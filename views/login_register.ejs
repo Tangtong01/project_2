@@ -21,7 +21,7 @@
   <div class="container">
     <div class="forms-container">
       <div class="signin-signup">
-        <form class="sign-in-form">
+        <form class="sign-in-form" id="login-form">
           <h2 class="title">เข้าสู่ระบบ</h2>
           <div class="input-field">
             <i class="fas fa-user"></i>
@@ -30,6 +30,7 @@
           <div class="input-field">
             <i class="fas fa-lock"></i>
             <input type="password" placeholder="Password" required id="Password" />
+            <input type="hidden" disabled value="<%=dataDormowner[0].role_id  %>" id="Role_id" />
           </div>
           <input type="button" value="เข้าสู่ระบบ" class="btn solid" onclick="login()" />
           <p class="social-text">หรือเข้าสู่ระบบด้วยช่องทาง </p>
@@ -63,20 +64,20 @@
             <div class="col-6">
               <div class="input-field">
                 <i class="fas fa-user"></i>
-                <input type="text" placeholder="Username" required id="username" />
+                <input type="text" placeholder="ชื่อผู้ใช้งาน" required id="username" />
               </div>
 
             </div>
             <div class="col-6">
               <div class="input-field">
                 <i class="fas fa-lock"></i>
-                <input type="password" placeholder="Password" required id="password" />
+                <input type="password" placeholder="รหัสผ่าน" required id="password" />
               </div>
             </div>
           </div>
           <div class="input-field">
             <i class="fas fa-envelope"></i>
-            <input type="email" placeholder="Emall" required id="Email" />
+            <input type="email" placeholder="อีเมล์" required id="Email" />
           </div>
 
           <div class="input-field">
@@ -210,7 +211,7 @@
           showConfirmButton: false,
           timer: 2000
         }).then(() => {
-          location.href = location.origin + "/user"
+          location.href = location.origin + "/owner"
         })
       } else if (role == 3) {
         swal.fire({
@@ -220,7 +221,7 @@
           showConfirmButton: false,
           timer: 2000
         }).then(() => {
-          // location.href = location.origin + "/"
+          location.href = location.origin + "/user"
         })
       }
       console.log(role)
@@ -244,6 +245,7 @@
     let email = document.getElementById("Email").value;
     let address = document.getElementById("Address").value;
     let phone_number = document.getElementById("Phonenumber").value;
+    let role_id = document.getElementById("Role_id").value;
     if (firstname == '' || surname == '' || username == '' || password == '' || email == '' || address == '' || phone_number == '') {
       swal.fire({
         position: 'center',
@@ -261,6 +263,7 @@
       "Email": email,
       "Address": address,
       "Phonenumber": phone_number,
+      "Role_id": role_id
     }
     console.log(Data);
     const url = location.origin + "/api/register";
@@ -282,10 +285,17 @@
         })
       },
       error: function(jqXhr, textStatus, errorThrow) {
+        console.log(jqXhr);
+        const msg = (() => {
+          switch (jqXhr.responseJSON.message) {
+            case "user_duplicated":
+              return "ชื่อผู้ใช้งานถูกใช้ไปแล้ว";
+          }
+        })();
         swal.fire({
           position: 'center',
           icon: 'error',
-          title: 'เกิดข้อผิดพลาด!',
+          title: msg,
           time: 2000
         })
       }

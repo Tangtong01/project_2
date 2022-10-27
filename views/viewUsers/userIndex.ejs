@@ -8,11 +8,11 @@
 
 <body>
   <div class="tm-main-content" id="top">
-    <%- include("../component/navbar.ejs",{
+    <%- include("../component/navbarNew.ejs",{
       role:CheckRole
     }) %>
 
-    <div class="tm-section tm-bg-img" id="tm-section-2">
+    <div class="tm-section tm-bg-img" id="tm-section-3" style="margin-top: 65px;">
       <div class="tm-bg-white ie-container-width-fix-2">
         <div class="container ie-h-align-center-fix">
 
@@ -20,15 +20,15 @@
       </div>
     </div>
 
-    <div class="tm-section-2">
+    <div class="tm-section-3">
       <div class="container">
         <div class="row">
           <div class="col text-center">
+            <h1> User</h1>
             <h2 class="tm-section-title">ยินดีต้อนรับคุณ :<%= datauser.firstname  %> </h2>
             <!-- <h2 class="tm-section-title">We are here to help you?</h2> -->
             <p class="tm-color-white tm-section-subtitle">Subscribe to get our newsletters</p>
             <a href="#" class="tm-color-white tm-btn-white-bordered">Subscribe Newletters</a>
-            <polygon fill="#ee5057" points="0,0  100,0  50,60"></polygon>
           </div>
         </div>
       </div>
@@ -58,73 +58,6 @@
             <p>เราจะตอบทุกคำถามที่เราสามารถตอบท่านได้.</p>
             <!-- <a href="#" class="text-uppercase tm-color-primary tm-font-semibold">Continue reading...</a> -->
           </article>
-        </div>
-      </div>
-    </div>
-
-    <div class="tm-section tm-section-pad tm-bg-gray" id="tm-section-4">
-      <div class="container">
-        <div class="row">
-          <div class="col-sm-12 col-md-12 col-lg-8 col-xl-8">
-            <div class="tm-article-carousel">
-              <article class="tm-bg-white mr-2 tm-carousel-item">
-                <img src="img/1.jpg" alt="Image" class="img-fluid">
-                <div class="tm-article-pad">
-                  <header>
-                    <h3 class="text-uppercase tm-article-title-2">หักพักหลังคาโปร่ง</h3>
-                  </header>
-                  <p1>อากาศเย็นสบาย ไม่ต้องเปิดแอร์ก็อยู่ได้ ฟรีWiFi เฟอร์นิเจอร์ครบครัน.</p1>
-                  <a href="#" class="text-uppercase btn-primary tm-btn-primary">ข้อมูลเพิ่มเติม.</a>
-                </div>
-              </article>
-              <article class="tm-bg-white mr-2 tm-carousel-item">
-                <img src="img/2.jpg" alt="Image" class="img-fluid">
-                <div class="tm-article-pad">
-                  <header>
-                    <h3 class="text-uppercase tm-article-title-2">หักพอบ้านเมตตาธรรม</h3>
-                  </header>
-                  <p1>มีอุปกรณ์ในห้องพักครบในตัวทั้งตู้เย็น ตู้เสื้อผ้า ทีวี เครื่องซักผ้า ฟรีWiFi ห้องพักราคาถูก.</p1>
-                  <a href="#" class="text-uppercase btn-primary tm-btn-primary">ข้อมูลเพิ่มเติม.</a>
-                </div>
-              </article>
-
-            </div>
-          </div>
-
-          <div class="col-sm-12 col-md-12 col-lg-4 col-xl-4 tm-recommended-container">
-            <div class="tm-bg-white">
-              <div class="tm-bg-primary tm-sidebar-pad">
-                <h3 class="tm-color-white tm-sidebar-title">หอพักแนะนำ</h3>
-                <p class="tm-color-white tm-margin-b-0 tm-font-light">หอพักที่ใช้งานเว็บไซต์เรา !</p>
-              </div>
-              <div class="tm-sidebar-pad-2">
-                <a href="#" class="media tm-media tm-recommended-item">
-                  <img src="img/tn-img-01.jpg" alt="Image">
-                  <div class="media-body tm-media-body tm-bg-gray">
-                    <h4 class="text-uppercase tm-font-semibold tm-sidebar-item-title">''</h4>
-                  </div>
-                </a>
-                <a href="#" class="media tm-media tm-recommended-item">
-                  <img src="img/tn-img-02.jpg" alt="Image">
-                  <div class="media-body tm-media-body tm-bg-gray">
-                    <h4 class="text-uppercase tm-font-semibold tm-sidebar-item-title">''</h4>
-                  </div>
-                </a>
-                <a href="#" class="media tm-media tm-recommended-item">
-                  <img src="img/tn-img-03.jpg" alt="Image">
-                  <div class="media-body tm-media-body tm-bg-gray">
-                    <h4 class="text-uppercase tm-font-semibold tm-sidebar-item-title">''</h4>
-                  </div>
-                </a>
-                <a href="#" class="media tm-media tm-recommended-item">
-                  <img src="img/tn-img-04.jpg" alt="Image">
-                  <div class="media-body tm-media-body tm-bg-gray">
-                    <h4 class="text-uppercase tm-font-semibold tm-sidebar-item-title">''</h4>
-                  </div>
-                </a>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
     </div>

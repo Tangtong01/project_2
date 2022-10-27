@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<%- include('../component/header.ejs',{
+        title:"จัดการห้องพัก"
+      }) %>
+
+<body>
+  <div class="tm-main-content" id="top">
+
+    <%- include('../component/navbarNew.ejs',{
+        checklogin: checklogin,
+        role:CheckRole,
+        route: route
+      }) %>
+    <!-- END TOP BAR -->
+
+    <!-- blank Page -->
+    <div class="container-fluid " style="margin-top: 65px;">
+      <div class=" row">
+        <div class="container-fluid ">
+          <div class=" row">
+            <div class="col-md-12">
+              <h4 class=" text-center">ตารางข้อมูลห้องพัก</h4>
+              <div class=" row">
+                <div class="col-md-12">
+                  <% if (dataDomitory.length == 0)  { %>
+                  <a href="/owner/domitoryManagement">
+                    <h1 class="d-flex justify-content-center">ไปเพิ่มหอพักก่อน</h1>
+                  </a>
+
+                  <% } else { %>
+                  <table class="table table-bordered">
+                    <thead>
+                      <tr>
+                        <th scope="col" class="text-center">ลำดับ</th>
+                        <th scope="col" class="text-center">รหัสห้อง-หมายเลขห้อง</th>
+                        <th scope="col" class="text-center">ราคา</th>
+                        <th scope="col" class="text-center">ประเภทห้อง</th>
+                        <th scope="col" class="text-center">สถานะห้อง </th>
+                        <th scope="col">การทำงาน : <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#Modal_Add"><i class="fas fa-plus-square"></i></button></th>
+                      </tr>
+                    </thead>
+
+                    <tbody>
+                      <% if (dataRoom.length == 0) { %>
+                      <tr>
+                        <td colspan="6" class="text-center">
+                          <h1>ไม่มีข้อมูล</h1>
+                        </td>
+                      </tr>
+
+                      <% } else { %>
+                      <% for (let i = 0; i < dataRoom.length; i++) { %>
+                      <tr>
+                        <th scope="row"><%= i+1 %></th>
+                        <td> <%= dataRoom[i].room_number %> </td>
+                        <td> <%= dataRoom[i].room_price %> bath </td>
+                        <td>
+                          <% if(dataRoom[i].room_type == 1) { %>
+                          ห้องแอร์
+                          <% } else { %>
+                          ห้องพัดลม
+                          <% } %>
+                        </td>
+
+                        <td>
+                          <% if(dataRoom[i].room_status == 0) { %>
+                          ว่าง
+                          <% } else { %>
+                          ไม่ว่าง
+                          <% } %>
+                        </td>
+                        <td>
+                          <button type="button" class="btn btn-success" onclick="showmodalupdate(this)" data-toggle="modal" data-target="#Modal_Update" data-User="<%= JSON.stringify(dataRoom[i]) %>"><i class="fas fa-edit"></i></button>
+                          <button type="button" class="btn btn-warning" onclick="DeleteRoom('<%= dataRoom[i].room_id  %>')"><i class="far fa-trash-alt"></i></button>
+                        </td>
+                      </tr>
+                      <% } %>
+                      <% } %>
+                    </tbody>
+                  </table>
+                  <% } %>
+
+                </div>
+                <div class="col-2">
+                  <% if (dataDomitory.length != 0 ) { %>
+                  <input type="hidden" class="form-control" disabled value="<%=dataDomitory[0].domitory_id  %>" aria-describedby=" basic-addon1" id="Domitory_id">
+                  <% } %>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- โมดอลเพิ่มข้อมูล -->
+  <div class="modal fade bd-example-modal-lg" id="Modal_Add" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">เพิ่มข้อมูลห้องพัก</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form>
+            <div class="row">
+              <div class="col-4">
+                <div class="form-group">
+                  <label for="exampleInputPassword1">หมายเลขห้อง</label>
+                  <input type="text" class="form-control" id="Room_number" placeholder="กรอกหมายเลขห้อง">
+                </div>
+              </div>
+              <div class="col-4">
+                <div class="form-group">
+                  <label for="exampleInputPassword1">ราคาห้อง</label>
+                  <input type="text" class="form-control" id="Room_price" placeholder="กรอกราคาห้อง">
+                </div>
+              </div>
+              <div class="col-4">
+                <div class="form-group">
+                  <label for="exampleInputPassword1">เลือกประเภทห้อง</label>
+                  <select class="form-select" id="Room_type" aria-label="Default select example">
+                    <option selected>เลือกประเภทห้อง</option>
+                    <option value="1">ห้องแอร์</option>
+                    <option value="2">ห้องพัดลม</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" data-dismiss="modal">ยกเลิก</button>
+          <input type="button" class="btn btn-secondary" value="เพิ่มข้อมูล" onclick="AddRoom()" />
+        </div>
+
+      </div>
+    </div>
+  </div>
+  
+
+  <!-- โมดอลแก้ไขข้อมูล -->
+  <div class="modal fade bd-example-modal-lg" id="Modal_Update" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">แก้ไขข้อมูลห้องพัก</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form>
+            <div class="row">
+              <div class="col-4">
+                <div class="form-group">
+                  <label for="exampleInputPassword1">หมายเลขห้อง</label>
+                  <input type="text" disabled class="form-control" id="EditRoom_number" placeholder="กรอกหมายเลขห้อง">
+                </div>
+              </div>
+              <div class="col-4">
+                <div class="form-group">
+                  <label for="exampleInputPassword1">ราคาห้อง</label>
+                  <input type="text" class="form-control" id="EditRoom_price" placeholder="กรอกราคาห้อง">
+                </div>
+              </div>
+              <div class="col-4">
+                <div class="form-group">
+                  <label for="exampleInputPassword1">เลือกประเภทห้อง</label>
+                  <select class="form-select" id="EditRoom_type" aria-label="Default select example">
+                    <option value="1">ห้องแอร์</option>
+                    <option value="2">ห้องพัดลม</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" data-dismiss="modal">ยกเลิก</button>
+          <input type="button" class="btn btn-secondary" value="แก้ไขข้อมูล" onclick="UpdateRoom()" />
+        </div>
+
+      </div>
+    </div>
+  </div>
+  </div>
+
+  <footer class="tm-bg-dark-blue">
+    <div class="container">
+      <div class="row">
+        <p class="col-sm-12 text-center tm-font-light tm-color-white p-4 tm-margin-b-0">
+          Copyright &copy; <span class="tm-current-year">2018</span> Your Company
+
+          - Design: <a rel="nofollow" href="https://www.tooplate.com" class="tm-color-primary tm-font-normal" target="_parent">Tooplate</a></p>
+      </div>
+    </div>
+  </footer>
+  </div>
+
+  <%- include('../component/script.ejs') %>
+</body>
+
+
+<script>
+  //---------------------------------เพิ่มข้อมูลห้องพัก----------------------------------------
+  async function AddRoom() {
+    let room_number = document.getElementById("Room_number").value;
+    let room_price = document.getElementById("Room_price").value;
+    let room_type = document.getElementById("Room_type").value;
+    let domitory_id = document.getElementById("Domitory_id").value;
+
+
+    if (room_number == '' || room_price == '' || room_type == '') {
+      swal.fire({
+        position: 'center',
+        icon: 'info',
+        title: 'กรุณากรอกข้อมูลให้ครบ',
+        time: 2000
+      })
+      return;
+    }
+    const Data = {
+      "Room_number": room_number,
+      "Room_price": room_price,
+      "Room_type": room_type,
+      "Domitory_id": domitory_id,
+    }
+    console.log(Data);
+    const url = location.origin + "/apiowner/AddRoom";
+    $.ajax({
+      type: 'POST',
+      url: url,
+      data: JSON.stringify(Data),
+      dataType: 'json',
+      contentType: "application/json; charset=utf-8",
+      success: function(data, status) {
+        console.log("hello world", data)
+        swal.fire({
+          position: 'center',
+          icon: 'success',
+          title: 'เพิ่มห้องพักสำเร็จ',
+          time: 2000
+        }).then(() => {
+          location.reload()
+        });
+      },
+      error: function(jqXhr, textStatus, errorThrow) {
+        const msg = (() => {
+          switch (jqXhr.responseJSON.message) {
+            case "duplicated":
+              return "มีหมายเลขห้องพักนี้แล้ว";
+          }
+        })();
+        console.log(msg);
+        swal.fire({
+          position: 'center',
+          icon: 'error',
+          title: msg,
+          time: 2000
+        })
+      }
+    })
+
+  }
+
+  //---------------------------------โชว์ข้อมูลห้องพัก-----------------------------------
+  function showmodalupdate(modal) {
+    let user = modal.getAttribute("data-User")
+    const jsonUser = JSON.parse(user)
+    document.getElementById("EditRoom_number").value = jsonUser.room_number
+    document.getElementById("EditRoom_price").value = jsonUser.room_price
+    document.getElementById("EditRoom_type").value = jsonUser.room_type
+
+    Room_id = jsonUser.room_id;
+  }
+
+  //---------------------------------แก้ไขข้อมูลห้องพัก-----------------------------------
+  async function UpdateRoom() {
+    // console.log(Room_id);
+    let room_number = document.getElementById("EditRoom_number").value;
+    let room_price = document.getElementById("EditRoom_price").value;
+    let room_type = document.getElementById("EditRoom_type").value;
+    let domitory_id = document.getElementById("Domitory_id").value;
+
+    // console.log("หมายเลขห้อง", room_number);
+    // console.log("ราคาห้อง", room_price);
+    // console.log("ประเภทห้อง", room_type);
+    // console.log("ID หอพัก", domitory_id);
+    if (!room_number || !room_price || !room_type || !domitory_id) {
+      //   console.log("if")
+      swal.fire({
+        position: 'center',
+        icon: 'info',
+        title: 'กรุณากรอกข้อมูลให้ครบ',
+        time: 2000
+      })
+    } else {
+      //   console.log("else")
+      const Data = {
+        "Room_number": room_number,
+        "Room_price": room_price,
+        "Room_type": room_type,
+        "Room_id": Room_id,
+      }
+      console.log(Data);
+
+      const url = location.origin + "/apiowner/UpdateRoom";
+      $.ajax({
+        type: 'POST',
+        url: url,
+        data: JSON.stringify(Data),
+        dataType: 'json',
+        contentType: "application/json; charset=utf-8",
+        success: function(data, status) {
+          console.log("hello world", data)
+          swal.fire({
+            position: 'center',
+            icon: 'success',
+            title: 'แก้ไขข้อมูลห้องพักสำเร็จ',
+            time: 2000
+          }).then(() => {
+            location.reload()
+          });
+        },
+        error: function(jqXhr, textStatus, errorThrow) {
+          swal.fire({
+            position: 'center',
+            icon: 'error',
+            title: 'เกิดข้อผิดพลาด!',
+            time: 2000
+          })
+        }
+      })
+
+    }
+  }
+
+  //---------------------------------ลบข้อมูลห้องพัก-----------------------------------
+  async function DeleteRoom(room_id) {
+    Swal.fire({
+      title: 'แน่ใจแล้วหรือ ?',
+      text: "คุณต้องการลบเจ้าของหอพัก !",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      cancelButtonText: 'ยกเลิก',
+      confirmButtonText: 'ใช่ต้องการลบ !'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const Data = {
+          room_id: room_id
+        }
+        const url = location.origin + '/apiowner/DeleteRoom/';
+        $.ajax({
+          type: 'POST',
+          url: url,
+          data: JSON.stringify(Data),
+          dataType: 'json',
+          contentType: "application/json; charset=utf-8",
+          success: function(data, status) {
+            if (data.message == "DeleteRoom") {
+              Swal.fire({
+                position: 'center',
+                icon: 'success',
+                title: 'ลบข้อมูลห้องพักสำเร็จ',
+                showConfirmButton: true,
+              }).then(() => {
+                location.reload();
+              })
+            }
+          },
+          error: function(jqXhr, textStatus, errorThrow) {
+            swal.fire({
+              position: 'center',
+              icon: 'error',
+              title: 'เกิดข้อผิดพลาด!',
+              time: 2000
+            });
+          }
+        })
+      }
+    })
+  }
+</script>
+
+</html>

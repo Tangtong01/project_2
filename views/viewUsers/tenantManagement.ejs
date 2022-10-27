@@ -8,7 +8,7 @@
 <body>
   <div class="tm-main-content" id="top">
 
-    <%- include('../component/navbar.ejs',{
+    <%- include('../component/navbarNew.ejs',{
         checklogin: checklogin,
         role:CheckRole,
         route: route
@@ -93,6 +93,9 @@
                     <span class="input-group-text" id="basic-addon1"></span>
                     <input type="text" class="form-control" disabled value="เบอร์โทร :<%=datauser.user_tel  %>"" aria-label=" Phonenumber" aria-describedby="basic-addon1">
                   </div>
+
+                  <input type="hidden" class="form-control" disabled value="<%=datauser.user_id  %>"" aria-describedby="basic-addon1" id="user_id">
+
                 </div>
               </div>
             </div>
@@ -272,6 +275,8 @@
     let email = document.getElementById("Email").value;
     let address = document.getElementById("Address").value;
     let phone_number = document.getElementById("Phonenumber").value;
+    let owner_id = document.getElementById("user_id").value;
+
     if (firstname == '' || surname == '' || username == '' || password == '' || email == '' || address == '' || phone_number == '') {
       swal.fire({
         position: 'center',
@@ -289,6 +294,7 @@
       "Email": email,
       "Address": address,
       "Phonenumber": phone_number,
+      "owner": owner_id,
     }
     console.log(Data);
     const url = location.origin + "/apiuser/AddTenant";

@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<%- include('../component/header.ejs',{
+        title:"จัดการการมัดจำ"
+      }) %>
+
+<body>
+  <div class="tm-main-content" id="top">
+
+    <%- include('../component/navbarNew.ejs',{
+        checklogin: checklogin,
+        role:CheckRole,
+        route: route
+      }) %>
+    <!-- END TOP BAR -->
+
+    <!-- blank Page -->
+    <div class="container-fluid " style="margin-top: 65px;">
+      <div class=" row">
+        <div class="container-fluid ">
+          <div class=" row">
+            <div class="col-md-12">
+              <h4 class=" text-center">ตารางข้อมูลการมัดจำ</h4>
+              <div class=" row">
+                <div class="col-md-12">
+                  <% if(dataTenant.length == 0 ) { %>
+                  <a href="/owner/tenantManagement">
+                    <h1 class="d-flex justify-content-center">ไปเพิ่มข้อมูลผู้เช่าก่อน</h1>
+                  </a>
+                  <% } else { %>
+                  <table class="table table-bordered">
+                    <thead>
+                      <tr>
+                        <th scope="col" class="text-center">ลำดับ</th>
+                        <th scope="col" class="text-center">รหัสห้อง</th>
+                        <th scope="col" class="text-center">รหัสผู้เช่าหอ</th>
+                        <th scope="col" class="text-center">ค่ามัดจำ</th>
+                        <th scope="col" class="text-center">วันที่มัดจำ </th>
+                        <th scope="col" class="text-center">วันที่หมดอายุ </th>
+                        <th scope="col">การทำงาน : <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#Modal_Add"><i class="fas fa-plus-square"></i></button></th>
+                      </tr>
+                    </thead>
+
+                    <tbody>
+                      <% if (dataDeposit.length == 0) { %>
+                      <tr>
+                        <td colspan="7" class="text-center">
+                          <h1>ไม่มีข้อมูล</h1>
+                        </td>
+                      </tr>
+
+                      <% } else { %>
+                      <% for (let i = 0; i < dataDeposit.length; i++) { %>
+                      <tr>
+                        <th scope="row"><%= i+1 %></th>
+                        <td> <%= dataDeposit[i].room_id %> - <%= dataDeposit[i].room_number %> </td>
+                        <td> <%= dataDeposit[i].user_id %> - <%= dataDeposit[i].firstname %> </td>
+                        <td> <%= dataDeposit[i].deposit_price %> bath </td>
+                        <td> <%= dataDeposit[i].deposit_date %> </td>
+                        <td> <%= dataDeposit[i].deposit_end_date %> </td>
+                        <td>
+                          <button type="button" class="btn btn-success" onclick="showmodalupdate(this)" data-toggle="modal" data-target="#Modal_Update" data-User="<%= JSON.stringify(dataDeposit[i]) %>"><i class="fas fa-edit"></i></button>
+                          <button type="button" class="btn btn-warning" onclick="DeleteDeposit('<%= dataDeposit[i].deposit_id  %>','<%= dataDeposit[i].room_id  %>')"><i class="far fa-trash-alt"></i></button>
+                        </td>
+                      </tr>
+                      <% } %>
+                      <% } %>
+                    </tbody>
+                  </table>
+                  <div class="col-2">
+                    <% if (dataUser.length != 0 ) { %>
+                    <input type="hidden" class="form-contsrol" disabled value="<%=dataTenant[0].owner_id  %> " aria-describedby=" basic-addon1" id="user_id">
+                    <% } %>
+                  </div>
+                  <% } %>
+
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+  <!-- โมดอลเพิ่มข้อมูล -->
+  <div class="modal fade bd-example-modal-lg" id="Modal_Add" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">เพิ่มข้อมูลการมัดจำ</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form>
+            <div class="row">
+              <div class="col-4">
+                <div class="form-group">
+                  <label for="exampleInputPassword1">รหัสห้อง</label>
+                  <select class="form-select" id="RoomID" aria-label="Default select example" onChange="checkAddRoom()">
+                    <option selected>เลือกรหัสห้อง</option>
+                    <% for (let i = 0; i < dataRoom.length; i++) { %>
+                    <option value="<%= dataRoom[i].room_id %>"><%= dataRoom[i].room_id+"-"+dataRoom[i].room_number %></option>
+                    <% } %>
+                    <option value="add_room">เพิ่มห้องพัก</option>
+                  </select>
+                  <!-- <input type="text" class="form-control" id="RoomID" placeholder="Enter RoomID"> -->
+                </div>
+              </div>
+              <div class="col-4">
+
+                <div class="form-group">
+                  <label for="exampleInputPassword1">รหัสผู้เช่า</label>
+                  <select class="form-select" id="TenantID" aria-label="Default select example" onchange="chackAddTenant()">
+                    <option selected>เลือกรหัสผู้เช่า</option>
+                    <% for (let i = 0; i < dataTenant.length; i++) { %>
+                    <option value="<%= dataTenant[i].user_id %>"><%= dataTenant[i].user_id+"-"+dataTenant[i].firstname %></option>
+                    <% } %>
+                    <option value="add_tenant">เพิ่มผู้เช่า</option>
+                  </select>
+                  <!-- <label for="exampleInputPassword1">รหัสผู้เช่า</label>
+                  <input type="text" class="form-control" id="TenantID" placeholder="Enter TenantID"> -->
+                </div>
+              </div>
+              <div class="col-4">
+                <div class="form-group">
+                  <label for="exampleInputPassword1">ค่ามัดจำ</label>
+                  <input type="text" class="form-control" id="Deposit_Price" placeholder="กรอกค่ามัดจำ  ">
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-6">
+                <div class="form-group">
+                  <label for="exampleInputPassword1">วันที่มัดจำ :</label>
+                  <input type="date" id="deposit_start_date">
+                  <input type="time" id="deposit_start_time">
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="form-group">
+                  <label for="exampleInputPassword1">วันที่หมดอายุ :</label>
+                  <input type="date" id="deposit_end_date">
+                  <input type="time" id="deposit_end_time">
+                </div>
+              </div>
+            </div>
+
+          </form>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" data-dismiss="modal">ยกเลิก</button>
+          <input type="button" class="btn btn-secondary" value="เพิ่มข้อมูล" onclick="AddDeposit() " />
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+
+  <!-- โมดอลแก้ไขข้อมูล -->
+  <div class="modal fade bd-example-modal-lg" id="Modal_Update" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">แก้ข้อมูลการมัดจำ</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form>
+            <div class="row">
+              <div class="col-4">
+                <div class="form-group">
+                  <label for="exampleInputPassword1">รหัสห้อง</label>
+                  <select disabled class="form-select" id="EditRoomID" aria-label="Default select example" onChange="checkAddRoom()">
+                    <option selected>เลือกรหัสห้อง</option>
+                    <% for (let i = 0; i < dataRoom.length; i++) { %>
+                    <option value="<%= dataRoom[i].room_id %>"><%= dataRoom[i].room_id+"-"+dataRoom[i].room_number %></option>
+                    <% } %>
+                  </select>
+                  <!-- <input type="text" class="form-control" id="RoomID" placeholder="Enter RoomID"> -->
+                </div>
+              </div>
+              <div class="col-4">
+
+                <div class="form-group">
+                  <label for="exampleInputPassword1">รหัสผู้เช่า</label>
+                  <select disabled class="form-select" id="EditTenantID" aria-label="Default select example" onchange="chackAddTenant()">
+                    <option selected>เลือกรหัสผู้เช่า</option>
+                    <% for (let i = 0; i < dataTenant.length; i++) { %>
+                    <option value="<%= dataTenant[i].user_id %>"><%= dataTenant[i].user_id+"-"+dataTenant[i].firstname %></option>
+                    <% } %>
+                  </select>
+                  <!-- <label for="exampleInputPassword1">รหัสผู้เช่า</label>
+                  <input type="text" class="form-control" id="TenantID" placeholder="Enter TenantID"> -->
+                </div>
+              </div>
+              <div class="col-4">
+                <div class="form-group">
+                  <label for="exampleInputPassword1">ค่ามัดจำ</label>
+                  <input type="text" class="form-control" id="EditDeposit_Price" placeholder="กรอกค่ามัดจำ">
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-6">
+                <div class="form-group">
+                  <label for="exampleInputPassword1">วันที่มัดจำ :</label>
+                  <input type="date" id="Editdeposit_start_date">
+                  <input type="time" id="Editdeposit_start_time">
+                </div>
+              </div>
+              <div class=" col-6">
+                <div class="form-group">
+                  <label for="exampleInputPassword1">วันที่หมดอายุ :</label>
+                  <input type="date" id="Editdeposit_end_date">
+                  <input type="time" id="Editdeposit_end_time">
+                </div>
+              </div>
+            </div>
+
+          </form>
+        </div>
+
+        <div class=" modal-footer">
+          <button type="button" class="btn btn-danger" data-dismiss="modal">ยกเลิก</button>
+          <input type="button" class="btn btn-success" value="แก้ไขข้อมูล" onclick="Updatedeposit()" />
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+
+  <footer class="tm-bg-dark-blue">
+    <div class="container">
+      <div class="row">
+        <p class="col-sm-12 text-center tm-font-light tm-color-white p-4 tm-margin-b-0">
+          Copyright &copy; <span class="tm-current-year">2018</span> Your Company
+
+          - Design: <a rel="nofollow" href="https://www.tooplate.com" class="tm-color-primary tm-font-normal" target="_parent">Tooplate</a></p>
+      </div>
+    </div>
+  </footer>
+  </div>
+
+  <%- include('../component/script.ejs') %>
+</body>
+
+
+<script>
+  //----------------------------------------------เปลี่ยนหน้าไป หน้าเพิ่มห้องพัก-------------------
+  function checkAddRoom() {
+    console.log("change room");
+    if (document.querySelector("#RoomID").value == 'add_room') location.href = location.origin + '/owner/roomManagement';
+  }
+  //----------------------------------------------เปลี่ยนหน้าไป หน้าเพิ่มผู้เช่า----------------------
+  function chackAddTenant() {
+    console.log("change tenant");
+    if (document.querySelector("#TenantID").value == 'add_tenant') location.href = location.origin + '/owner/tenantManagement';
+  }
+
+  //---------------------------------เพิ่มข้อมูลการมัดจำ----------------------------------------
+  async function AddDeposit() {
+    let room_id = document.getElementById("RoomID").value;
+    let tenant_id = document.getElementById("TenantID").value;
+    let owner_id = document.getElementById("user_id").value;
+    let deposit_price = document.getElementById("Deposit_Price").value;
+    let deposit_start_date = document.getElementById("deposit_start_date").value;
+    let deposit_start_time = document.getElementById("deposit_start_time").value;
+    let deposit_end_date = document.getElementById("deposit_end_date").value;
+    let deposit_end_time = document.getElementById("deposit_end_time").value;
+
+    const date_start = deposit_start_date + " " + deposit_start_time;
+    const date_end = deposit_end_date + " " + deposit_end_time;
+
+    if (room_id == '0' || tenant_id == '0' || owner_id == '' || deposit_price == '' || deposit_start_date == '' || deposit_end_date == '' || deposit_start_time == '' || deposit_end_time == '') {
+      swal.fire({
+        position: 'center',
+        icon: 'info',
+        title: 'กรุณากรอกข้อมูลให้ครบ',
+        time: 2000
+      })
+      return;
+    }
+    const Data = {
+      "RoomID": room_id,
+      "TenantID": tenant_id,
+      "owner_id": owner_id,
+      "Deposit_Price": deposit_price,
+      "deposit_start_date": date_start,
+      "deposit_end_date": date_end,
+    }
+    console.log(Data);
+    const url = location.origin + "/apiowner/AddDeposit";
+    $.ajax({
+      type: 'POST',
+      url: url,
+      data: JSON.stringify(Data),
+      dataType: 'json',
+      contentType: "application/json; charset=utf-8",
+      success: function(data, status) {
+        console.log("hello world", data)
+        swal.fire({
+          position: 'center',
+          icon: 'success',
+          title: 'เพิ่มการมัดจำสำเร็จ',
+          time: 2000
+        }).then(() => {
+          location.reload()
+        });
+      },
+      error: function(jqXhr, textStatus, errorThrow) {
+        const msg = (() => {
+          switch (jqXhr.responseJSON.message) {
+            case "duplicated":
+              return "ข้อมูลซ้ำ"
+            case "room_not_empty":
+              return "มีคนจองห้องพักแล้ว";
+          }
+        })();
+        console.log(msg);
+
+        swal.fire({
+          position: 'center',
+          icon: 'error',
+          title: msg,
+          time: 2000
+        })
+      }
+    })
+
+  }
+
+
+  //---------------------------------โชว์ข้อมูลการมัดจำ-----------------------------------
+  function showmodalupdate(modal) {
+    let user = modal.getAttribute("data-User")
+    const jsonUser = JSON.parse(user)
+    document.getElementById("EditRoomID").value = jsonUser.room_id
+    document.getElementById("EditTenantID").value = jsonUser.user_id
+    document.getElementById("EditDeposit_Price").value = jsonUser.deposit_price
+
+    console.log(jsonUser.deposit_date);
+
+    const date_start_split = jsonUser.deposit_date.split(" ")
+    const date_end_split = jsonUser.deposit_end_date.split(" ")
+
+    document.getElementById("Editdeposit_start_date").value = date_start_split[0];
+    document.getElementById("Editdeposit_start_time").value = date_start_split[1]
+    document.getElementById("Editdeposit_end_date").value = date_end_split[0]
+    document.getElementById("Editdeposit_end_time").value = date_end_split[1]
+    console.log(date_start_split[0], date_start_split[1], date_end_split[0], date_end_split[1]);
+
+    UserId = jsonUser.user_id;
+  }
+
+  //---------------------------------แก้ไขข้อมูลการมัดจำ-----------------------------------
+  async function Updatedeposit() {
+
+    let room_id = document.getElementById("EditRoomID").value;
+    let tenant_id = document.getElementById("EditTenantID").value;
+    let owner_id = document.getElementById("user_id").value;
+    let deposit_price = document.getElementById("EditDeposit_Price").value;
+    let deposit_start_date = document.getElementById("Editdeposit_start_date").value;
+    let deposit_start_time = document.getElementById("Editdeposit_start_time").value;
+    let deposit_end_date = document.getElementById("Editdeposit_end_date").value;
+    let deposit_end_time = document.getElementById("Editdeposit_end_time").value;
+
+    const date_start = deposit_start_date + " " + deposit_start_time;
+    const date_end = deposit_end_date + " " + deposit_end_time;
+
+    console.log(room_id, tenant_id, owner_id, deposit_price, date_start, date_end);
+    if (!room_id || !tenant_id || !deposit_price || !deposit_start_date || !deposit_start_time || !deposit_end_date || !deposit_end_time) {
+
+      swal.fire({
+        position: 'center',
+        icon: 'info',
+        title: 'กรุณากรอกข้อมูลให้ครบ',
+        time: 2000
+      })
+    } else {
+      const Data = {
+        "UserId": UserId,
+        "RoomID": room_id,
+        "TenantID": tenant_id,
+        "Deposit_Price": deposit_price,
+        "deposit_start_date": date_start,
+        "deposit_end_date": date_end,
+      }
+      console.log(Data);
+
+      const url = location.origin + "/apiowner/UpdateDeposit";
+      $.ajax({
+        type: 'POST',
+        url: url,
+        data: JSON.stringify(Data),
+        dataType: 'json',
+        contentType: "application/json; charset=utf-8",
+        success: function(data, status) {
+          console.log("hello world", data)
+          swal.fire({
+            position: 'center',
+            icon: 'success',
+            title: 'แก้ไขข้อมูลการมัดจำสำเร็จ',
+            time: 2000
+          }).then(() => {
+            location.reload()
+          });
+        },
+        error: function(jqXhr, textStatus, errorThrow) {
+          const msg = (() => {
+            switch (jqXhr.responseJSON.message) {
+              case "duplicated":
+                return "ข้อมูลซ้ำ"
+              case "room_not_empty":
+                return "มีคนจองห้องพักแล้ว";
+            }
+          })();
+
+          swal.fire({
+            position: 'center',
+            icon: 'error',
+            title: msg,
+            time: 2000
+          })
+        }
+      })
+
+    }
+  }
+
+  //---------------------------------ลบข้อมูลการมัดจำ-----------------------------------
+  async function DeleteDeposit(deposit_id, room_id) {
+    Swal.fire({
+      title: 'แน่ใจแล้วหรือ ?',
+      text: "คุณต้องการลบเจ้าของหอพัก !",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      cancelButtonText: 'ยกเลิก',
+      confirmButtonText: 'ใช่ต้องการลบ !'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const Data = {
+          deposit_id: deposit_id,
+          room_id: room_id
+        }
+        console.log(Data);
+        const url = location.origin + '/apiowner/DeleteDeposit/';
+        $.ajax({
+          type: 'POST',
+          url: url,
+          data: JSON.stringify(Data),
+          dataType: 'json',
+          contentType: "application/json; charset=utf-8",
+          success: function(data, status) {
+            if (data.message == "DeleteDeposit") {
+              Swal.fire({
+                position: 'center',
+                icon: 'success',
+                title: 'ลบข้อมูลการมัดจำสำเร็จ',
+                showConfirmButton: true,
+              }).then(() => {
+                location.reload();
+              })
+            }
+          },
+          error: function(jqXhr, textStatus, errorThrow) {
+            swal.fire({
+              position: 'center',
+              icon: 'error',
+              title: 'เกิดข้อผิดพลาด!',
+              time: 2000
+            });
+          }
+        })
+      }
+    })
+  }
+</script>
+
+</html>

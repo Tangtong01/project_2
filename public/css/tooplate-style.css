@@ -28,7 +28,9 @@ a:focus {
 .tm-p-4 { padding: 2rem!important; }
 .tm-color-white { color: white; }
 .tm-color-primary {	color: #007bff; }
+.tm-color-primary2 {color: #CD6155; }
 .tm-bg-primary { background: #007bff; }
+.tm-bg-primary2 { background:#CD6155; }
 .tm-bg-gray { background: #F4F4F4; }
 .tm-bg-white { background: white; }
 .tm-bg-dark-blue { background: #1f3646; }
@@ -100,7 +102,7 @@ p1 {
 .nav-link.active,
 .nav-link:hover {
 	color:#ffffff ;
-	background-color: #007bff;	
+	
 }
 
 .tm-top-bar .navbar-expand-lg .navbar-nav .nav-link { padding: 50px 35px; }
@@ -137,6 +139,11 @@ p1 {
 }
 #tm-section-2 {	
 	background-image: url('../img/1.jpg');	
+	height: 515px;
+}
+
+#tm-section-3 {	
+	background-image: url('../img/hero-background-4-3.jpg');	
 	height: 515px;
 }
 
@@ -199,7 +206,42 @@ p1 {
 	background-color: #0055af;
 	border-color: #0055af;
 }
+.btn-primary2 {
+	background-color: #CD6155;
+	border-color: #CD6155;
+	border-radius: 0;
+	cursor: pointer;
+	color: white;
+	font-size: 0.7rem;
+	font-weight: 600;
+	padding: 13px 15px;
+	text-transform: uppercase;
+}
 
+.btn-primary2:hover,
+.btn-primary2:focus,
+.btn-primary2:active {
+	background-color: #CD6155;
+	border-color: #CD6155;
+}
+
+.btn-primary-bill {
+	background-color: #CD6155;
+	border-color: #CD6155;
+	border-radius: 5px;
+	cursor: pointer;
+	color: white;
+	font-size: 0.7rem;
+	font-weight: 800;
+	padding: 9.8px 10px;
+	text-transform: uppercase;
+}
+.btn-primary-bill:hover,
+.btn-primary-bill:focus,
+.btn-primary-bill:active {
+	background-color: #e19056;
+	border-color: #CD6155;
+}
 .tm-search-form .tm-form-element { padding: 0 5px; }
 .tm-form-element { position: relative; }
 .tm-form-element:last-child { margin-right: 0; }
@@ -257,12 +299,25 @@ select.tm-select::-ms-expand { display: none; }
 .tm-pt-5 { padding-top: 150px; }
 .tm-pb-4 { padding-bottom: 100px; }
 
-.tm-section-2 {
-	background: #007bff;
+
+
+.tm-section-1 {
+	background: #1f3646;
 	padding-top: 50px;
 	position: relative;
 }
 
+.tm-section-2 {
+	background: #CD6155;
+	padding-top: 50px;
+	position: relative;
+}
+
+.tm-section-3 {
+	background: #007bff;
+	padding-top: 50px;
+	position: relative;
+}
 .tm-section-title {
 	color: white;
 	font-size: 3rem;

@@ -8,7 +8,7 @@
 <body>
   <div class="tm-main-content" id="top">
 
-    <%- include('./component/navbar.ejs',{
+    <%- include('./component/navbarNew.ejs',{
         checklogin: checklogin,
         role:CheckRole,
         route: route
@@ -16,7 +16,7 @@
     <!-- END TOP BAR -->
 
     <!-- blank Page -->
-    <div class="container-fluid" ">
+    <div class="container-fluid" style="margin-top: 65px;">
       <h4 class=" text-center">ตารางข้อมูลเจ้าของหอพัก</h4>
       <div class=" row">
         <div class="col-md-12">
@@ -34,6 +34,14 @@
             </thead>
 
             <tbody>
+              <% if (dataDormowner.length == 0) { %>
+              <tr>
+                <td colspan="7" class="text-center">
+                  <h1>ไม่มีข้อมูล</h1>
+                </td>
+              </tr>
+
+              <% } else { %>
               <% for (let i = 0; i < dataDormowner.length; i++) { %>
               <tr>
                 <th scope="row"><%= i+1 %></th>
@@ -53,6 +61,7 @@
                 </td>
               </tr>
               <% } %>
+              <% } %>
             </tbody>
 
           </table>
@@ -60,7 +69,7 @@
         <div class="col-2">
           <h3>ข้อมูลผู้ดูแลระบบ</h3>
           <div style="margin-left: 350px;">
-            <img src="" alt="" style="width: 420px ; height: 250px;">
+            <img src="img/logoadmin.png" alt="" style="width: 300px ; height: 300px;">
           </div>
         </div>
         <div class="col-12" style="margin-top: 20px; margin-left: 185px;">
@@ -74,13 +83,13 @@
             <div class="col-2">
               <div class="input-group mb-3">
                 <span class="input-group-text" id="basic-addon1"></span>
-                <input type="text" class="form-control" disabled value="นามสกุล :<%=datauser.surname  %>"" aria-label=" Surname" aria-describedby="basic-addon1">
+                <input type="text" class="form-control" disabled value="นามสกุล :<%=datauser.surname  %>" aria-label=" Surname" aria-describedby="basic-addon1">
               </div>
             </div>
             <div class="col-2">
               <div class="input-group mb-3">
                 <span class="input-group-text" id="basic-addon1"></span>
-                <input type="text" class="form-control" disabled value="อีเมล์ :<%=datauser.user_email  %>"" aria-label=" Email" aria-describedby="basic-addon1">
+                <input type="text" class="form-control" disabled value="อีเมล์ :<%=datauser.user_email  %>" aria-label=" Email" aria-describedby="basic-addon1">
               </div>
             </div>
           </div>
@@ -88,17 +97,19 @@
             <div class="col-2">
               <div class="input-group mb-3">
                 <span class="input-group-text" id="basic-addon1"></span>
-                <input type="text" class="form-control" disabled value="ที่อยู่ :<%=datauser.user_address  %>"" aria-label=" Address" aria-describedby="basic-addon1">
+                <input type="text" class="form-control" disabled value="ที่อยู่ :<%=datauser.user_address  %>" aria-label=" Address" aria-describedby="basic-addon1">
               </div>
             </div>
             <div class="col-2">
               <div class="input-group mb-3">
                 <span class="input-group-text" id="basic-addon1"></span>
-                <input type="text" class="form-control" disabled value="เบอร์โทร :<%=datauser.user_tel  %>"" aria-label=" Phonenumber" aria-describedby="basic-addon1">
+                <input type="text" class="form-control" disabled value="เบอร์โทร :<%=datauser.user_tel  %>" aria-label=" Phonenumber" aria-describedby="basic-addon1">
               </div>
             </div>
           </div>
-
+          <% if (dataDormowner.length != 0 ) { %>
+          <input type="hidden" class="form-control" disabled value="<%=dataDormowner[0].role_id  %>" aria-describedby=" basic-addon1" id="Role_id">
+          <% } %>
         </div>
       </div>
     </div>
@@ -118,20 +129,20 @@
               <div class="row">
                 <div class="col-4">
                   <div class="form-group">
-                    <label for="exampleInputPassword1">ชื่อจริง</label> 
-                    <input type="text" class="form-control" id="Firstname" placeholder="Enter Firstname">
+                    <label for="exampleInputPassword1">ชื่อจริง</label>
+                    <input type="text" class="form-control" id="Firstname" placeholder="กรอกชื่อจริง">
                   </div>
                 </div>
                 <div class="col-4">
                   <div class="form-group">
                     <label for="exampleInputPassword1">นามสกุล</label>
-                    <input type="text" class="form-control" id="Surname" placeholder="Enter Surname">
+                    <input type="text" class="form-control" id="Surname" placeholder="กรอกนามสกุล">
                   </div>
                 </div>
                 <div class="col-4">
                   <div class="form-group">
                     <label for="exampleInputPassword1">ชื่อผู้ใช้</label>
-                    <input type="text" class="form-control" id="username" placeholder="Enter Username">
+                    <input type="text" class="form-control" id="username" placeholder="กรอกชื่อผู้ใช้">
                   </div>
                 </div>
               </div>
@@ -139,19 +150,19 @@
                 <div class="col-4">
                   <div class="form-group">
                     <label for="exampleInputPassword1">รหัสผ่าน</label>
-                    <input type="password" class="form-control" id="password" placeholder="Enter Password">
+                    <input type="password" class="form-control" id="password" placeholder="กรอกรหัสผ่าน">
                   </div>
                 </div>
                 <div class="col-4">
                   <div class="form-group">
                     <label for="exampleInputEmail1">ที่อยู่อีเมล์</label>
-                    <input type="email" class="form-control" id="Email" aria-describedby="emailHelp" placeholder="Enter email">
+                    <input type="email" class="form-control" id="Email" aria-describedby="emailHelp" placeholder="กรอกอีเมล์">
                   </div>
                 </div>
                 <div class="col-4">
                   <div class="form-group">
                     <label for="exampleInputEmail1">เบอร์โทร</label>
-                    <input type="text" class="form-control" id="Phonenumber" placeholder="Enter Phone number">
+                    <input type="text" class="form-control" id="Phonenumber" placeholder="กรอกเบอร์โทร">
                   </div>
                 </div>
               </div>
@@ -159,7 +170,7 @@
                 <div class="col-8">
                   <div class="form-group">
                     <label for="exampleInputEmail1">ที่อยู่</label>
-                    <textarea type="text" class="form-control" id="Address" placeholder="Enter Address"></textarea>
+                    <textarea type="text" class="form-control" id="Address" placeholder="กรอกที่อยู่"></textarea>
                   </div>
                 </div>
               </div>
@@ -192,19 +203,19 @@
                 <div class="col-4">
                   <div class="form-group">
                     <label for="exampleInputPassword1">ชื่อจริง</label>
-                    <input type="text" class="form-control" id="EditFirstname" placeholder="Enter Firstname">
+                    <input type="text" class="form-control" id="EditFirstname" placeholder="กรอกชื่อจริง">
                   </div>
                 </div>
                 <div class="col-4">
                   <div class="form-group">
                     <label for="exampleInputPassword1">นามสกุล</label>
-                    <input type="text" class="form-control" id="EditSurname" placeholder="Enter Surname">
+                    <input type="text" class="form-control" id="EditSurname" placeholder="กรอกนามสกุล">
                   </div>
                 </div>
                 <div class="col-4">
                   <div class="form-group">
                     <label for="exampleInputPassword1">ชื่อผู้ใช้</label>
-                    <input type="text" class="form-control" id="Editusername" placeholder="Enter Username">
+                    <input type="text" class="form-control" id="Editusername" placeholder="กรอกชื่อผู้ใช้">
                   </div>
                 </div>
               </div>
@@ -212,19 +223,19 @@
                 <div class="col-4">
                   <div class="form-group">
                     <label for="exampleInputPassword1">รหัสผ่าน</label>
-                    <input type="password" class="form-control" id="Editpassword" placeholder="Enter Password">
+                    <input type="password" class="form-control" id="Editpassword" placeholder="กรอกรหัสผ่าน">
                   </div>
                 </div>
                 <div class="col-4">
                   <div class="form-group">
                     <label for="exampleInputEmail1">ที่อยู่อีเมล์</label>
-                    <input type="email" class="form-control" id="EditEmail" aria-describedby="emailHelp" placeholder="Enter email">
+                    <input type="email" class="form-control" id="EditEmail" aria-describedby="emailHelp" placeholder="กรอกอีเมล์">
                   </div>
                 </div>
                 <div class="col-4">
                   <div class="form-group">
                     <label for="exampleInputEmail1">เบอร์โทร</label>
-                    <input type="text" class="form-control" id="EditPhonenumber" placeholder="Enter Phone number">
+                    <input type="text" class="form-control" id="EditPhonenumber" placeholder="กรอกเบอร์โทร">
                   </div>
                 </div>
               </div>
@@ -232,7 +243,7 @@
                 <div class="col-8">
                   <div class="form-group">
                     <label for="exampleInputEmail1">ที่อยู่</label>
-                    <textarea type="text" class="form-control" id="EditAddress" placeholder="Enter Address"></textarea>
+                    <textarea type="text" class="form-control" id="EditAddress" placeholder="กรอกที่อยู่"></textarea>
                   </div>
                 </div>
               </div>
@@ -275,6 +286,7 @@
     let email = document.getElementById("Email").value;
     let address = document.getElementById("Address").value;
     let phone_number = document.getElementById("Phonenumber").value;
+    let role_id = document.getElementById("Role_id").value;
     if (firstname == '' || surname == '' || username == '' || password == '' || email == '' || address == '' || phone_number == '') {
       swal.fire({
         position: 'center',
@@ -292,6 +304,7 @@
       "Email": email,
       "Address": address,
       "Phonenumber": phone_number,
+      "Role_id": role_id
     }
     console.log(Data);
     const url = location.origin + "/api/AddDormowner";
@@ -313,10 +326,17 @@
         });
       },
       error: function(jqXhr, textStatus, errorThrow) {
+        console.log(jqXhr);
+        const msg = (() => {
+          switch (jqXhr.responseJSON.message) {
+            case "user_duplicated":
+              return "ชื่อผู้ใช้งานถูกใช้ไปแล้ว";
+          }
+        })();
         swal.fire({
           position: 'center',
           icon: 'error',
-          title: 'เกิดข้อผิดพลาด!',
+          title: msg,
           time: 2000
         })
       }
@@ -418,10 +438,17 @@
     let username = document.getElementById("Editusername").value;
     let password = document.getElementById("Editpassword").value;
     let email = document.getElementById("EditEmail").value;
-    let address = document.getElementById("EditPhonenumber").value;
-    let phone_number = document.getElementById("EditAddress").value;
+    let address = document.getElementById("EditAddress").value;
+    let phone_number = document.getElementById("EditPhonenumber").value;
+    let role_id = document.getElementById("Role_id").value;
 
-    //console.log(firstname);console.log(surname);console.log(username);console.log(password);console.log(email);console.log(address);console.log(phone_number);
+    console.log("----", firstname);
+    console.log(surname);
+    console.log(username);
+    console.log(password);
+    console.log(email);
+    console.log("----ที่อยู่", address);
+    console.log("----เบอร์โทร", phone_number);
     if (!firstname || !surname || !username || !password || !email || !address || !phone_number) {
       console.log("if")
       swal.fire({
@@ -441,6 +468,7 @@
         "Email": email,
         "Address": address,
         "Phonenumber": phone_number,
+        "Role_id": role_id
       }
       console.log(Data);
 
@@ -463,10 +491,17 @@
           });
         },
         error: function(jqXhr, textStatus, errorThrow) {
+          // console.log(jqXhr);
+          const msg = (() => {
+            switch (jqXhr.responseJSON.message) {
+              case "user_duplicated":
+                return "ชื่อผู้ใช้งานถูกใช้ไปแล้ว";
+            }
+          })();
           swal.fire({
             position: 'center',
             icon: 'error',
-            title: 'เกิดข้อผิดพลาด!',
+            title: msg,
             time: 2000
           })
         }
@@ -502,7 +537,7 @@
               Swal.fire({
                 position: 'center',
                 icon: 'success',
-                title: 'ลบข้อมูลเข้าของหอสำเร็จ',
+                title: 'ลบข้อมูลเจ้าของหอสำเร็จ',
                 showConfirmButton: true,
               }).then(() => {
                 location.reload();

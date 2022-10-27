@@ -25,11 +25,11 @@ function CheckRole(req, res, next) {
 }
 
 route.get("/adminhomepage", Checklogin, async (req, res) => {
-  console.log("user_id", req.session.user_id);
+  // console.log("user_id", req.session.user_id);
   let dataUser;
   const sql = "SELECT  *  FROM users WHERE user_id = ?";
   await connecDB.query(sql, [req.session.user_id]).then(([result]) => {
-    console.log(result[0].firstname);
+    // console.log(result[0].firstname);
     dataUser = result[0];
   });
   res.render("index", {
@@ -47,7 +47,7 @@ route.get("/noPermission", (req, res) => {
 });
 
 route.get("/about", (req, res) => {
-  console.log(req.session.user_id);
+  // console.log(req.session.user_id);
   res.render("about", {
     checklogin: req.session.user_id,
     CheckRole: req.session.role_id,
@@ -55,7 +55,7 @@ route.get("/about", (req, res) => {
   });
 });
 route.get("/dormitoryList", (req, res) => {
-  console.log(req.session.user_id);
+  // console.log(req.session.user_id);
   res.render("dormitoryList", {
     checklogin: req.session.user_id,
     CheckRole: req.session.role_id,
@@ -63,20 +63,20 @@ route.get("/dormitoryList", (req, res) => {
   });
 });
 route.get("/dormowner", Checklogin, async (req, res) => {
-  console.log(req.session.user_id);
+  // console.log(req.session.user_id);
   const sql = "SELECT  *  FROM users WHERE user_id = ?";
   const sql2 = "SELECT * FROM users WHERE role_id =2 ";
   let dataUser;
   let dataDormowner;
   await connecDB.query(sql, [req.session.user_id]).then(([result]) => {
-    console.log(result[0].firstname);
+    // console.log(result[0].firstname);
     dataUser = result[0];
   });
   await connecDB.query(sql2).then(([result]) => {
-    console.log(result[0].firstname);
+    // console.log(result[0].role_id);
     dataDormowner = result;
   });
-  console.log(dataDormowner);
+  // console.log(dataDormowner);
   res.render("dormowner", {
     checklogin: req.session.user_id,
     CheckRole: req.session.role_id,
@@ -85,8 +85,19 @@ route.get("/dormowner", Checklogin, async (req, res) => {
     dataDormowner: dataDormowner,
   });
 });
-route.get("/login_register", (req, res) => {
-  res.render("login_register");
+route.get("/login_register", async (req, res) => {
+
+  let dataDormowner;
+  const sql = "SELECT * FROM users WHERE role_id =2 ";
+  await connecDB.query(sql).then(([result]) => {
+    // console.log(result);
+    dataDormowner = result;
+  });
+
+  res.render("login_register", {
+    route: "login_register",
+    dataDormowner: dataDormowner,
+  });
 });
 
 route.get("/dashbord", (req, res) => {

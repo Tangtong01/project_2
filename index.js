@@ -2,8 +2,8 @@ const path = require("path");
 const express = require("express");
 const app = express();
 const session = require("express-session");
-
 const oneDay = 1000 * 60 * 60 * 24;
+const bodyParser = require("body-parser");
 
 app.use(
   session({
@@ -18,18 +18,25 @@ app.listen(3000, () => {
   console.log("http://localhost:3000");
 });
 app.use(express.static("public"));
+app.use(express.static(__dirname));
 app.set(express.static(path.join(__dirname, "public")));
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
+app.use("/public/images_domitory", express.static("public/images_domitory"));
+app.use(bodyParser.json({limit: '50mb'}));
+app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
 
-const route = require("./route/route");
+const route = require("./routeAdmin/route");
 app.use("/", route);
-
-const routeUser = require("./route/routeUser");
-app.use("/user", routeUser);
-
-const routeAPI = require("./route/routeAPI");
+const routeAPI = require("./routeAdmin/routeAPI");
 app.use("/api", routeAPI);
 
-const routeAPIUser = require("./route/routeAPIUser");
+const routeUser = require("./routeUser/routeUser");
+app.use("/user", routeUser);
+const routeAPIUser = require("./routeUser/routeAPIUser");
 app.use("/apiuser", routeAPIUser);
+
+const routeOwner = require("./routeOwner/routeOwner");
+app.use("/owner", routeOwner);
+const routeAPIOwner = require("./routeOwner/routeAPIOwner");
+app.use("/apiowner", routeAPIOwner);

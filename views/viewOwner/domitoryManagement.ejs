@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<%- include('../component/header.ejs',{
+        title:"จัดการหอพัก"
+      }) %>
+
+<body>
+  <div class="tm-main-content" id="top">
+
+    <%- include('../component/navbarNew.ejs',{
+        checklogin: checklogin,
+        role:CheckRole,
+        route: route
+      }) %>
+    <!-- END TOP BAR -->
+
+    <!-- blank Page -->
+    <% if (dataDomitory.length == 0) { %>
+    <div class="container-fluid " style="margin-top: 100px;">
+      <div class=" row d-flex justify-content-center">
+        <div class="col-6">
+          <div class="form-group">
+            <h5>ชื่อหอพัก</h5>
+            <input type="text" class="form-control" id="Domitory_name" aria-describedby="emailHelp" placeholder="กรอกชื่อหอพักของคุณ">
+            <small id="emailHelp" class="form-text text-muted">หอพักของคุณเอง</small>
+          </div>
+          <div class="form-group">
+            <h5>ที่อยู่หอพัก</h5>
+            <input type="text" class="form-control" id="Domitory_address" placeholder="กรอกที่อยู่หอพักของคุณ">
+          </div>
+          <div class="form-group">
+            <h5>รายระเอียดหอพัก</h5>
+            <textarea type="text" rows="5" class="form-control" id="Domitory_description" placeholder="กรอกรายละเอียดหอพักของคุณ"></textarea>
+          </div>
+          <div class="form-group">
+            <h5>อัพโหลดรูปภาพหอพัก</h5>
+            <input type="file" class="form-control-file" id="Domitory_images">
+            <% if (datauser.length != 0 ) { %>
+            <input type="hidden" class="form-control" disabled value="<%=datauser.user_id  %>" aria-describedby=" basic-addon1" id="User_id">
+            <% } %>
+          </div>
+          <button type="button" class="btn btn-primary btn-lg rounded" onclick="AddDomitory()"><i class="fas fa-plus-square"></i> เพิ่มหอพัก</button>
+        </div>
+      </div>
+    </div>
+    <%} else { %>
+    <div class="container-fluid " style="margin-top: 100px;">
+      <div class=" row d-flex justify-content-center">
+        <div class="col-6">
+          <div class="form-group">
+            <h5>ชื่อหอพัก</h5>
+            <input type="text" disabled class="form-control" id="Domitory_name" aria-describedby="emailHelp" placeholder="กรอกชื่อหอพักของคุณ" value="<%= dataDomitory[0].domitory_name %> ">
+            <small id="emailHelp" class="form-text text-muted">หอพักของคุณเอง</small>
+          </div>
+          <div class="form-group">
+            <h5>ที่อยู่หอพัก</h5>
+            <input type="text" disabled class="form-control" id="Domitory_address" placeholder="กรอกที่อยู่หอพักของคุณ" value="<%= dataDomitory[0].domitory_address %>">
+          </div>
+          <div class="form-group">
+            <h5>รายระเอียดหอพัก</h5>
+            <textarea type="text" rows="5" disabled class="form-control" id="Domitory_description" placeholder="กรอกรายละเอียดหอพักของคุณ"><%= dataDomitory[0].domitory_description %></textarea>
+          </div>
+          <div class="form-group">
+            <h5>รูปภาพหอพัก</h5>
+            <img src="/public/images_domitory/<%= dataDomitory[0].domitory_images %> " alt="" style="width: 730px ; height: 250px;">
+
+            <% if (datauser.length != 0 ) { %>
+            <input type="hidden" class="form-control" disabled value="<%=datauser.user_id  %>" aria-describedby=" basic-addon1" id="User_id">
+            <% } %>
+          </div>
+        </div>
+      </div>
+    </div>
+    <% } %>
+    <br>
+
+
+
+
+    <footer class="tm-bg-dark-blue">
+      <div class="container">
+        <div class="row">
+          <p class="col-sm-12 text-center tm-font-light tm-color-white p-4 tm-margin-b-0">
+            Copyright &copy; <span class="tm-current-year">2018</span> Your Company
+
+            - Design: <a rel="nofollow" href="https://www.tooplate.com" class="tm-color-primary tm-font-normal" target="_parent">Tooplate</a></p>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <%- include('../component/script.ejs') %>
+</body>
+
+
+<script>
+  var fileData;
+  var myFile;
+  $('#Domitory_images').change(function() {
+    var filereader = new FileReader();
+    filereader.onload = function(event) {
+      fileData = event.target.result;
+    };
+    myFile = $('#Domitory_images').prop('files')[0];
+    console.log('myFile', myFile);
+    filereader.readAsDataURL(myFile);
+    if (myFile.size >= 1024 * 1024 * 2) {
+      Swal.fire({
+        icon: 'error',
+        title: 'เกิดปัญหา',
+        text: 'ขนาดรูปภาพใหญ่เกินไป',
+        footer: '<a>ทำไมไม่ลองเลือกรูปภาพใหม่ดูละ</a>'
+      })
+    }
+  })
+
+  async function AddDomitory() {
+    let domitory_name = document.getElementById("Domitory_name").value;
+    let domitory_address = document.getElementById("Domitory_address").value;
+    let domitory_description = document.getElementById("Domitory_description").value;
+    let domitory_images = document.getElementById("Domitory_images").value;
+    let user_id = document.getElementById("User_id").value;
+
+    if (domitory_name == '' || domitory_address == '' || domitory_description == '' || domitory_images == '') {
+      swal.fire({
+        position: 'center',
+        icon: 'info',
+        title: 'กรุณากรอกข้อมูลให้ครบ',
+        time: 2000
+      })
+      return;
+    }
+    const Data = {
+      "Domitory_name": domitory_name,
+      "Domitory_address": domitory_address,
+      "Domitory_description": domitory_description,
+      "filename": myFile.name,
+      "file": fileData,
+      "User_id": user_id
+    }
+    console.log(Data);
+    const url = location.origin + "/apiowner/AddDomitory";
+    $.ajax({
+      type: 'POST',
+      url: url,
+      data: JSON.stringify(Data),
+      dataType: 'json',
+      contentType: "application/json; charset=utf-8",
+      success: function(data, status) {
+        console.log("hello world", data)
+        swal.fire({
+          position: 'center',
+          icon: 'success',
+          title: 'เพิ่มหอพักสำเร็จ',
+          time: 2000
+        }).then(() => {
+          location.reload()
+        });
+      },
+      error: function(jqXhr, textStatus, errorThrow) {
+        console.log(jqXhr);
+        const msg = (() => {
+          switch (jqXhr.responseJSON.message) {
+            case "duplicated":
+              return "มีหอพักนี้แล้ว";
+          }
+        })();
+        console.log(msg);
+        swal.fire({
+          position: 'center',
+          icon: 'error',
+          title: msg,
+          time: 2000
+        })
+      }
+    })
+  }
+</script>
+
+</html>

@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<%- include('../component/header.ejs',{
+        title:"จัดการบิล"
+      }) %>
+
+<body>
+  <div class="tm-main-content" id="top">
+
+    <%- include('../component/navbarNew.ejs',{
+        checklogin: checklogin,
+        role:CheckRole,
+        route: route
+      }) %>
+    <!-- END TOP BAR -->
+
+    <!-- blank Page -->
+    <div class="container-fluid " style="margin-top: 65px;"">
+        <div class=" container-fluid " style=" margin-top: 65px;">
+      <div class=" row">
+        <div class="container-fluid ">
+          <div class=" row">
+            <div class="col-md-12">
+              <h4 class=" text-center">ตารางข้อมูลบิล</h4>
+              <div class=" row">
+                <div class="col-md-12">
+                  <% if(dataDeposit_users_room.length == 0 ) { %>
+                  <a href="/owner/tenantManagement">
+                    <h1 class="d-flex justify-content-center">ไปเพิ่มข้อมูลการมัดจำก่อน</h1>
+                  </a>
+                  <% } else { %>
+                  <table class="table table-bordered">
+                    <thead>
+                      <tr>
+                        <th scope="col" class="text-center">ลำดับ</th>
+                        <th scope="col" class="text-center">รหัสผู้เช่าหอ-ชื่อผู้ใช้</th>
+                        <th scope="col" class="text-center">หมายเลขห้อง</th>
+                        <th scope="col" class="text-center">ประเภทห้อง</th>
+                        <th scope="col" class="text-center">ราคาห้อง</th>
+                        <th scope="col" class="text-center">บิล</th>
+                      </tr>
+                    </thead>
+
+                    <tbody>
+                      <% if (dataDeposit_users_room.length == 0) { %>
+                      <tr>
+                        <td colspan="7" class="text-center">
+                          <h1>ไม่มีข้อมูล</h1>
+                        </td>
+                      </tr>
+
+                      <% } else { %>
+                      <% for (let i = 0; i < dataDeposit_users_room.length; i++) { %>
+                      <tr>
+                        <th scope="row"><%= i+1 %></th>
+                        <td> <%= dataDeposit_users_room[i].user_id %> - <%= dataDeposit_users_room[i].firstname %> </td>
+                        <td> <%= dataDeposit_users_room[i].dep_room_id %> - <%= dataDeposit_users_room[i].room_number %> </td>
+                        <td> <% if(dataDeposit_users_room[i].room_type == 1) { %>
+                          ห้องแอร์
+                          <% } else { %>
+                          ห้องพัดลม
+                          <% } %>
+                        </td>
+                        <td> <%= dataDeposit_users_room[i].room_price  %> </td>
+                        <td class="text-center">
+                          <% if (dataDeposit_users_room[i].roombill_id == null) { %>
+                          <button type="button" class="btn btn-primary-bill" data-toggle="modal" onclick="showmodalAddroombill(this)" data-target="#Modal_AddRoomprice" data-User="<%= JSON.stringify(dataDeposit_users_room[i]) %>"><i class="fas fa-home" style="font-size: 14px;"></i></button>
+                          <% } else { %>
+                          <button type="button" class="btn btn-primary-bill" data-toggle="modal" onclick="showmodalUpdateroombill(this)" data-target="#Modal_UpdateRoomprice" data-User="<%= JSON.stringify(dataDeposit_users_room[i]) %>"><i class="fas fa-home" style="font-size: 14px;"> แก้ไขบิล</i></button>
+                          <button type="button" class="btn btn-primary-bill" data-toggle="modal" onclick="showmodalUpdateroombill(this)" data-target="#Modal_UpdateRoomprice" data-User="<%= JSON.stringify(dataDeposit_users_room[i]) %>"><i class="fas fa-home" style="font-size: 14px;"> แก้ไขบิล</i></button>
+                          <button type="button" class="btn btn-success" style="background-color: blue ;" onclick="showmodalupdate(this)" data-toggle="modal" data-target="#Modal_Update" data-User="<%= JSON.stringify(dataRoom[i]) %>"><i class="fas fa-tint"></i></button>
+                          <button type="button" class="btn btn-warning" onclick="DeleteBill('<%= dataRoom[i].room_id  %>','<%= dataRoom[i].room_id  %>')"><i class="fas fa-bolt" style="color: white;"></i></button>
+                          <% } %>
+
+
+                        </td>
+                      </tr>
+                      <% } %>
+                      <% } %>
+                    </tbody>
+                  </table>
+                  <div class="col-2">
+                    <% if (dataRoom.length != 0 ) { %>
+                    <input type="hidden" class="form-contsrol" disabled value="<%=dataRoom[0].owner_id  %> " aria-describedby=" basic-addon1" id="user_id">
+                    <% } %>
+                  </div>
+                  <% } %>
+
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- โมดอลออกบิลค่าห้อง -->
+  <div class="modal fade bd-example-modal-lg" id="Modal_AddRoomprice" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">ออกบิลค่าห้อง</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form>
+            <div class="row">
+              <div class="col-4">
+                <div class="form-group">
+                  <label for="exampleInputPassword1">หมายเลขห้อง</label>
+                  <input type="hidden" class="form-control" id="room_id" placeholder="กรอกid ห้อง">
+                  <input type="text" disabled class="form-control" id="room_number" placeholder="กรอกหมายเลขห้อง">
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="form-group">
+                  <label for="exampleInputPassword1">วันที่ออกบิล :</label>
+                  <input type="date" id="roombill_date">
+                  <input type="time" id="roombill_time">
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" data-dismiss="modal" style="background-color: darkcyan;">ยกเลิก</button>
+          <input type="button" class="btn btn-secondary" style="background-color: blueviolet;" value="เพิ่มข้อมูล" onclick="AddRoomBill()" />
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- โมดอลแก้ไขบิลค่าห้อง -->
+  <div class="modal fade bd-example-modal-lg" id="Modal_UpdateRoomprice" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">ออกบิลค่าห้อง</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form>
+            <div class="row">
+              <div class="col-4">
+                <div class="form-group">
+                  <label for="exampleInputPassword1">หมายเลขห้อง</label>
+                  <input type="hidden" class="form-control" id="roombill_id">
+                  <input type="hidden" class="form-control" id="Editroom_id" placeholder="กรอกid ห้อง">
+                  <input type="text" disabled class="form-control" id="Editroom_number" placeholder="กรอกหมายเลขห้อง">
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="form-group">
+                  <label for="exampleInputPassword1">วันที่ออกบิล :</label>
+                  <input type="date" id="Editroombill_date">
+                  <input type="time" id="Editroombill_time">
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" data-dismiss="modal" style="background-color: darkcyan;">ยกเลิก</button>
+          <input type="button" class="btn btn-warning" value="แก้ไขข้อมูล" onclick="UpdateRoomBill()" />
+          <input type="button" class="btn btn-danger" value="ลบข้อมูล" onclick="DeleteRoomBill()" />
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+
+  <!-- โมดอลออกบิลค่าน้ำ -->
+  <div class="modal fade bd-example-modal-lg" id="Modal_AddWaterprice" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">ออกบิลค่าห้อง</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form>
+            <div class="row">
+              <div class="col-4">
+                <div class="form-group">
+                  <label for="exampleInputPassword1">หมายเลขห้อง</label>
+                  <input type="hidden" class="form-control" id="room_id" placeholder="กรอกid ห้อง">
+                  <input type="text" disabled class="form-control" id="room_number" placeholder="กรอกหมายเลขห้อง">
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="form-group">
+                  <label for="exampleInputPassword1">วันที่ออกบิล :</label>
+                  <input type="date" id="roombill_date">
+                  <input type="time" id="roombill_time">
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" data-dismiss="modal" style="background-color: darkcyan;">ยกเลิก</button>
+          <input type="button" class="btn btn-secondary" style="background-color: blueviolet;" value="เพิ่มข้อมูล" onclick="AddRoomBill()" />
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <footer class="tm-bg-dark-blue">
+    <div class="container">
+      <div class="row">
+        <p class="col-sm-12 text-center tm-font-light tm-color-white p-4 tm-margin-b-0">
+          Copyright &copy; <span class="tm-current-year">2018</span> Your Company
+
+          - Design: <a rel="nofollow" href="https://www.tooplate.com" class="tm-color-primary tm-font-normal" target="_parent">Tooplate</a></p>
+      </div>
+    </div>
+  </footer>
+  </div>
+
+  <%- include('../component/script.ejs') %>
+</body>
+
+
+<script>
+  //---------------------------------โชว์ข้อมูลออกบิลค่าห้อง-----------------------------------
+  function showmodalAddroombill(modal) {
+    let user = modal.getAttribute("data-User")
+    const jsonUser = JSON.parse(user)
+    document.getElementById("room_id").value = jsonUser.dep_room_id
+    document.getElementById("room_number").value = jsonUser.room_number
+
+    Room_id = jsonUser.room_id;
+  }
+
+  //---------------------------------ออกข้อมูลบิลค่าห้อง----------------------------------------
+  async function AddRoomBill() {
+    let room_id = document.getElementById("room_id").value;
+    let roombill_date = document.getElementById("roombill_date").value;
+    let roombill_time = document.getElementById("roombill_time").value;
+
+    const roombilldate = roombill_date + " " + roombill_time;
+    console.log("-----------", room_id, "-----------", roombilldate);
+    if (room_id == '' || roombill_date == '' || roombill_date == '' || roombill_time == '') {
+      swal.fire({
+        position: 'center',
+        icon: 'info',
+        title: 'กรุณากรอกข้อมูลให้ครบ',
+        time: 2000
+      })
+      return;
+    }
+    const Data = {
+      "room_id": room_id,
+      "roombill_date": roombilldate,
+    }
+    console.log(Data);
+    const url = location.origin + "/apiowner/AddRoombill";
+    $.ajax({
+      type: 'POST',
+      url: url,
+      data: JSON.stringify(Data),
+      dataType: 'json',
+      contentType: "application/json; charset=utf-8",
+      success: function(data, status) {
+        console.log("hello world", data)
+        swal.fire({
+          position: 'center',
+          icon: 'success',
+          title: 'ออกบิลค่าห้องพักสำเร็จ',
+          time: 2000
+        }).then(() => {
+          location.reload()
+        });
+      },
+      error: function(jqXhr, textStatus, errorThrow) {
+        const msg = (() => {
+          switch (jqXhr.responseJSON.message) {
+            case "duplicated":
+              return "มีหมายเลขห้องพักนี้แล้ว";
+          }
+        })();
+        console.log(msg);
+        swal.fire({
+          position: 'center',
+          icon: 'error',
+          title: msg,
+          time: 2000
+        })
+      }
+    })
+
+  }
+
+  //---------------------------------โชว์ข้อมูลแก้ไขออกบิลค่าห้อง-----------------------------------
+  function showmodalUpdateroombill(modal) {
+    let user = modal.getAttribute("data-User")
+    const jsonUser = JSON.parse(user)
+    console.log(jsonUser);
+    document.getElementById("Editroom_id").value = jsonUser.dep_room_id
+    document.getElementById("Editroom_number").value = jsonUser.room_number
+    document.getElementById("roombill_id").value = jsonUser.roombill_id
+    const roombilldate = jsonUser.rBill_date.split(" ")
+
+    document.getElementById("Editroombill_date").value = roombilldate[0];
+    document.getElementById("Editroombill_time").value = roombilldate[1]
+    Room_id = jsonUser.room_id;
+  }
+
+  //---------------------------------แก้ไขข้อมูลบิลค่าห้อง----------------------------------------
+  async function UpdateRoomBill() {
+    let room_id = document.getElementById("Editroom_id").value;
+    let roombill_date = document.getElementById("Editroombill_date").value;
+    let roombill_time = document.getElementById("Editroombill_time").value;
+
+    const roombilldate = roombill_date + " " + roombill_time;
+
+    if (room_id == '' || roombill_date == '' || roombill_date == '' || roombill_time == '') {
+      swal.fire({
+        position: 'center',
+        icon: 'info',
+        title: 'กรุณากรอกข้อมูลให้ครบ',
+        time: 2000
+      })
+      return;
+    }
+    const Data = {
+      "room_id": room_id,
+      "roombill_date": roombilldate,
+    }
+    console.log(Data);
+    const url = location.origin + "/apiowner/UpdateRoombill";
+    $.ajax({
+      type: 'POST',
+      url: url,
+      data: JSON.stringify(Data),
+      dataType: 'json',
+      contentType: "application/json; charset=utf-8",
+      success: function(data, status) {
+        console.log("hello world", data)
+        swal.fire({
+          position: 'center',
+          icon: 'success',
+          title: 'แก้ไขบิลค่าห้องพักสำเร็จ',
+          time: 2000
+        }).then(() => {
+          location.reload()
+        });
+      },
+      error: function(jqXhr, textStatus, errorThrow) {
+        const msg = (() => {
+          switch (jqXhr.responseJSON.message) {
+            case "duplicated":
+              return "มีหมายเลขห้องพักนี้แล้ว";
+          }
+        })();
+        console.log(msg);
+        swal.fire({
+          position: 'center',
+          icon: 'error',
+          title: msg,
+          time: 2000
+        })
+      }
+    })
+
+  }
+
+  //---------------------------------ลบข้อมูลบิลค่าห้อง-----------------------------------
+  async function DeleteRoomBill() {
+
+    let roombill_id = document.getElementById("roombill_id").value
+    console.log("--------บิลค่าห้องที่", roombill_id);
+    Swal.fire({
+      title: 'แน่ใจแล้วหรือ ?',
+      text: "คุณต้องการลบบิลค่าห้องหรือไม่ !",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      cancelButtonText: 'ยกเลิก',
+      confirmButtonText: 'ใช่ต้องการลบ !'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const Data = {
+          roombill_id: roombill_id,
+        }
+        console.log(Data);
+        const url = location.origin + '/apiowner/DeleteRoombill/';
+        $.ajax({
+          type: 'POST',
+          url: url,
+          data: JSON.stringify(Data),
+          dataType: 'json',
+          contentType: "application/json; charset=utf-8",
+          success: function(data, status) {
+            if (data.message == "DeleteRoombill") {
+              Swal.fire({
+                position: 'center',
+                icon: 'success',
+                title: 'ลบข้อมูลบิลค่าห้องสำเร็จ',
+                showConfirmButton: true,
+              }).then(() => {
+                location.reload();
+              })
+            }
+          },
+          error: function(jqXhr, textStatus, errorThrow) {
+            swal.fire({
+              position: 'center',
+              icon: 'error',
+              title: 'เกิดข้อผิดพลาด!',
+              time: 2000
+            });
+          }
+        })
+      }
+    })
+  }
+</script>
+
+</html>

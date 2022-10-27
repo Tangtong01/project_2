@@ -74,11 +74,53 @@
         <div id="mainNav" class="collapse navbar-collapse tm-bg-white">
           <ul class="navbar-nav ml-auto">
             <li class="nav-item">
-              <a class="nav-link <%= route == "index" ? "active " : "" %>" href="/user">หน้าหลัก <span class="sr-only">(current)</span></a>
+              <a class="nav-link <%= route == "index" ? "active " : "" %>" href="/owner">หน้าหลัก <span class="sr-only">(current)</span></a>
             </li>
             <li class="nav-item">
-              <a class="nav-link <%= route == "tenantManagement" ? "active " : "" %>" href="/user/tenantManagement">จัดการผู้เช่า <span class="sr-only">(current)</span></a>
+              <a class="nav-link <%= route == "tenantManagement" ? "active " : "" %>" href="/owner/tenantManagement">จัดการผู้เช่า <span class="sr-only">(current)</span></a>
             </li>
+            <li class="nav-item">
+              <a class="nav-link <%= route == "deposit" ? "active " : "" %>" href="/owner/deposit">จัดการการมัดจำ <span class="sr-only">(current)</span></a>
+            </li>
+            <!-- <li class="nav-item">
+              <select name="adult" class="form-control tm-select " id="adult">
+                <option value="">การจัดการ</option>
+                <option value="1" class="nav-link"><a class="nav-link <%= route == "deposit" ? "active " : "" %>" href="/owner/deposit">จัดการการมัดจำ <span class="sr-only">(current)</span></a></option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+                <option value="9">9</option>
+                <option value="10">10</option>
+              </select>
+
+            </li> -->
+            <li class="nav-item" onclick="logout()">
+              <a class="nav-link text-danger" href="#tm-section-6">ออกจากระบบ</a>
+            </li>
+          </ul>
+        </div>
+      </nav>
+      <% } else if( role == 3) {%>
+      <nav class="navbar navbar-expand-lg narbar-light">
+        <a class="navbar-brand mr-auto" href="#">
+          <img src="../img/hotel_center_logo2 copy.png" alt="Site logo">
+          HOTEL CENTER
+        </a>
+        <button type="button" id="nav-toggle" class="navbar-toggler collapsed" data-toggle="collapse" data-target="#mainNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div id="mainNav" class="collapse navbar-collapse tm-bg-white">
+          <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+              <a class="nav-link <%= route == "index" ? "active " : "" %>" href="/user">หน้าหลัก <span class="sr-only">(current)</span></a>
+            </li>
+            <!-- <li class="nav-item">
+              <a class="nav-link <%= route == "tenantManagement" ? "active " : "" %>" href="/owner/tenantManagement">จัดการผู้เช่า <span class="sr-only">(current)</span></a>
+            </li> -->
 
             <li class="nav-item" onclick="logout()">
               <a class="nav-link text-danger" href="#tm-section-6">ออกจากระบบ</a>
@@ -104,6 +146,7 @@
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
+      cancelButtonText: 'ยกเลิก',
       cancelButtonColor: '#d33',
       confirmButtonText: 'ออกจากระบบ '
     }).then((result) => {
