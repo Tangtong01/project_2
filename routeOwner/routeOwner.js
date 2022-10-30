@@ -236,6 +236,8 @@ route.get("/billManagement", Checklogin, async (req, res) => {
   let dataRoom;
   let dataDomitory;
   let dataDeposit_users_room;
+  let dataDeposit;
+  let dataBill;
   // let dataDeposit;
   const sql = "SELECT  *  FROM users WHERE user_id = ?";
   const sql2 = `                 
@@ -257,16 +259,58 @@ route.get("/billManagement", Checklogin, async (req, res) => {
 
   const sql4 = "SELECT\n" +
     "	*,\n" +
-    "	deposit.room_id AS dep_room_id ,\n" +
-    "	DATE_FORMAT(roombill.roombill_date,\"%Y-%m-%d %T\") as rBill_date\n" +
+    "	deposit.room_id AS dep_room_id,\n" +
+    "	DATE_FORMAT( roombill.roombill_date, \"%Y-%m-%d %T\" ) AS rBill_date,\n" +
+    "	DATE_FORMAT( waterbill.water_date, \"%Y-%m-%d %T\" ) AS wBill_date,\n" +
+    "	DATE_FORMAT( powerbill.power_date, \"%Y-%m-%d %T\" ) AS pBill_date,\n" +
+    "	DATE_FORMAT( bill.bill_date, \"%Y-%m-%d %T\" ) AS bBill_date \n" +
     "FROM\n" +
     "	deposit\n" +
     "	INNER JOIN room ON deposit.room_id = room.room_id\n" +
     "	INNER JOIN users ON deposit.user_id = users.user_id\n" +
-    "	LEFT JOIN roombill ON roombill.room_id = room.room_id \n" +
+    "	LEFT JOIN roombill ON roombill.room_id = room.room_id\n" +
+    "	LEFT JOIN bill ON bill.roombill_id = roombill.roombill_id\n" +
+    "	LEFT JOIN waterbill ON bill.waterbill_id = waterbill.waterbill_id\n" +
+    "	LEFT JOIN powerbill ON bill.powerbill_id = powerbill.powerbill_id \n" +
     "WHERE\n" +
     "	deposit.owner_id = ?"
 
+  const sql5 = `SELECT
+  deposit.deposit_id,
+	deposit.room_id,
+	room.room_number,
+	deposit.user_id,
+	users.firstname,
+	deposit.deposit_price,
+	DATE_FORMAT( deposit.deposit_date, "%Y-%m-%d %T" ) AS deposit_date,
+	DATE_FORMAT( deposit.deposit_end_date, "%Y-%m-%d %T" ) AS deposit_end_date 
+FROM
+	users,
+	room,
+	deposit 
+WHERE
+	deposit.room_id = room.room_id 
+	AND deposit.user_id = users.user_id 
+	AND role_id = 3 
+	AND deposit.owner_id = ?`
+
+  const sql6 = "SELECT\n" +
+    "	*,\n" +
+    "	DATE_FORMAT( roombill.roombill_date, \"%Y-%m-%d %T\" ) AS rBill_date,\n" +
+    "	DATE_FORMAT( bill.bill_date, \"%Y-%m-%d %T\" ) AS bBill_date,\n" +
+    "	DATE_FORMAT( waterbill.water_date, \"%Y-%m-%d %T\" ) AS wBill_date,\n" +
+    "	DATE_FORMAT( powerbill.power_date, \"%Y-%m-%d %T\" ) AS pBill_date \n" +
+    "FROM\n" +
+    "	bill\n" +
+    "	LEFT JOIN roombill ON bill.roombill_id = roombill.roombill_id\n" +
+    "	LEFT JOIN room ON room.room_id = roombill.room_id\n" +
+    "	LEFT JOIN deposit ON room.room_id = deposit.room_id\n" +
+    "	LEFT JOIN domitory ON room.domitory_id = domitory.domitory_id\n" +
+    "	LEFT JOIN users ON deposit.user_id = users.user_id\n" +
+    "	LEFT JOIN waterbill ON bill.waterbill_id = waterbill.waterbill_id\n" +
+    "	LEFT JOIN powerbill ON bill.powerbill_id = powerbill.powerbill_id \n" +
+    "WHERE\n" +
+    "	domitory.user_id = ?"
   await connecDB.query(sql, [req.session.user_id]).then(([result]) => {
     dataUser = result[0];
   });
@@ -282,8 +326,18 @@ route.get("/billManagement", Checklogin, async (req, res) => {
   });
 
   await connecDB.query(sql4, [req.session.user_id]).then(([result]) => {
-    console.log("--- ข้อมูลการมัดจำ_ผู้เช่าหอ_ห้องพัก>", result);
+    console.log("--- ข้อมูลการมัดจำ  _  ผู้เช่าหอ_  ห้องพัก_  ค่าไฟ_  ค่าน้ำ_   ค่าห้อง   --->", result);
     dataDeposit_users_room = result;
+  });
+
+  await connecDB.query(sql5, [req.session.user_id]).then(([result]) => {
+    // console.log("--- ข้อมูลการมัดจำ  _  ผู้เช่าหอ_  ห้องพัก_  ค่าไฟ_  ค่าน้ำ_   ค่าห้อง   --->", result);
+    dataDeposit = result;
+  });
+
+  await connecDB.query(sql6, [req.session.user_id]).then(([result]) => {
+    console.log("--- ข้อมูลบิล   --->", result);
+    dataBill = result;
   });
 
   res.render("viewOwner/billManagement", {
@@ -293,6 +347,8 @@ route.get("/billManagement", Checklogin, async (req, res) => {
     dataRoom: dataRoom,
     dataDomitory: dataDomitory,
     dataDeposit_users_room: dataDeposit_users_room,
+    dataDeposit: dataDeposit,
+    dataBill: dataBill,
     route: "billManagement",
   });
 

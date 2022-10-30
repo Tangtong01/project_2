@@ -23,12 +23,12 @@ app.set(express.static(path.join(__dirname, "public")));
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
 app.use("/public/images_domitory", express.static("public/images_domitory"));
-app.use(bodyParser.json({limit: '50mb'}));
-app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
+app.use(bodyParser.json({ limit: '50mb' }));
+app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 
-const route = require("./routeAdmin/route");
+const route = require("./routeAdmin/routeAdmin");
 app.use("/", route);
-const routeAPI = require("./routeAdmin/routeAPI");
+const routeAPI = require("./routeAdmin/routeAPIAdmin");
 app.use("/api", routeAPI);
 
 const routeUser = require("./routeUser/routeUser");

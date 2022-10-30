@@ -97,8 +97,8 @@
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
     <ul class="navbar-nav mr-auto">
 
-      <li class="nav-item active">
-        <a class="nav-link <%= route == "index" ? "active " : "" %>" href="/owner">หน้าหลัก <span class="sr-only">(current)</span></a>
+      <li class="nav-item ">
+        <a class="nav-link <%= route == "ownerindex" ? "active " : "" %>" href="/owner/">หน้าหลัก <span class="sr-only">(current)</span></a>
       </li>
       <li class="nav-item">
         <a class="nav-link <%= route == "domitoryManagement" ? "active " : "" %>" href="/owner/domitoryManagement">จัดการหอพัก <span class="sr-only">(current)</span></a>
@@ -113,7 +113,7 @@
         <a class="nav-link <%= route == "deposit" ? "active " : "" %>" href="/owner/deposit">จัดการการมัดจำ <span class="sr-only">(current)</span></a>
       </li>
       <li class="nav-item">
-        <a class="nav-link <%= route == "deposit" ? "active " : "" %>" href="/owner/billManagement">จัดการบิล <span class="sr-only">(current)</span></a>
+        <a class="nav-link <%= route == "billManagement" ? "active " : "" %>" href="/owner/billManagement">จัดการบิล <span class="sr-only">(current)</span></a>
       </li>
       <!-- <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -146,9 +146,18 @@
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
     <ul class="navbar-nav mr-auto">
 
-      <li class="nav-item active">
+      <li class="nav-item">
         <a class="nav-link <%= route == "index" ? "active " : "" %>" href="/user">หน้าหลัก <span class="sr-only">(current)</span></a>
       </li>
+
+      <li class="nav-item">
+        <a class="nav-link <%= route == "pay" ? "active " : "" %>" href="/user/pay">แจ้งชำระเงิน <span class="sr-only">(current)</span></a>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link <%= route == "repair" ? "active " : "" %>" href="/user/repair">แจ้งช่อม <span class="sr-only">(current)</span></a>
+      </li>
+
 
       <!-- <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
