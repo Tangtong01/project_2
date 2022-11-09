@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en">
+<style>
+  * {
+    box-sizing: border-box;
+  }
+
+  #myInput {
+    background-image: url('https://www.w3schools.com/css/searchicon.png');
+    background-position: 10px 10px;
+    background-repeat: no-repeat;
+    width: 30%;
+    font-size: 16px;
+    padding: 12px 20px 12px 40px;
+    border: 1px solid #ddd;
+    margin-bottom: 12px;
+  }
+
+  #myTable {
+    border-collapse: collapse;
+    width: 100%;
+    border: 1px solid #ddd;
+    font-size: 18px;
+  }
+
+  #myTable th,
+  #myTable td {
+    text-align: left;
+    padding: 12px;
+  }
+
+  #myTable tr {
+    border-bottom: 1px solid #ddd;
+  }
+
+  #myTable tr.header,
+  #myTable tr:hover {
+    background-color: #f1f1f1;
+  }
+
+  #myInput1 {
+    background-image: url('https://www.w3schools.com/css/searchicon.png');
+    background-position: 10px 10px;
+    background-repeat: no-repeat;
+    width: 30%;
+    font-size: 16px;
+    padding: 12px 20px 12px 40px;
+    border: 1px solid #ddd;
+    margin-bottom: 12px;
+  }
+
+  #myTable1 {
+    border-collapse: collapse;
+    width: 100%;
+    border: 1px solid #ddd;
+    font-size: 18px;
+  }
+
+  #myTable1 th,
+  #myTable1 td {
+    text-align: left;
+    padding: 12px;
+  }
+
+  #myTable1 tr {
+    border-bottom: 1px solid #ddd;
+  }
+
+  #myTable1 tr.header,
+  #myTable1 tr:hover {
+    background-color: #f1f1f1;
+  }
+</style>
+<%- include('../component/header.ejs',{
+        title:"จัดการชำระเงิน"
+      }) %>
+
+<body>
+  <div class="tm-main-content" id="top">
+
+    <%- include('../component/navbarNew.ejs',{
+        checklogin: checklogin,
+        role:CheckRole,
+        route: route
+      }) %>
+    <!-- END TOP BAR -->
+
+    <!-- blank Page -->
+    <div class="container-fluid " style="margin-top: 30px;">
+      <main class="col-md-9 ml-sm-auto col-lg-12 px-md-4 py-4">
+        <div class=" row my-4">
+          <div class="col-md-12">
+            <h1 class=" text-center">
+              ตารางข้อมูลการชำระเงิน(บิล)
+            </h1>
+            <!-- <h2>ค้นหาข้อมูลการชำระเงิน(บิล)</h2> -->
+            <div class="row my-2" style="margin-left: -7px;">
+              <!-- <input type="text" id="myInput" style="margin-left: 10px;" onkeyup="Seach()" placeholder="กรอกชื่อผู้เช่าที่ต้องการค้นหา" title="Type in a name"> -->
+              <!-- <li class="nav-item dropdown" style="margin-left: 10px;">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  Dropdown
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                  <a class="dropdown-item" href="#">Action</a>
+                  <a class="dropdown-item" href="#">Another action</a>
+                  <div class="dropdown-divider"></div>
+                  <a class="dropdown-item" href="#">Something else here</a>
+                </div>
+              </li> -->
+            </div>
+
+            <table class="table " id="myTable">
+              <thead>
+                <tr class="header" style="background-color: #CD6155; color: white;">
+                  <th scope="col">บิลที่</th>
+                  <th scope="col">หมายเลขห้อง</th>
+                  <th scope="col">ชื่อผู้เช่า</th>
+                  <th scope="col">ประเภทของการชำระเงิน</th>
+                  <th scope="col">วันที่แจ้งชำระเงิน</th>
+                  <th scope="col">ตรวจสอบข้อมูลการชำระเงิน</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                <% if (dataPayment_bill.length == 0) { %>
+                <tr>
+                  <td colspan="7" class="text-center">
+                    <h1>ไม่มีข้อมูล</h1>
+                  </td>
+                </tr>
+
+                <% } else  { %>
+                <% for (let i = 0; i < dataPayment_bill.length; i++) { %>
+                <tr>
+                  <th scope="row"><%= i+1 %></th>
+                  <td><%=dataPayment_bill[i].room_number%></td>
+                  <td> <%= dataPayment_bill[i].firstname %> </td>
+                  <td> <%= dataPayment_bill[i].paymentBill_type %> </td>
+                  <td> <%= dataPayment_bill[i].pPaymentBill_date %> </td>
+                  <td>
+                    <% if (dataPayment_bill[i].paymentBill_status == 0) { %>
+                    <button type="button" class="btn btn-secondary" style="background-color: blueviolet;" onclick="showmodalPayment(this)" data-toggle="modal" data-target="#Modal_addPayMent" data-User="<%= JSON.stringify(dataPayment_bill[i]) %>">ดูข้อมูลสลิปโอนเงิน! <h7 style="color: chartreuse;" class="blink">NEW!!!</h7></button>
+                    <% } else if (dataPayment_bill[i].paymentBill_status == 2) { %>
+                    <h5 style="color: red;"> ข้อมูลการชำระเงินไม่ถูกต้อง</h5>
+                    <% } else { %>
+                    <h5 style="color: chartreuse;"> ยืนยันการชำระเงินแล้ว</h5>
+                    <% } %>
+                  </td>
+                </tr>
+                <% } %>
+                <% } %>
+              </tbody>
+            </table>
+            <br>
+
+            <!-- ---------------------------------------------------------------------------------------------------ตารางข้อมูลการชำระเงิน(ค่าซ่อมอุปกรณ์)----------------------------------- -->
+            <h1 class=" text-center">
+              ตารางข้อมูลการชำระเงิน(ค่าซ่อมอุปกรณ์)
+            </h1>
+            <!-- <h2>ค้นหาข้อมูลการชำระเงิน(ค่าซ่อมอุปกรณ์)</h2> -->
+            <div class="row my-2" style="margin-left: 2px;">
+              <!-- <input type="text" id="myInput1" onkeyup="Seach1()" placeholder="กรอกชื่อผู้เช่าที่ต้องการค้นหา" title="Type in a name"> -->
+            </div>
+            <table class="table" id="myTable1">
+              <thead>
+                <tr class="header" style="background-color: #CD6155; color: white;">
+                  <th scope="col">บิลที่</th>
+                  <th scope="col">หมายเลขห้อง</th>
+                  <th scope="col">ชื่อผู้เช่า</th>
+                  <th scope="col">ประเภทของการชำระเงิน</th>
+                  <th scope="col">วันที่แจ้งชำระเงิน</th>
+                  <th scope="col">ตรวจสอบข้อมูลการชำระเงิน</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                <% if (dataPayment_repair.length == 0) { %>
+                <tr>
+                  <td colspan="7" class="text-center">
+                    <h1>ไม่มีข้อมูล</h1>
+                  </td>
+                </tr>
+
+                <% } else  { %>
+                <% for (let i = 0; i < dataPayment_repair.length; i++) { %>
+                <tr>
+                  <th scope="row" class="text-center"><%= i+1 %></th>
+                  <td><%=dataPayment_repair[i].room_number%></td>
+                  <td> <%= dataPayment_repair[i].firstname %> </td>
+                  <td> <%= dataPayment_repair[i].paymentRepair_type %> </td>
+                  <td> <%= dataPayment_repair[i].pPaymentRepair_date %> </td>
+                  <td>
+                    <% if (dataPayment_repair[i].paymentRepair_status == 0) { %>
+                    <button type="button" class="btn btn-secondary" style="background-color: blueviolet;" onclick="showmodalPaymentRepair(this)" data-toggle="modal" data-target="#Modal_addPayMentRepair" data-User="<%= JSON.stringify(dataPayment_repair[i]) %>">ดูข้อมูลสลิปโอนเงิน! <h7 style="color: chartreuse;" class="blink">NEW!!!</h7></button>
+                    <% } else if (dataPayment_repair[i].paymentRepair_status == 2) { %>
+                    <h5 style="color: red;"> ข้อมูลการชำระเงินไม่ถูกต้อง</h5>
+                    <% } else { %>
+                    <h5 style="color: chartreuse;"> ยืนยันการชำระเงินแล้ว</h5>
+                    <% } %>
+                  </td>
+                </tr>
+                <% } %>
+                <% } %>
+              </tbody>
+            </table>
+      </main>
+    </div>
+  </div>
+  </div>
+
+
+  <!-- โมดอล[การชำระเงิน] -->
+  <div class="modal fade" id="Modal_addPayMent" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">ข้อมูสลิปโอนเงิน</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="card-group">
+            <div class="card " style="width: 20rem; margin: 20px;">
+              <img src="/public/images_bill/" class="card-img-top" id="payment_image">
+              <div class="card-body">
+                <h5 class="card-header  text-white border-0 text-center" style="background-color:coral;">สลิปโอนเงิน</h5>
+                <input type="hidden" id="bill_id">
+                <input type="hidden" id="user_id">
+                <input type="hidden" id="payment_id">
+                <input type="hidden" id="bill_id2">
+                <input type="hidden" id="user_id2">
+                <input type="hidden" id="payment_id2">
+                <p class="card-text" id="room_number"></p>
+                <p class="card-text" id="Pment_name"></p>
+                <p class="card-text" id="sum_price"></p>
+              </div>
+              <div class="card-footer text-end border-0"></div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" style="background-color:blueviolet ;" onclick="UpdatePayMentStatus()">บันทึกข้อมูล</button>
+          <button type="button" class="btn btn-warning" onclick="callback_to_tenant()">ส่งใบแจ้งหนี้อีกครั้ง</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal" style="background-color: darkcyan;">ยกเลิก</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- โมดอล[การชำระเงินค่าอุปกรณ์] -->
+  <div class="modal fade" id="Modal_addPayMentRepair" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">ข้อมูสลิปโอนเงิน</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="card-group">
+            <div class="card " style="width: 150rem; margin: 20px;">
+              <img src="/public/images_bill/" class="card-img-top" id="payment_image3">
+              <div class="card-body">
+                <h5 class="card-header  text-white border-0 text-center" style="background-color:coral;">สลิปโอนเงินค่าซ่อมอุปกรณ์</h5>
+                <input type="hidden" id="bill_id3">
+                <input type="hidden" id="user_id3">
+                <input type="hidden" id="payment_id3">
+                <input type="hidden" id="bill_id3">
+                <input type="hidden" id="user_id3">
+                <input type="hidden" id="payment_id3">
+                <input type="hidden" id="Repair_id2">
+                <p class="card-text" id="room_number3"></p>
+                <p class="card-text" id="Repair_name"></p>
+                <p class="card-text" id="sum_price3"></p>
+              </div>
+              <div class="card-footer text-end border-0"></div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" style="background-color:blueviolet ;" onclick="UpdatePayMentStatusRepair()">บันทึกข้อมูล</button>
+          <button type="button" class="btn btn-warning" onclick="callback_to_tenant_repair()">ส่งใบแจ้งหนี้อีกครั้ง</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal" style="background-color: darkcyan;">ยกเลิก</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <footer class=" tm-bg-dark-blue">
+    <div class="container">
+      <div class="row">
+        <p class="col-sm-12 text-center tm-font-light tm-color-white p-4 tm-margin-b-0">
+          Copyright &copy; <span class="tm-current-year">2022</span> Hotel Center
+
+          - Design by: <a rel="nofollow" href="https://www.facebook.com/profile.php?id=100008831296272" class="tm-color-primary tm-font-normal" target="_parent">Tang</a></p>
+      </div>
+    </div>
+  </footer>
+  </div>
+
+  <%- include('../component/script.ejs') %>
+</body>
+
+
+<script>
+  $(document).ready(function() {
+    $('#myTable').DataTable();
+  });
+  $(document).ready(function() {
+    $('#myTable1').DataTable();
+  });
+
+
+  function Seach() {
+    var input, filter, table, tr, td, i, txtValue;
+    input = document.getElementById("myInput");
+    filter = input.value.toUpperCase();
+    table = document.getElementById("myTable");
+    tr = table.getElementsByTagName("tr");
+    for (i = 0; i < tr.length; i++) {
+      td = tr[i].getElementsByTagName("td")[1];
+      if (td) {
+        txtValue = td.textContent || td.innerText;
+        if (txtValue.toUpperCase().indexOf(filter) > -1) {
+          tr[i].style.display = "";
+        } else {
+          tr[i].style.display = "none";
+        }
+      }
+    }
+  }
+
+  function Seach1() {
+    var input, filter, table, tr, td, i, txtValue;
+    input = document.getElementById("myInput1");
+    filter = input.value.toUpperCase();
+    table = document.getElementById("myTable1");
+    tr = table.getElementsByTagName("tr");
+    for (i = 0; i < tr.length; i++) {
+      td = tr[i].getElementsByTagName("td")[1];
+      if (td) {
+        txtValue = td.textContent || td.innerText;
+        if (txtValue.toUpperCase().indexOf(filter) > -1) {
+          tr[i].style.display = "";
+        } else {
+          tr[i].style.display = "none";
+        }
+      }
+    }
+  }
+
+  function blink_text() {
+    $('.blink').fadeOut(500);
+    $('.blink').fadeIn(500);
+  }
+  setInterval(blink_text, 500);
+
+  //------------------------------------------------------โชว์ข้อมูลการชำระเงิน-----------------------------------------------------
+  function showmodalPayment(modal) {
+
+    let user = modal.getAttribute("data-User")
+    const jsonUser = JSON.parse(user)
+    document.getElementById("room_number").innerHTML = 'หมายเลขห้อง : ' + jsonUser.room_number
+    document.getElementById("sum_price").innerHTML = 'จำนวนเงิน : ' + jsonUser.paymentBill_price + ' บาท'
+    document.getElementById("bill_id").value = jsonUser.bill_id
+    document.getElementById("user_id").value = jsonUser.USER_ID
+    document.getElementById("payment_id").value = jsonUser.paymentBill_id
+    document.getElementById("bill_id2").value = jsonUser.bill_id
+    document.getElementById("user_id2").value = jsonUser.USER_ID
+    document.getElementById("payment_id2").value = jsonUser.paymentBill_id
+    document.getElementById("Pment_name").innerHTML = jsonUser.paymentBill_type
+    document.getElementById("payment_image").src = "/public/images_bill/" + jsonUser.paymentBill_image
+    console.log("-----------payment_id2", jsonUser.paymentBill_id)
+    console.log("-----------user_id2", jsonUser.USER_ID)
+    console.log("-----------bill_id2", jsonUser.bill_id)
+  }
+
+  //---------------------------------ยืนยันการชำระเงิน----------------------------------------
+  async function UpdatePayMentStatus() {
+    let user_id = document.getElementById("user_id").value;
+    let bill_id = document.getElementById("bill_id").value;
+    let payment_id = document.getElementById("payment_id").value;
+
+
+    if (payment_id == '' || user_id == '' || bill_id == '') {
+      swal.fire({
+        position: 'center',
+        icon: 'info',
+        title: 'กรุณากรอกข้อมูลให้ครบ',
+        time: 2000
+      })
+      return;
+    }
+    const Data = {
+      "user_id": user_id,
+      "bill_id": bill_id,
+      "payment_id": payment_id
+    }
+    console.log(Data);
+    const url = location.origin + "/apiowner/UpdatePaymentStatus_and_billStatus";
+    $.ajax({
+      type: 'POST',
+      url: url,
+      data: JSON.stringify(Data),
+      dataType: 'json',
+      contentType: "application/json; charset=utf-8",
+      success: function(data, status) {
+        if (data.message == "UpdateStatus") {
+          Swal.fire({
+            position: 'center',
+            icon: 'success',
+            title: 'ยืนยันการชำระเงินสำเร็จ',
+            showConfirmButton: true,
+          }).then(() => {
+            location.reload();
+          })
+        }
+      },
+      error: function(jqXhr, textStatus, errorThrow) {
+        const msg = (() => {
+          switch (jqXhr.responseJSON.message) {
+            case "duplicated":
+              return "มีหมายเลขห้องพักนี้แล้ว";
+          }
+
+        })();
+        console.log(msg);
+        swal.fire({
+          position: 'center',
+          icon: 'error',
+          title: msg,
+          time: 2000
+        })
+      }
+    })
+
+  }
+
+  //---------------------------------สลิปเงินไม่ถูกต้อง (บิล)----------------------------------------
+  async function callback_to_tenant() {
+    let user_id = document.getElementById("user_id2").value;
+    let bill_id = document.getElementById("bill_id2").value;
+    let payment_id = document.getElementById("payment_id2").value;
+
+
+    Swal.fire({
+      title: 'แน่ใจแล้วหรือ ?',
+      text: "คุณต้องการส่งใบแจ้งหนี้หรือไม่ !",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: 'blueviolet',
+      cancelButtonColor: '#darkcyan',
+      cancelButtonText: 'ยกเลิก',
+      confirmButtonText: 'ใช่ต้องส่ง !'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const Data = {
+          bill_id: bill_id,
+          payment_id: payment_id
+        }
+        console.log(Data);
+        const url = location.origin + '/apiowner/UpdatePaymentStatus_and_billStatus2/';
+        $.ajax({
+          type: 'POST',
+          url: url,
+          data: JSON.stringify(Data),
+          dataType: 'json',
+          contentType: "application/json; charset=utf-8",
+          success: function(data, status) {
+            if (data.message == "UpdateStatus2") {
+              Swal.fire({
+                position: 'center',
+                icon: 'success',
+                title: 'ทำการส่งบิลให้เช่าสำเร็จ',
+                showConfirmButton: true,
+              }).then(() => {
+                location.reload();
+              })
+            }
+          },
+          error: function(jqXhr, textStatus, errorThrow) {
+            swal.fire({
+              position: 'center',
+              icon: 'error',
+              title: 'เกิดข้อผิดพลาด!',
+              time: 2000
+            });
+          }
+        })
+      }
+    })
+
+  }
+
+  //------------------------------------------------------โชว์ข้อมูลการชำระเงินของแจ้งซ่อม-----------------------------------------------------
+  function showmodalPaymentRepair(modal) {
+
+    let user = modal.getAttribute("data-User")
+    const jsonUser = JSON.parse(user)
+    document.getElementById("room_number3").innerHTML = 'หมายเลขห้อง : ' + jsonUser.room_number
+    document.getElementById("sum_price3").innerHTML = 'จำนวนเงิน : ' + jsonUser.paymentRepair_price + ' บาท'
+    document.getElementById("user_id3").value = jsonUser.USER_ID
+    document.getElementById("payment_id3").value = jsonUser.paymentRepair_id
+    document.getElementById("Repair_id2").value = jsonUser.repair_id
+    document.getElementById("payment_image3").src = "/public/images_bill/" + jsonUser.paymentRepair_image
+    document.getElementById("Repair_name").innerHTML = jsonUser.paymentRepair_type
+    console.log("-----------payment_id3", jsonUser.paymentRepair_id)
+    console.log("-----------Repair_id", jsonUser.repair_id)
+  }
+
+  //---------------------------------ยืนยันการชำระเงิน[ของการแจ้งซ่อม]----------------------------------------
+  async function UpdatePayMentStatusRepair() {
+    let paymentRepair_id = document.getElementById("payment_id3").value;
+    let repair_id = document.getElementById("Repair_id2").value;
+
+
+    if (paymentRepair_id == '' || repair_id == '') {
+      swal.fire({
+        position: 'center',
+        icon: 'info',
+        title: 'กรุณากรอกข้อมูลให้ครบ',
+        time: 2000
+      })
+      return;
+    }
+    const Data = {
+      "paymentRepair_id": paymentRepair_id,
+      "repair_id": repair_id
+    }
+    console.log(Data);
+    const url = location.origin + "/apiowner/UpdatePaymentStatusRepair";
+    $.ajax({
+      type: 'POST',
+      url: url,
+      data: JSON.stringify(Data),
+      dataType: 'json',
+      contentType: "application/json; charset=utf-8",
+      success: function(data, status) {
+        if (data.message == "UpdateStatusPay_Repair") {
+          Swal.fire({
+            position: 'center',
+            icon: 'success',
+            title: 'ยืนยันการชำระเงินสำเร็จ',
+            showConfirmButton: true,
+          }).then(() => {
+            location.reload();
+          })
+        }
+      },
+      error: function(jqXhr, textStatus, errorThrow) {
+        swal.fire({
+          position: 'center',
+          icon: 'error',
+          title: 'เกิดข้อผิดพลาด',
+          time: 2000
+        })
+      }
+    })
+
+  }
+
+  //---------------------------------สลิปเงินไม่ถูกต้อง (ค่าแจ้งซ่อม)----------------------------------------
+  async function callback_to_tenant_repair() {
+    let user_id = document.getElementById("user_id3").value;
+    let repair_id = document.getElementById("Repair_id2").value;
+    let paymentRepair_id = document.getElementById("payment_id3").value;
+
+
+    Swal.fire({
+      title: 'แน่ใจแล้วหรือ ?',
+      text: "คุณต้องการส่งใบแจ้งหนี้หรือไม่ !",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: 'blueviolet',
+      cancelButtonColor: '#darkcyan',
+      cancelButtonText: 'ยกเลิก',
+      confirmButtonText: 'ใช่ต้องส่ง !'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const Data = {
+          paymentRepair_id: paymentRepair_id,
+          repair_id: repair_id
+        }
+        console.log(Data);
+        const url = location.origin + '/apiowner/UpdatePaymentRepair_Status/';
+        $.ajax({
+          type: 'POST',
+          url: url,
+          data: JSON.stringify(Data),
+          dataType: 'json',
+          contentType: "application/json; charset=utf-8",
+          success: function(data, status) {
+            if (data.message == "UpdateStatus_Pay_repair") {
+              Swal.fire({
+                position: 'center',
+                icon: 'success',
+                title: 'ทำการส่งบิลให้เช่าสำเร็จ',
+                showConfirmButton: true,
+              }).then(() => {
+                location.reload();
+              })
+            }
+          },
+          error: function(jqXhr, textStatus, errorThrow) {
+            swal.fire({
+              position: 'center',
+              icon: 'error',
+              title: 'เกิดข้อผิดพลาด!',
+              time: 2000
+            });
+          }
+        })
+      }
+    })
+
+  }
+</script>
+
+</html>

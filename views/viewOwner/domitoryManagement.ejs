@@ -17,7 +17,7 @@
 
     <!-- blank Page -->
     <% if (dataDomitory.length == 0) { %>
-    <div class="container-fluid " style="margin-top: 100px;">
+    <div class="container-fluid " style="margin-top: 75px;">
       <div class=" row d-flex justify-content-center">
         <div class="col-6">
           <div class="form-group">
@@ -63,31 +63,94 @@
           </div>
           <div class="form-group">
             <h5>รูปภาพหอพัก</h5>
-            <img src="/public/images_domitory/<%= dataDomitory[0].domitory_images %> " alt="" style="width: 730px ; height: 250px;">
-
+            <div class="text-center">
+              <img src="/public/images_domitory/<%= dataDomitory[0].domitory_images %> " alt="" style="width: 500px ; height: 500px;">
+              <input type="hidden" value="<%= dataDomitory[0].domitory_id %>" id="Domi_ID1">
+              <input type="hidden" value="<%= datauser.user_id %>" id="U_ID">
+            </div>
             <% if (datauser.length != 0 ) { %>
             <input type="hidden" class="form-control" disabled value="<%=datauser.user_id  %>" aria-describedby=" basic-addon1" id="User_id">
             <% } %>
           </div>
+          <button type="button" class="btn btn-warning" onclick="showmodalDomitory(this)" data-toggle="modal" data-target="#Modal_Update" data-User="<%= JSON.stringify(dataDomitory[0]) %>"><i class="fas fa-edit"></i> แก้ไขข้อมูลหอพัก</button>
+          <button type="button" class="btn btn-danger" onclick="DeleteDomi()"><i class="fas fa-trash-alt"></i> ลบบ้อมูลหอพัก</button>
+
+        </div>
+
+      </div>
+    </div>
+
+    <!-- โมดอลแก้ไขข้อมูล -->
+    <div class="modal fade bd-example-modal-lg" id="Modal_Update" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">แก้ไขข้อมูลหอพัก</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="card" style="width: 48rem;">
+              <div class="text-center" style="margin-top: 20px;">
+                <img class="card-img-top" id="domi_img" src="/public/images_domitory/" alt="Card image cap" style="width: 400px; height: 400px;">
+              </div>
+              <div class="card-body">
+                <h5 class="card-title">ชื่อหอพัก :</h5>
+                <div class="col-4" style="margin-left: -14px;">
+                  <div class="form-group">
+                    <input type="text" class="form-control" id="domi_update_name" placeholder="กรอกชื่อหอพักของคุณ">
+                  </div>
+                </div>
+                <h5 class="card-title">ที่อยู่หอพัก :</h5>
+                <div class="col-8" style="margin-left: -14px;">
+                  <div class="form-group">
+                    <textarea type="text" rows="4" class="form-control" id="domi_update_address" placeholder="กรอกที่อยู่หอพักของคุณ"></textarea>
+                  </div>
+                </div>
+                <h5 class="card-title">รายระเอียดหอพัก :</h5>
+                <div class="col-8" style="margin-left: -14px;">
+                  <div class="form-group">
+                    <textarea type="text" rows="6" class="form-control" id="domi_update_description" placeholder="กรอกรายละเอียดหอพักของคุณ"></textarea>
+                    <input type="hidden" id="UserID1">
+                    <input type="hidden" id="domitory_det_id">
+                    <input type="hidden" id="domi_id">
+                  </div>
+                </div>
+                <h5 class="card-title">รูปภาพหอพัก(ให้ทำการอัพโหลดไฟล์รูปภาพทุกครั้ง) :</h5>
+                <div class="col-8" style="margin-left: -14px;">
+                  <div class="form-group">
+                    <input type="file" class="form-control-file" id="Domitory_update_images">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="modal-footer">
+            <input type="button" class="btn btn-warning" value="แก้ไขข้อมูล" onclick="UpdateDomi()" />
+            <button type="button" class="btn btn-danger" data-dismiss="modal" style="background-color: darkcyan;">ยกเลิก</button>
+          </div>
+
         </div>
       </div>
     </div>
-    <% } %>
-    <br>
+  </div>
+  <% } %>
+  <br>
 
 
 
+  <footer class=" tm-bg-dark-blue">
+    <div class="container">
+      <div class="row">
+        <p class="col-sm-12 text-center tm-font-light tm-color-white p-4 tm-margin-b-0">
+          Copyright &copy; <span class="tm-current-year">2022</span> Hotel Center
 
-    <footer class="tm-bg-dark-blue">
-      <div class="container">
-        <div class="row">
-          <p class="col-sm-12 text-center tm-font-light tm-color-white p-4 tm-margin-b-0">
-            Copyright &copy; <span class="tm-current-year">2018</span> Your Company
-
-            - Design: <a rel="nofollow" href="https://www.tooplate.com" class="tm-color-primary tm-font-normal" target="_parent">Tooplate</a></p>
-        </div>
+          - Design by: <a rel="nofollow" href="https://www.facebook.com/profile.php?id=100008831296272" class="tm-color-primary tm-font-normal" target="_parent">Tang</a></p>
       </div>
-    </footer>
+    </div>
+  </footer>
   </div>
 
   <%- include('../component/script.ejs') %>
@@ -95,6 +158,8 @@
 
 
 <script>
+  //*------------------------------------------------------------รูปภาพ--------------------------------------------------------------------
+
   var fileData;
   var myFile;
   $('#Domitory_images').change(function() {
@@ -115,6 +180,7 @@
     }
   })
 
+  //*------------------------------------------------------------เพิ่มข่้อมูลหอพัก--------------------------------------------------------------------
   async function AddDomitory() {
     let domitory_name = document.getElementById("Domitory_name").value;
     let domitory_address = document.getElementById("Domitory_address").value;
@@ -160,18 +226,159 @@
       },
       error: function(jqXhr, textStatus, errorThrow) {
         console.log(jqXhr);
-        const msg = (() => {
-          switch (jqXhr.responseJSON.message) {
-            case "duplicated":
-              return "มีหอพักนี้แล้ว";
-          }
-        })();
-        console.log(msg);
         swal.fire({
           position: 'center',
           icon: 'error',
-          title: msg,
+          title: 'เกิดข้อผิดพลาด',
           time: 2000
+        })
+      }
+    })
+  }
+
+  //*------------------------------------------------------------รูปภาพ--------------------------------------------------------------------
+  var fileData1;
+  var myFile1;
+  $('#Domitory_update_images').change(function() {
+    var filereader1 = new FileReader();
+    filereader1.onload = function(event) {
+      fileData1 = event.target.result;
+    };
+    myFile1 = $('#Domitory_update_images').prop('files')[0];
+    console.log('myFile', myFile1);
+    filereader1.readAsDataURL(myFile1);
+    if (myFile1.size >= 1024 * 1024 * 2) {
+      Swal.fire({
+        icon: 'error',
+        title: 'เกิดปัญหา',
+        text: 'ขนาดรูปภาพใหญ่เกินไป',
+        footer: '<a>ทำไมไม่ลองเลือกรูปภาพใหม่ดูละ</a>'
+      })
+    }
+  })
+  //------------------------------------------------------โชว์ข้อมูลหอพัก-----------------------------------------------------
+  function showmodalDomitory(modal) {
+
+    let user = modal.getAttribute("data-User")
+    const jsonUser = JSON.parse(user)
+    document.getElementById("domi_img").src = "/public/images_domitory/" + jsonUser.domitory_images
+    document.getElementById("domi_update_name").value = jsonUser.domitory_name
+    document.getElementById("domi_update_address").value = jsonUser.domitory_address
+    document.getElementById("domi_update_description").value = jsonUser.domitory_description
+    document.getElementById("UserID1").value = jsonUser.user_id
+    document.getElementById("domitory_det_id").value = jsonUser.domitory_det_id
+    document.getElementById("domi_id").value = jsonUser.domitory_id
+    console.log("UserID1", jsonUser.user_id)
+    console.log("domitory_det_id", jsonUser.domitory_det_id)
+    console.log("domi_id", jsonUser.domitory_id)
+  }
+
+  //*------------------------------------------------------------แก้ไขข่้อมูลหอพัก--------------------------------------------------------------------
+  async function UpdateDomi() {
+    let domitory_name = document.getElementById("domi_update_name").value;
+    let domitory_address = document.getElementById("domi_update_address").value;
+    let domitory_description = document.getElementById("domi_update_description").value;
+    let domitory_images = document.getElementById("Domitory_update_images").value;
+    let domitory_det_id = document.getElementById("domitory_det_id").value;
+    let domitory_id = document.getElementById("domi_id").value;
+
+    if (domitory_name == '' || domitory_address == '' || domitory_description == '' || domitory_images == '' || domitory_det_id == '') {
+      swal.fire({
+        position: 'center',
+        icon: 'info',
+        title: 'กรุณากรอกข้อมูลให้ครบ',
+        time: 2000
+      })
+      return;
+    }
+    const Data = {
+      "domitory_name": domitory_name,
+      "domitory_address": domitory_address,
+      "domitory_description": domitory_description,
+      "filename": myFile1.name,
+      "file": fileData1,
+      "Domi_det_id": domitory_det_id,
+      "Domi_id": domitory_id
+    }
+    console.log(Data);
+    const url = location.origin + "/apiowner/UpdateDomitory";
+    $.ajax({
+      type: 'POST',
+      url: url,
+      data: JSON.stringify(Data),
+      dataType: 'json',
+      contentType: "application/json; charset=utf-8",
+      success: function(data, status) {
+        console.log("hello world", data)
+        swal.fire({
+          position: 'center',
+          icon: 'success',
+          title: 'แก้ไขข้อมูลหอพักสำเร็จ',
+          time: 2000
+        }).then(() => {
+          location.reload()
+        });
+      },
+      error: function(jqXhr, textStatus, errorThrow) {
+        console.log(jqXhr);
+        swal.fire({
+          position: 'center',
+          icon: 'error',
+          title: 'เกิดข้อผิดพลาด',
+          time: 2000
+        })
+      }
+    })
+  }
+
+  //---------------------------------ลบข้อมูลหอพัก-----------------------------------
+  async function DeleteDomi() {
+    let domi_id = document.getElementById("Domi_ID1").value;
+    let user_id = document.getElementById("U_ID").value
+    console.log("-----------domi_id", domi_id)
+    console.log("-----------user_id", user_id)
+    Swal.fire({
+      title: 'แน่ใจแล้วหรือ ?',
+      text: "คุณต้องการลบหอพัก !",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#F10724',
+      cancelButtonColor: '#darkcyan',
+      cancelButtonText: 'ยกเลิก',
+      confirmButtonText: 'ใช่ต้องการลบ !'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const Data = {
+          "domi_id": domi_id,
+          "user_id": user_id
+        }
+        const url = location.origin + '/apiowner/DeleteDomitory/';
+        $.ajax({
+          type: 'POST',
+          url: url,
+          data: JSON.stringify(Data),
+          dataType: 'json',
+          contentType: "application/json; charset=utf-8",
+          success: function(data, status) {
+            if (data.message == "DeleteDomi") {
+              Swal.fire({
+                position: 'center',
+                icon: 'success',
+                title: 'ลบข้อมูลหอพักสำเร็จ',
+                showConfirmButton: true,
+              }).then(() => {
+                location.reload();
+              })
+            }
+          },
+          error: function(jqXhr, textStatus, errorThrow) {
+            swal.fire({
+              position: 'center',
+              icon: 'error',
+              title: 'เกิดข้อผิดพลาด!',
+              time: 2000
+            });
+          }
         })
       }
     })

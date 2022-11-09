@@ -1,6 +1,43 @@
 <!DOCTYPE html>
 <html lang="en">
+<style>
+  * {
+    box-sizing: border-box;
+  }
 
+  #myInput {
+    background-image: url('https://www.w3schools.com/css/searchicon.png');
+    background-position: 10px 10px;
+    background-repeat: no-repeat;
+    width: 50%;
+    font-size: 16px;
+    padding: 12px 20px 12px 40px;
+    border: 1px solid #ddd;
+    margin-bottom: 12px;
+  }
+
+  #myTable {
+    border-collapse: collapse;
+    width: 100%;
+    border: 1px solid #ddd;
+    font-size: 18px;
+  }
+
+  #myTable th,
+  #myTable td {
+    text-align: left;
+    padding: 12px;
+  }
+
+  #myTable tr {
+    border-bottom: 1px solid #ddd;
+  }
+
+  #myTable tr.header,
+  #myTable tr:hover {
+    background-color: #f1f1f1;
+  }
+</style>
 <%- include('../component/header.ejs',{
         title:"จัดการห้องพัก"
       }) %>
@@ -16,83 +53,86 @@
     <!-- END TOP BAR -->
 
     <!-- blank Page -->
-    <div class="container-fluid " style="margin-top: 65px;">
-      <div class=" row">
-        <div class="container-fluid ">
-          <div class=" row">
-            <div class="col-md-12">
-              <h4 class=" text-center">ตารางข้อมูลห้องพัก</h4>
-              <div class=" row">
-                <div class="col-md-12">
-                  <% if (dataDomitory.length == 0)  { %>
-                  <a href="/owner/domitoryManagement">
-                    <h1 class="d-flex justify-content-center">ไปเพิ่มหอพักก่อน</h1>
-                  </a>
+    <div class="container-fluid " style="margin-top: 30px;">
+      <main class="col-md-9 ml-sm-auto col-lg-12 px-md-4 py-4">
+        <div class="row my-4">
+          <div class="container-fluid ">
+            <div class=" row">
+              <div class="col-md-12">
+                <h1 class=" text-center">ตารางข้อมูลห้องพัก</h1>
+                <% if (dataDomitory.length == 0)  { %>
+                <a href="/owner/domitoryManagement">
+                  <h1 class="d-flex justify-content-center">ไปเพิ่มหอพักก่อน</h1>
+                </a>
+                <% } else { %>
+                <!-- <h2>ค้นหาห้องพัก</h2>
+                <input type="text" id="myInput" onkeyup="myFunction()" placeholder="กรอกห้องพักที่ต้องการค้นหา" title="Type in a name"> -->
+                <div class=" row my-2">
+                  <div class="col-md-12">
+                    <table class="table" id="myTable">
+                      <thead>
+                        <tr class="header" style="background-color: #CD6155; color: white;">
+                          <th scope="col">ลำดับ</th>
+                          <th scope="col">หมายเลขห้อง</th>
+                          <th scope="col">ราคา</th>
+                          <th scope="col">ประเภทห้อง</th>
+                          <th scope="col">สถานะห้อง </th>
+                          <th scope="col" class="text-center">การทำงาน : <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#Modal_Add" style="background-color: blueviolet;"><i class="fas fa-plus-square"></i></button></th>
+                        </tr>
+                      </thead>
 
-                  <% } else { %>
-                  <table class="table table-bordered">
-                    <thead>
-                      <tr>
-                        <th scope="col" class="text-center">ลำดับ</th>
-                        <th scope="col" class="text-center">รหัสห้อง-หมายเลขห้อง</th>
-                        <th scope="col" class="text-center">ราคา</th>
-                        <th scope="col" class="text-center">ประเภทห้อง</th>
-                        <th scope="col" class="text-center">สถานะห้อง </th>
-                        <th scope="col">การทำงาน : <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#Modal_Add" style="background-color: blueviolet;"><i class="fas fa-plus-square"></i></button></th>
-                      </tr>
-                    </thead>
+                      <tbody>
+                        <% if (dataRoom.length == 0) { %>
+                        <tr>
+                          <td colspan="6" class="text-center">
+                            <h1>ไม่มีข้อมูล</h1>
+                          </td>
+                        </tr>
 
-                    <tbody>
-                      <% if (dataRoom.length == 0) { %>
-                      <tr>
-                        <td colspan="6" class="text-center">
-                          <h1>ไม่มีข้อมูล</h1>
-                        </td>
-                      </tr>
+                        <% } else { %>
+                        <% for (let i = 0; i < dataRoom.length; i++) { %>
+                        <tr>
+                          <th scope="row"><%= i+1 %></th>
+                          <td> <%= dataRoom[i].room_number %> </td>
+                          <td> <%= dataRoom[i].room_price %> บาท </td>
+                          <td>
+                            <% if(dataRoom[i].room_type == 1) { %>
+                            ห้องแอร์
+                            <% } else { %>
+                            ห้องพัดลม
+                            <% } %>
+                          </td>
 
-                      <% } else { %>
-                      <% for (let i = 0; i < dataRoom.length; i++) { %>
-                      <tr>
-                        <th scope="row"><%= i+1 %></th>
-                        <td> <%= dataRoom[i].room_number %> </td>
-                        <td> <%= dataRoom[i].room_price %> bath </td>
-                        <td>
-                          <% if(dataRoom[i].room_type == 1) { %>
-                          ห้องแอร์
-                          <% } else { %>
-                          ห้องพัดลม
-                          <% } %>
-                        </td>
+                          <td>
+                            <% if(dataRoom[i].room_status == 0) { %>
+                            ว่าง
+                            <% } else { %>
+                            ไม่ว่าง
+                            <% } %>
+                          </td>
+                          <td class="text-center">
+                            <button type="button" class="btn btn-warning" onclick="showmodalupdate(this)" data-toggle="modal" data-target="#Modal_Update" data-User="<%= JSON.stringify(dataRoom[i]) %>"><i class="fas fa-edit"></i></button>
+                            <button type="button" class="btn btn-danger" onclick="DeleteRoom('<%= dataRoom[i].room_id  %>')"><i class="far fa-trash-alt"></i></button>
+                          </td>
+                        </tr>
+                        <% } %>
+                        <% } %>
+                      </tbody>
+                    </table>
+                    <% } %>
 
-                        <td>
-                          <% if(dataRoom[i].room_status == 0) { %>
-                          ว่าง
-                          <% } else { %>
-                          ไม่ว่าง
-                          <% } %>
-                        </td>
-                        <td>
-                          <button type="button" class="btn btn-warning" onclick="showmodalupdate(this)" data-toggle="modal" data-target="#Modal_Update" data-User="<%= JSON.stringify(dataRoom[i]) %>"><i class="fas fa-edit"></i></button>
-                          <button type="button" class="btn btn-danger" onclick="DeleteRoom('<%= dataRoom[i].room_id  %>')"><i class="far fa-trash-alt"></i></button>
-                        </td>
-                      </tr>
-                      <% } %>
-                      <% } %>
-                    </tbody>
-                  </table>
-                  <% } %>
-
-                </div>
-                <div class="col-2">
-                  <% if (dataDomitory.length != 0 ) { %>
-                  <input type="hidden" class="form-control" disabled value="<%=dataDomitory[0].domitory_id  %>" aria-describedby=" basic-addon1" id="Domitory_id">
-                  <% } %>
+                  </div>
+                  <div class="col-2">
+                    <% if (dataDomitory.length != 0 ) { %>
+                    <input type="hidden" class="form-control" disabled value="<%=dataDomitory[0].domitory_id  %>" aria-describedby=" basic-addon1" id="Domitory_id">
+                    <% } %>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
+      </main>
     </div>
   </div>
 
@@ -125,7 +165,7 @@
                 <div class="form-group">
                   <label for="exampleInputPassword1">เลือกประเภทห้อง</label>
                   <div class="row" style="margin-left: 1px;">
-                    <select class="form-select" id="Room_type" style="height: 44.9px;" aria-label="Default select example">
+                    <select class="form-select" id="Room_type" aria-label="Default select example">
                       <option selected>เลือกประเภทห้อง</option>
                       <option value="1">ห้องแอร์</option>
                       <option value="2">ห้องพัดลม</option>
@@ -176,7 +216,7 @@
                 <div class="form-group">
                   <label for="exampleInputPassword1">เลือกประเภทห้อง</label>
                   <div class="row" style="margin-left: 1px;">
-                    <select class="form-select" id="EditRoom_type" style="height: 44.9px; width: 130px;" aria-label="Default select example">
+                    <select class="form-select" id="EditRoom_type"  aria-label="Default select example">
                       <option value="1">ห้องแอร์</option>
                       <option value="2">ห้องพัดลม</option>
                     </select>
@@ -197,13 +237,13 @@
   </div>
   </div>
 
-  <footer class="tm-bg-dark-blue">
+  <footer class=" tm-bg-dark-blue">
     <div class="container">
       <div class="row">
         <p class="col-sm-12 text-center tm-font-light tm-color-white p-4 tm-margin-b-0">
-          Copyright &copy; <span class="tm-current-year">2018</span> Your Company
+          Copyright &copy; <span class="tm-current-year">2022</span> Hotel Center
 
-          - Design: <a rel="nofollow" href="https://www.tooplate.com" class="tm-color-primary tm-font-normal" target="_parent">Tooplate</a></p>
+          - Design by: <a rel="nofollow" href="https://www.facebook.com/profile.php?id=100008831296272" class="tm-color-primary tm-font-normal" target="_parent">Tang</a></p>
       </div>
     </div>
   </footer>
@@ -214,6 +254,29 @@
 
 
 <script>
+  $(document).ready(function() {
+    $('#myTable').DataTable();
+  });
+
+
+  function myFunction() {
+    var input, filter, table, tr, td, i, txtValue;
+    input = document.getElementById("myInput");
+    filter = input.value.toUpperCase();
+    table = document.getElementById("myTable");
+    tr = table.getElementsByTagName("tr");
+    for (i = 0; i < tr.length; i++) {
+      td = tr[i].getElementsByTagName("td")[0];
+      if (td) {
+        txtValue = td.textContent || td.innerText;
+        if (txtValue.toUpperCase().indexOf(filter) > -1) {
+          tr[i].style.display = "";
+        } else {
+          tr[i].style.display = "none";
+        }
+      }
+    }
+  }
   //---------------------------------เพิ่มข้อมูลห้องพัก----------------------------------------
   async function AddRoom() {
     let room_number = document.getElementById("Room_number").value;
@@ -351,7 +414,7 @@
   async function DeleteRoom(room_id) {
     Swal.fire({
       title: 'แน่ใจแล้วหรือ ?',
-      text: "คุณต้องการลบเจ้าของหอพัก !",
+      text: "คุณต้องการลบห้องพัก !",
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#F10724',

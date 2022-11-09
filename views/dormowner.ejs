@@ -1,6 +1,43 @@
 <!DOCTYPE html>
 <html lang="en">
+<style>
+  * {
+    box-sizing: border-box;
+  }
 
+  #myInput {
+    background-image: url('https://www.w3schools.com/css/searchicon.png');
+    background-position: 10px 10px;
+    background-repeat: no-repeat;
+    width: 50%;
+    font-size: 16px;
+    padding: 12px 20px 12px 40px;
+    border: 1px solid #ddd;
+    margin-bottom: 12px;
+  }
+
+  #myTable {
+    border-collapse: collapse;
+    width: 100%;
+    border: 1px solid #ddd;
+    font-size: 18px;
+  }
+
+  #myTable th,
+  #myTable td {
+    text-align: left;
+    padding: 12px;
+  }
+
+  #myTable tr {
+    border-bottom: 1px solid #ddd;
+  }
+
+  #myTable tr.header,
+  #myTable tr:hover {
+    background-color: #f1f1f1;
+  }
+</style>
 <%- include('./component/header.ejs',{
         title:"จัดการเจ้าของหอพัก"
       }) %>
@@ -16,260 +53,233 @@
     <!-- END TOP BAR -->
 
     <!-- blank Page -->
-    <div class="container-fluid" style="margin-top: 65px;">
-      <h4 class=" text-center">ตารางข้อมูลเจ้าของหอพัก</h4>
-      <div class=" row">
-        <div class="col-md-12">
-          <table class="table table-bordered">
-            <thead>
-              <tr>
-                <th scope="col" class="text-center">ลำดับ</th>
-                <th scope="col" class="text-center">ชื่อ-นามสกุล</th>
-                <th scope="col" class="text-center">ชื่อผู้ใช้งาน</th>
-                <th scope="col" class="text-center">อีเมล์</th>
-                <th scope="col" class="text-center">ที่อยู่</th>
-                <th scope="col" class="text-center">เบอร์โทร</th>
-                <th scope="col">การทำงาน : <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#Modal_Add" style="background-color: blueviolet;"><i class="fas fa-plus-square"></i></button></th>
-              </tr>
-            </thead>
+    <div class="container-fluid" style="margin-top: 30px;">
+      <main class="col-md-9 ml-sm-auto col-lg-12 px-md-4 py-4">
+        <div class=" row my-4">
+          <div class="col-md-12">
+            <h1 class=" text-center">ตารางข้อมูลเจ้าของหอพัก</h1>
+            <!-- <h2>ค้นหาข้อมูลเจ้าของหอพัก</h2>
+            <input type="text" id="myInput" onkeyup="myFunction()" placeholder="กรอกชื่อเจ้าของหอที่ต้องการค้นหา" title="Type in a name"> -->
+            <div class=" row my-2">
+              <div class="col-md-12">
+                <table class="table " id="myTable">
+                  <thead>
+                    <tr class="header" style="background-color: #1f3646; color: white;">
+                      <th scope="col">ลำดับ</th>
+                      <th scope="col">ชื่อ-นามสกุล</th>
+                      <th scope="col">ชื่อผู้ใช้งาน</th>
+                      <th scope="col">อีเมล์</th>
+                      <th scope="col">ที่อยู่</th>
+                      <th scope="col">เบอร์โทร</th>
+                      <th scope="col" class="text-center">การทำงาน : <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#Modal_Add" style="background-color: blueviolet;"><i class="fas fa-plus-square"></i></button></th>
+                    </tr>
+                  </thead>
 
-            <tbody>
-              <% if (dataDormowner.length == 0) { %>
-              <tr>
-                <td colspan="7" class="text-center">
-                  <h1>ไม่มีข้อมูล</h1>
-                </td>
-              </tr>
+                  <tbody>
+                    <% if (dataDormowner.length == 0) { %>
+                    <tr>
+                      <td colspan="7" class="text-center">
+                        <h1>ไม่มีข้อมูล</h1>
+                      </td>
+                    </tr>
 
-              <% } else { %>
-              <% for (let i = 0; i < dataDormowner.length; i++) { %>
-              <tr>
-                <th scope="row"><%= i+1 %></th>
-                <td><%= dataDormowner[i].firstname %> <%= dataDormowner[i].surname %></td>
-                <td><%= dataDormowner[i].username %></td>
-                <td><%= dataDormowner[i].user_email %> </td>
-                <td><%= dataDormowner[i].user_address %></td>
-                <td><%= dataDormowner[i].user_tel %></td>
-                <td>
-                  <% if(dataDormowner[i].user_status == 0) { %>
-                  <button type="button" class="btn btn-danger" onclick="approve('<%= dataDormowner[i].user_status%>,<%= dataDormowner[i].user_id%>')" style="background-color: #AC1729  ;"><i class="fas fa-frown" style="color: white;"></i></button>
-                  <%}else{%>
-                  <button type="button" class="btn btn-info" onclick="approve('<%= dataDormowner[i].user_status%>,<%= dataDormowner[i].user_id%>')"><i class="fas fa-smile"></i></button>
-                  <%}%> 
-                  <button type="button" class="btn btn-warning" onclick="showmodalupdate(this)" data-toggle="modal" data-target="#Modal_Update" data-User="<%= JSON.stringify(dataDormowner[i]) %>"><i class="fas fa-edit"></i></button>
-                  <button type="button" class="btn btn-danger" onclick="DeleteDormowner('<%= dataDormowner[i].user_id %>')"><i class="far fa-trash-alt"></i></button>
-                </td>
-              </tr>
+                    <% } else { %>
+                    <% for (let i = 0; i < dataDormowner.length; i++) { %>
+                    <tr>
+                      <th scope="row"><%= i+1 %></th>
+                      <td><%= dataDormowner[i].firstname %> <%= dataDormowner[i].surname %></td>
+                      <td><%= dataDormowner[i].username %></td>
+                      <td><%= dataDormowner[i].user_email %> </td>
+                      <td><%= dataDormowner[i].user_address %></td>
+                      <td><%= dataDormowner[i].user_tel %></td>
+                      <td class="text-center">
+                        <% if(dataDormowner[i].user_status == 0) { %>
+                        <button type="button" class="btn btn-danger" onclick="approve('<%= dataDormowner[i].user_status%>,<%= dataDormowner[i].user_id%>')" style="background-color: #AC1729  ;"><i class="fas fa-frown" style="color: white;"></i></button>
+                        <%}else{%>
+                        <button type="button" class="btn btn-info" onclick="approve('<%= dataDormowner[i].user_status%>,<%= dataDormowner[i].user_id%>')" style="background-color: chocolate;"><i class="fas fa-smile" style="color: white;"></i></button>
+                        <%}%> 
+                        <button type="button" class="btn btn-warning" onclick="showmodalupdate(this)" data-toggle="modal" data-target="#Modal_Update" data-User="<%= JSON.stringify(dataDormowner[i]) %>"><i class="fas fa-edit"></i></button>
+                        <button type="button" class="btn btn-danger" onclick="DeleteDormowner('<%= dataDormowner[i].user_id %>')"><i class="far fa-trash-alt"></i></button>
+                      </td>
+                    </tr>
+                    <% } %>
+                    <% } %>
+                  </tbody>
+
+                </table>
+              </div>
+
+              <input type="hidden" class="form-control" disabled value="ชื่อจริง :<%=datauser.firstname  %>" aria-label="Firstname" aria-describedby="basic-addon1">
+              <input type="hidden" class="form-control" disabled value="นามสกุล :<%=datauser.surname  %>" aria-label=" Surname" aria-describedby="basic-addon1">
+              <input type="hidden" class="form-control" disabled value="อีเมล์ :<%=datauser.user_email  %>" aria-label=" Email" aria-describedby="basic-addon1">
+              <input type="hidden" class="form-control" disabled value="ที่อยู่ :<%=datauser.user_address  %>" aria-label=" Address" aria-describedby="basic-addon1">
+              <input type="hidden" class="form-control" disabled value="เบอร์โทร :<%=datauser.user_tel  %>" aria-label=" Phonenumber" aria-describedby="basic-addon1">
+              <% if (dataDormowner.length != 0 ) { %>
+              <input type="hidden" class="form-control" disabled value="<%=dataDormowner[0].role_id  %>" aria-describedby=" basic-addon1" id="Role_id">
               <% } %>
-              <% } %>
-            </tbody>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
 
-          </table>
+  <!-- โมดอลเพิ่มข้อมูล -->
+  <div class="modal fade bd-example-modal-lg" id="Modal_Add" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">เพิ่มข้อมูลเจ้าของหอพัก</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
         </div>
-        <div class="col-2">
-          <h3>ข้อมูลผู้ดูแลระบบ</h3>
-          <div style="margin-left: 350px;">
-            <img src="img/logoadmin.png" alt="" style="width: 300px ; height: 300px;">
-          </div>
+        <div class="modal-body">
+          <form>
+            <div class="row">
+              <div class="col-4">
+                <div class="form-group">
+                  <label for="exampleInputPassword1">ชื่อจริง</label>
+                  <input type="text" class="form-control" id="Firstname" placeholder="กรอกชื่อจริง">
+                </div>
+              </div>
+              <div class="col-4">
+                <div class="form-group">
+                  <label for="exampleInputPassword1">นามสกุล</label>
+                  <input type="text" class="form-control" id="Surname" placeholder="กรอกนามสกุล">
+                </div>
+              </div>
+              <div class="col-4">
+                <div class="form-group">
+                  <label for="exampleInputPassword1">ชื่อผู้ใช้</label>
+                  <input type="text" class="form-control" id="username" placeholder="กรอกชื่อผู้ใช้">
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-4">
+                <div class="form-group">
+                  <label for="exampleInputPassword1">รหัสผ่าน</label>
+                  <input type="password" class="form-control" id="password" placeholder="กรอกรหัสผ่าน">
+                </div>
+              </div>
+              <div class="col-4">
+                <div class="form-group">
+                  <label for="exampleInputEmail1">ที่อยู่อีเมล์</label>
+                  <input type="email" class="form-control" id="Email" aria-describedby="emailHelp" placeholder="กรอกอีเมล์">
+                </div>
+              </div>
+              <div class="col-4">
+                <div class="form-group">
+                  <label for="exampleInputEmail1">เบอร์โทร</label>
+                  <input type="text" class="form-control" id="Phonenumber" placeholder="กรอกเบอร์โทร">
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-8">
+                <div class="form-group">
+                  <label for="exampleInputEmail1">ที่อยู่</label>
+                  <textarea type="text" class="form-control" id="Address" placeholder="กรอกที่อยู่"></textarea>
+                </div>
+              </div>
+            </div>
+          </form>
         </div>
-        <div class="col-12" style="margin-top: 20px; margin-left: 185px;">
-          <div class="row">
-            <div class="col-2">
-              <div class="input-group mb-3">
-                <span class="input-group-text" id="basic-addon1"></span>
-                <input type="text" class="form-control" disabled value="ชื่อจริง :<%=datauser.firstname  %>" aria-label="Firstname" aria-describedby="basic-addon1">
-              </div>
-            </div>
-            <div class="col-2">
-              <div class="input-group mb-3">
-                <span class="input-group-text" id="basic-addon1"></span>
-                <input type="text" class="form-control" disabled value="นามสกุล :<%=datauser.surname  %>" aria-label=" Surname" aria-describedby="basic-addon1">
-              </div>
-            </div>
-            <div class="col-2">
-              <div class="input-group mb-3">
-                <span class="input-group-text" id="basic-addon1"></span>
-                <input type="text" class="form-control" disabled value="อีเมล์ :<%=datauser.user_email  %>" aria-label=" Email" aria-describedby="basic-addon1">
-              </div>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-2">
-              <div class="input-group mb-3">
-                <span class="input-group-text" id="basic-addon1"></span>
-                <input type="text" class="form-control" disabled value="ที่อยู่ :<%=datauser.user_address  %>" aria-label=" Address" aria-describedby="basic-addon1">
-              </div>
-            </div>
-            <div class="col-2">
-              <div class="input-group mb-3">
-                <span class="input-group-text" id="basic-addon1"></span>
-                <input type="text" class="form-control" disabled value="เบอร์โทร :<%=datauser.user_tel  %>" aria-label=" Phonenumber" aria-describedby="basic-addon1">
-              </div>
-            </div>
-          </div>
-          <% if (dataDormowner.length != 0 ) { %>
-          <input type="hidden" class="form-control" disabled value="<%=dataDormowner[0].role_id  %>" aria-describedby=" basic-addon1" id="Role_id">
-          <% } %>
+
+        <div class="modal-footer">
+          <input type="button" class="btn btn-secondary" value="เพิ่มข้อมูล" style="background-color: blueviolet;" onclick="AddDormowner() " />
+          <button type="button" class="btn btn-danger" data-dismiss="modal" style="background-color: darkcyan;">ยกเลิก</button>
         </div>
+
+
       </div>
     </div>
+  </div>
 
-    <!-- โมดอลเพิ่มข้อมูล -->
-    <div class="modal fade bd-example-modal-lg" id="Modal_Add" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
-      <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">เพิ่มข้อมูลเจ้าของหอพัก</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            <form>
-              <div class="row">
-                <div class="col-4">
-                  <div class="form-group">
-                    <label for="exampleInputPassword1">ชื่อจริง</label>
-                    <input type="text" class="form-control" id="Firstname" placeholder="กรอกชื่อจริง">
-                  </div>
-                </div>
-                <div class="col-4">
-                  <div class="form-group">
-                    <label for="exampleInputPassword1">นามสกุล</label>
-                    <input type="text" class="form-control" id="Surname" placeholder="กรอกนามสกุล">
-                  </div>
-                </div>
-                <div class="col-4">
-                  <div class="form-group">
-                    <label for="exampleInputPassword1">ชื่อผู้ใช้</label>
-                    <input type="text" class="form-control" id="username" placeholder="กรอกชื่อผู้ใช้">
-                  </div>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-4">
-                  <div class="form-group">
-                    <label for="exampleInputPassword1">รหัสผ่าน</label>
-                    <input type="password" class="form-control" id="password" placeholder="กรอกรหัสผ่าน">
-                  </div>
-                </div>
-                <div class="col-4">
-                  <div class="form-group">
-                    <label for="exampleInputEmail1">ที่อยู่อีเมล์</label>
-                    <input type="email" class="form-control" id="Email" aria-describedby="emailHelp" placeholder="กรอกอีเมล์">
-                  </div>
-                </div>
-                <div class="col-4">
-                  <div class="form-group">
-                    <label for="exampleInputEmail1">เบอร์โทร</label>
-                    <input type="text" class="form-control" id="Phonenumber" placeholder="กรอกเบอร์โทร">
-                  </div>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-8">
-                  <div class="form-group">
-                    <label for="exampleInputEmail1">ที่อยู่</label>
-                    <textarea type="text" class="form-control" id="Address" placeholder="กรอกที่อยู่"></textarea>
-                  </div>
-                </div>
-              </div>
-            </form>
-          </div>
-
-          <div class="modal-footer">
-            <input type="button" class="btn btn-secondary" value="เพิ่มข้อมูล" style="background-color: blueviolet;" onclick="AddDormowner() " />
-            <button type="button" class="btn btn-danger" data-dismiss="modal" style="background-color: darkcyan;">ยกเลิก</button>
-          </div>
-
-
+  <!-- โมดอลแก้ไขข้อมูล -->
+  <div class="modal fade bd-example-modal-lg" id="Modal_Update" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">แก้ไขข้อมูลเจ้าของหอพัก</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
         </div>
+        <div class="modal-body">
+          <form>
+            <div class="row">
+              <div class="col-4">
+                <div class="form-group">
+                  <label for="exampleInputPassword1">ชื่อจริง</label>
+                  <input type="text" class="form-control" id="EditFirstname" placeholder="กรอกชื่อจริง">
+                </div>
+              </div>
+              <div class="col-4">
+                <div class="form-group">
+                  <label for="exampleInputPassword1">นามสกุล</label>
+                  <input type="text" class="form-control" id="EditSurname" placeholder="กรอกนามสกุล">
+                </div>
+              </div>
+              <div class="col-4">
+                <div class="form-group">
+                  <label for="exampleInputPassword1">ชื่อผู้ใช้</label>
+                  <input type="text" class="form-control" id="Editusername" placeholder="กรอกชื่อผู้ใช้">
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-4">
+                <div class="form-group">
+                  <label for="exampleInputPassword1">รหัสผ่าน</label>
+                  <input type="password" class="form-control" id="Editpassword" placeholder="กรอกรหัสผ่าน">
+                </div>
+              </div>
+              <div class="col-4">
+                <div class="form-group">
+                  <label for="exampleInputEmail1">ที่อยู่อีเมล์</label>
+                  <input type="email" class="form-control" id="EditEmail" aria-describedby="emailHelp" placeholder="กรอกอีเมล์">
+                </div>
+              </div>
+              <div class="col-4">
+                <div class="form-group">
+                  <label for="exampleInputEmail1">เบอร์โทร</label>
+                  <input type="text" class="form-control" id="EditPhonenumber" placeholder="กรอกเบอร์โทร">
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-8">
+                <div class="form-group">
+                  <label for="exampleInputEmail1">ที่อยู่</label>
+                  <textarea type="text" class="form-control" id="EditAddress" placeholder="กรอกที่อยู่"></textarea>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <div class="modal-footer">
+          <input type="button" class="btn btn-warning" value="แก้ไขข้อมูล" onclick="Updatedormowner()" />
+          <button type="button" class="btn btn-danger" data-dismiss="modal" style="background-color: darkcyan;">ยกเลิก</button>
+        </div>
+
+
       </div>
     </div>
+  </div>
 
-    <!-- โมดอลแก้ไขข้อมูล -->
-    <div class="modal fade bd-example-modal-lg" id="Modal_Update" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
-      <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">แก้ไขข้อมูลเจ้าของหอพัก</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            <form>
-              <div class="row">
-                <div class="col-4">
-                  <div class="form-group">
-                    <label for="exampleInputPassword1">ชื่อจริง</label>
-                    <input type="text" class="form-control" id="EditFirstname" placeholder="กรอกชื่อจริง">
-                  </div>
-                </div>
-                <div class="col-4">
-                  <div class="form-group">
-                    <label for="exampleInputPassword1">นามสกุล</label>
-                    <input type="text" class="form-control" id="EditSurname" placeholder="กรอกนามสกุล">
-                  </div>
-                </div>
-                <div class="col-4">
-                  <div class="form-group">
-                    <label for="exampleInputPassword1">ชื่อผู้ใช้</label>
-                    <input type="text" class="form-control" id="Editusername" placeholder="กรอกชื่อผู้ใช้">
-                  </div>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-4">
-                  <div class="form-group">
-                    <label for="exampleInputPassword1">รหัสผ่าน</label>
-                    <input type="password" class="form-control" id="Editpassword" placeholder="กรอกรหัสผ่าน">
-                  </div>
-                </div>
-                <div class="col-4">
-                  <div class="form-group">
-                    <label for="exampleInputEmail1">ที่อยู่อีเมล์</label>
-                    <input type="email" class="form-control" id="EditEmail" aria-describedby="emailHelp" placeholder="กรอกอีเมล์">
-                  </div>
-                </div>
-                <div class="col-4">
-                  <div class="form-group">
-                    <label for="exampleInputEmail1">เบอร์โทร</label>
-                    <input type="text" class="form-control" id="EditPhonenumber" placeholder="กรอกเบอร์โทร">
-                  </div>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-8">
-                  <div class="form-group">
-                    <label for="exampleInputEmail1">ที่อยู่</label>
-                    <textarea type="text" class="form-control" id="EditAddress" placeholder="กรอกที่อยู่"></textarea>
-                  </div>
-                </div>
-              </div>
-            </form>
-          </div>
+  <footer class=" tm-bg-dark-blue">
+    <div class="container">
+      <div class="row">
+        <p class="col-sm-12 text-center tm-font-light tm-color-white p-4 tm-margin-b-0">
+          Copyright &copy; <span class="tm-current-year">2022</span> Hotel Center
 
-          <div class="modal-footer">
-            <input type="button" class="btn btn-warning" value="แก้ไขข้อมูล" onclick="Updatedormowner()" />
-            <button type="button" class="btn btn-danger" data-dismiss="modal" style="background-color: darkcyan;">ยกเลิก</button>
-          </div>
-
-
-        </div>
+          - Design by: <a rel="nofollow" href="https://www.facebook.com/profile.php?id=100008831296272" class="tm-color-primary tm-font-normal" target="_parent">Tang</a></p>
       </div>
     </div>
-
-    <footer class="tm-bg-dark-blue">
-      <div class="container">
-        <div class="row">
-          <p class="col-sm-12 text-center tm-font-light tm-color-white p-4 tm-margin-b-0">
-            Copyright &copy; <span class="tm-current-year">2018</span> Your Company
-
-            - Design: <a rel="nofollow" href="https://www.tooplate.com" class="tm-color-primary tm-font-normal" target="_parent">Tooplate</a></p>
-        </div>
-      </div>
-    </footer>
+  </footer>
   </div>
 
   <%- include('./component/script.ejs') %>
@@ -277,6 +287,52 @@
 
 
 <script>
+  $(document).ready(function() {
+    $('#myTable').DataTable();
+  });
+
+  function myFunction() {
+    var input, filter, table, tr, td, i, txtValue;
+    input = document.getElementById("myInput");
+    filter = input.value.toUpperCase();
+    table = document.getElementById("myTable");
+    tr = table.getElementsByTagName("tr");
+    for (i = 0; i < tr.length; i++) {
+      td = tr[i].getElementsByTagName("td")[0];
+      if (td) {
+        txtValue = td.textContent || td.innerText;
+        if (txtValue.toUpperCase().indexOf(filter) > -1) {
+          tr[i].style.display = "";
+        } else {
+          tr[i].style.display = "none";
+        }
+      }
+    }
+  }
+
+  const normalize = elem => {
+    let value = elem.target.value;
+
+    const onlyNums = value.replace(/[^\d]/g, '');
+
+    if (onlyNums.length <= 3) {
+      return onlyNums;
+    } else if (onlyNums.length <= 6) {
+      return `${onlyNums.slice(0, 3)} ${onlyNums.slice(3)}`;
+    } else if (onlyNums.length <= 6) {
+      return `${onlyNums.slice(0, 3)} ${onlyNums.slice(3, 6)} ${onlyNums.slice(6, 10)}`;
+    }
+    return `${onlyNums.slice(0, 3)} ${onlyNums.slice(3, 6)} ${onlyNums.slice(6, 10)}
+ ${onlyNums.slice(10, 10)}`;
+
+  };
+
+  const input = document.getElementById('Phonenumber');
+  input.addEventListener('input', (e) => e.target.value = normalize(e));
+
+  const input2 = document.getElementById('EditPhonenumber');
+  input2.addEventListener('input', (e) => e.target.value = normalize(e));
+
   //---------------------------------เพิ่มข้อมูลสมาชิก-----------------------------------
   async function AddDormowner() {
     let firstname = document.getElementById("Firstname").value;

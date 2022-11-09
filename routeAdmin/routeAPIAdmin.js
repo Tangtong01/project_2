@@ -21,6 +21,8 @@ route.get("/login/:username/:password", async (req, res) => {
 
     if (status == 0) {
       res.status(203).send();
+    } else if (status == 2) {
+      res.status(204).send();
     } else {
       req.session.role_id = role_id;
       req.session.user_id = userid;
@@ -51,7 +53,10 @@ route.post("/register", async (req, res) => {
     } = req.body;
     // console.log(Role_id);
     let findSql = "SELECT * FROM users WHERE username =  ?  AND role_id = ? ";
-    const [user, resultData] = await Connection.query(findSql, [username, Role_id]);
+    const [user, resultData] = await Connection.query(findSql, [
+      username,
+      Role_id,
+    ]);
     if (user.length > 0) throw new Error("user_duplicated");
 
     let sql = `INSERT INTO users(role_id,firstname,surname,username,password,user_email,user_address,user_tel,user_status) 
@@ -93,9 +98,11 @@ route.post("/AddDormowner", async (req, res) => {
     } = req.body;
     // console.log(Role_id);
     let findSql = "SELECT * FROM users WHERE username =  ?  AND role_id = ? ";
-    const [user, resultData] = await Connection.query(findSql, [username, Role_id]);
+    const [user, resultData] = await Connection.query(findSql, [
+      username,
+      Role_id,
+    ]);
     if (user.length > 0) throw new Error("user_duplicated");
-
 
     let sql = `INSERT INTO users(role_id,firstname,surname,username,password,user_email,user_address,user_tel,user_status) 
     VALUES (?,?,?,?,?,?,?,?,?)`;
@@ -144,9 +151,11 @@ route.post("/UpdateDormowner", async (req, res) => {
     if (users.username != username) {
       // console.log(users.username, "!=", username);
       let findSql = "SELECT * FROM users WHERE username =  ?  AND role_id = ? ";
-      const [user, resultData] = await Connection.query(findSql, [username, Role_id]);
+      const [user, resultData] = await Connection.query(findSql, [
+        username,
+        Role_id,
+      ]);
       if (user.length > 0) throw new Error("user_duplicated");
-
     }
 
     let sql =
@@ -199,5 +208,46 @@ route.post("/UpdateStatusDormowner/", async (req, res) => {
   res.status(200).send({
     message: "UpdateStatusDormowner",
   });
+});
+
+// -----------------------------------------แก้ไขข้อมูลส่วนตัว [ADMIN]---------------------------------------------------------
+route.post("/UpdateUser", async (req, res) => {
+  try {
+    const {
+      Firstname,
+      Surname,
+      username,
+      password,
+      Email,
+      Address,
+      Phonenumber,
+      UserId,
+    } = req.body;
+    // console.log(req.body);
+
+    let sql =
+      "UPDATE users SET firstname =  ?,  surname = ? , username = ? , password = ? , user_email = ? , user_address = ? , user_tel = ? WHERE user_id = ? ";
+    // console.log(sql);
+    const Data = await Connection.execute(sql, [
+      Firstname,
+      Surname,
+      username,
+      password,
+      Email,
+      Address,
+      Phonenumber,
+      UserId,
+    ]);
+    // console.log(Data[0].insertId);
+    if (Data[0].insertId != undefined) {
+      res.status(200).send({ message: "success" });
+    } else {
+      // console.log("1");
+      res.status(500).send({ message: "error" });
+    }
+  } catch (error) {
+    // console.log(error.message);
+    res.status(500).send({ message: error.message });
+  }
 });
 module.exports = route;

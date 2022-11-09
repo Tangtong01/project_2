@@ -3,18 +3,21 @@
 
 <head>
   <title>Sign up</title>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Document</title>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700"> <!-- Google web font "Open Sans" -->
-  <link rel="stylesheet" href="font-awesome-4.7.0/css/font-awesome.min.css"> <!-- Font Awesome -->
-  <link rel="stylesheet" href="css/bootstrap.min.css"> <!-- Bootstrap style -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" />
+  <!-- Google web font "Open Sans" -->
+  <link rel="stylesheet" href="font-awesome-4.7.0/css/font-awesome.min.css" />
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="css/bootstrap.min.css" />
+  <!-- Bootstrap style -->
   <link rel="stylesheet" type="text/css" href="slick/slick.css" />
   <link rel="stylesheet" type="text/css" href="slick/slick-theme.css" />
   <link rel="stylesheet" type="text/css" href="css/datepicker.css" />
-  <link rel="stylesheet" href="css/tooplate-style.css">
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/tooplate-style.css" />
+  <link rel="stylesheet" href="css/style.css" />
 </head>
 
 <body>
@@ -33,16 +36,6 @@
             <input type="hidden" disabled value="<%=dataDormowner[0].role_id  %>" id="Role_id" />
           </div>
           <input type="button" value="เข้าสู่ระบบ" class="btn solid" onclick="login()" />
-          <p class="social-text">หรือเข้าสู่ระบบด้วยช่องทาง </p>
-          <div class="social-media">
-            <a href="#" class="social-icon">
-              <i class="fab fa-facebook-f"></i>
-            </a>
-
-            <a href="#" class="social-icon">
-              <i class="fab fa-google"></i>
-            </a>
-          </div>
         </form>
         <form action="#" class="sign-up-form">
           <h2 class="title">สมัครสมาชิก</h2>
@@ -66,7 +59,6 @@
                 <i class="fas fa-user"></i>
                 <input type="text" placeholder="ชื่อผู้ใช้งาน" required id="username" />
               </div>
-
             </div>
             <div class="col-6">
               <div class="input-field">
@@ -89,15 +81,6 @@
             <input type="text" placeholder="เบอร์โทร" required id="Phonenumber" />
           </div>
           <input type="button" class="btn" value="สมัครสมาชิก" onclick="register()" />
-          <p class="social-text">หรือเข้าสู่ระบบด้วยช่องทาง</p>
-          <div class="social-media">
-            <a href="#" class="social-icon">
-              <i class="fab fa-facebook-f"></i>
-            </a>
-            <a href="#" class="social-icon">
-              <i class="fab fa-google"></i>
-            </a>
-          </div>
         </form>
       </div>
     </div>
@@ -113,12 +96,7 @@
           <button class="btn transparent" id="sign-up-btn">
             สมัครสมาชิก
           </button>
-          <!-- <li class="nav-item">   
-            <a class="nav-link" href="/">เข้าสู่ระบบ</a>
-          </li> -->
-          <button class="btn transparent" id="homepage-btn">
-            หน้าหลัก
-          </button>
+          <button class="btn transparent" id="homepage-btn">หน้าหลัก</button>
         </div>
         <img src="img/log.svg" class="image" alt="" />
       </div>
@@ -127,21 +105,19 @@
           <h3>เป็นหนึ่งกับเรา ?</h3>
           <p>
             จัดการงานรูปแบบ online เป็นตัวกลางในการเชื่อมต่อ
-            ระหว่างผู้ประกอบการหอพัก และผู้เช่าหอ
-            ที่มาพร้อมกับการทำงานที่ง่าย
+            ระหว่างผู้ประกอบการหอพัก และผู้เช่าหอ ที่มาพร้อมกับการทำงานที่ง่าย
           </p>
           <button class="btn transparent" id="sign-in-btn">
             เข้าสู่ระบบ
           </button>
-
         </div>
-        <img src="img/register.svg" class="image" alt="" />
+        <img src="img/register.png" class="image" alt="" />
       </div>
     </div>
   </div>
+
   <%- include('./component/script.ejs') %>
 </body>
-
 
 <script>
   const sign_in_btn = document.querySelector("#sign-in-btn");
@@ -161,81 +137,119 @@
     container.classList.remove("sign-up-mode");
   });
 
-  const form = document.getElementById('login_register');
+  const form = document.getElementById("login_register");
+
+
+  function cc_format(value) {
+    var v = value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
+    if (v.length > 3)
+      v = [v.slice(0, 3), '-', v.slice(3)].join('');
+    if (v.length > 8)
+      v = [v.slice(0, 7), '-', v.slice(7)].join('');
+    if (v.length > 12)
+      v = [v.slice(0, 12), ' ', v.slice(12)].join('');
+    v = v.slice(0, 12);
+    return v;
+  }
+  onload = function() {
+    document.getElementById('Phonenumber').oninput = function() {
+      this.value = cc_format(this.value)
+    }
+  }
 
   async function login() {
     let username = document.getElementById("Username").value;
     let password = document.getElementById("Password").value;
     const Data = {
-      "Username": username,
-      "Password": password
-    }
+      Username: username,
+      Password: password,
+    };
     console.log(Data);
     const url = location.origin + "/api/login/" + username + "/" + password;
     let res = await fetch(url, {
-      method: 'GET',
+      method: "GET",
       mode: "no-cors",
       headers: {
-        'Content-Type': 'application/json'
+        "Content-Type": "application/json",
       },
-    })
+    });
 
-    console.log(res.status)
+    console.log(res.status);
     if (res.status == 203) {
-      swal.fire({
-        position: 'center',
-        icon: 'warning',
-        title: 'ยังไม่ยืนยันผู้ใช้งาน',
-        showConfirmButton: true,
-      }).then(() => {
-        location.reload();
-      })
+      swal
+        .fire({
+          position: "center",
+          icon: "warning",
+          title: "ยังไม่ยืนยันผู้ใช้งาน",
+          text: "โปรดติดต่อมาที่ : ttptangloye666@gmail.com",
+          showConfirmButton: true,
+        })
+        .then(() => {
+          location.reload();
+        });
+    } else if (res.status == 204) {
+      swal
+        .fire({
+          position: "center",
+          icon: "warning",
+          title: "ท่านได้คืนห้องพักไปแล้ว",
+          text: "ขออภัยในความไม่สะดวก",
+          showConfirmButton: true,
+        })
+        .then(() => {
+          location.reload();
+        });
     } else if (res.status == 200) {
-      const body = await res.json()
+      const body = await res.json();
       const role = body.role;
       if (role == 1) {
-        swal.fire({
-          position: 'center',
-          icon: 'success',
-          title: 'เข้าสู่ระบบสำเร็จ',
-          showConfirmButton: false,
-          timer: 2000
-        }).then(() => {
-          location.href = location.origin + "/adminhomepage"
-        })
+        swal
+          .fire({
+            position: "center",
+            icon: "success",
+            title: "เข้าสู่ระบบสำเร็จ",
+            showConfirmButton: false,
+            timer: 2000,
+          })
+          .then(() => {
+            location.href = location.origin + "/adminhomepage";
+          });
       } else if (role == 2) {
-        swal.fire({
-          position: 'center',
-          icon: 'success',
-          title: 'เข้าสู่ระบบสำเร็จ',
-          showConfirmButton: false,
-          timer: 2000
-        }).then(() => {
-          location.href = location.origin + "/owner"
-        })
+        swal
+          .fire({
+            position: "center",
+            icon: "success",
+            title: "เข้าสู่ระบบสำเร็จ",
+            showConfirmButton: false,
+            timer: 2000,
+          })
+          .then(() => {
+            location.href = location.origin + "/owner";
+          });
       } else if (role == 3) {
-        swal.fire({
-          position: 'center',
-          icon: 'success',
-          title: 'เข้าสู่ระบบสำเร็จ',
-          showConfirmButton: false,
-          timer: 2000
-        }).then(() => {
-          location.href = location.origin + "/user"
-        })
+        swal
+          .fire({
+            position: "center",
+            icon: "success",
+            title: "เข้าสู่ระบบสำเร็จ",
+            showConfirmButton: false,
+            timer: 2000,
+          })
+          .then(() => {
+            location.href = location.origin + "/user";
+          });
       }
-      console.log(role)
-      console.log(res.status)
+      console.log(role);
+      console.log(res.status);
     } else {
       swal.fire({
-        position: 'center',
-        icon: 'error',
-        title: 'ชื่่อผู้ใช้หรือรหัสผ่านผิดพลาด!!',
+        position: "center",
+        icon: "error",
+        title: "ชื่่อผู้ใช้หรือรหัสผ่านผิดพลาด!!",
         showConfirmButton: false,
-        timer: 2000
-      })
+        timer: 2000,
+      });
     }
-
   }
   async function register() {
     let firstname = document.getElementById("Firstname").value;
@@ -246,43 +260,53 @@
     let address = document.getElementById("Address").value;
     let phone_number = document.getElementById("Phonenumber").value;
     let role_id = document.getElementById("Role_id").value;
-    if (firstname == '' || surname == '' || username == '' || password == '' || email == '' || address == '' || phone_number == '') {
+    if (
+      firstname == "" ||
+      surname == "" ||
+      username == "" ||
+      password == "" ||
+      email == "" ||
+      address == "" ||
+      phone_number == ""
+    ) {
       swal.fire({
-        position: 'center',
-        icon: 'info',
-        title: 'กรุณากรอกข้อมูลให้ครบ',
-        time: 2000
-      })
+        position: "center",
+        icon: "info",
+        title: "กรุณากรอกข้อมูลให้ครบ",
+        time: 2000,
+      });
       return;
     }
     const Data = {
-      "Firstname": firstname,
-      "Surname": surname,
-      "username": username,
-      "password": password,
-      "Email": email,
-      "Address": address,
-      "Phonenumber": phone_number,
-      "Role_id": role_id
-    }
+      Firstname: firstname,
+      Surname: surname,
+      username: username,
+      password: password,
+      Email: email,
+      Address: address,
+      Phonenumber: phone_number,
+      Role_id: role_id,
+    };
     console.log(Data);
     const url = location.origin + "/api/register";
     $.ajax({
-      type: 'POST',
+      type: "POST",
       url: url,
       data: JSON.stringify(Data),
-      dataType: 'json',
+      dataType: "json",
       contentType: "application/json; charset=utf-8",
       success: function(data, status) {
-        console.log("hello world", data)
-        swal.fire({
-          position: 'center',
-          icon: 'success',
-          title: 'สมัครสมาชิกสำเร็จ',
-          time: 2000
-        }).then(() => {
-          location.reload();
-        })
+        console.log("hello world", data);
+        swal
+          .fire({
+            position: "center",
+            icon: "success",
+            title: "สมัครสมาชิกสำเร็จ",
+            time: 2000,
+          })
+          .then(() => {
+            location.reload();
+          });
       },
       error: function(jqXhr, textStatus, errorThrow) {
         console.log(jqXhr);
@@ -293,14 +317,13 @@
           }
         })();
         swal.fire({
-          position: 'center',
-          icon: 'error',
+          position: "center",
+          icon: "error",
           title: msg,
-          time: 2000
-        })
-      }
-    })
-
+          time: 2000,
+        });
+      },
+    });
   }
 </script>
 

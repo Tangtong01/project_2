@@ -1,75 +1,133 @@
 <!DOCTYPE html>
 <html lang="en">
+<style>
+  * {
+    box-sizing: border-box;
+  }
 
-<%- include('../component/header.ejs',{
-        title:"แจ้งชำระเงิน"
-      }) %>
+  #myInput {
+    background-image: url("https://www.w3schools.com/css/searchicon.png");
+    background-position: 10px 10px;
+    background-repeat: no-repeat;
+    width: 100%;
+    font-size: 16px;
+    padding: 12px 20px 12px 40px;
+    border: 1px solid #ddd;
+    margin-bottom: 12px;
+  }
+
+  #myTable {
+    border-collapse: collapse;
+    width: 100%;
+    border: 1px solid #ddd;
+    font-size: 18px;
+  }
+
+  #myTable th,
+  #myTable td {
+    text-align: left;
+    padding: 12px;
+  }
+
+  #myTable tr {
+    border-bottom: 1px solid #ddd;
+  }
+
+  #myTable tr.header,
+  #myTable tr:hover {
+    background-color: #f1f1f1;
+  }
+
+  #myUL {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+  }
+</style>
+<%- include('../component/header.ejs',{ title:"แจ้งชำระเงิน" }) %>
 
 <body>
   <div class="tm-main-content" id="top">
-
-    <%- include('../component/navbarNew.ejs',{
-        checklogin: checklogin,
-        role:CheckRole,
-        route: route
-      }) %>
+    <%- include('../component/navbarNew.ejs',{ checklogin: checklogin,
+      role:CheckRole, route: route }) %>
     <!-- END TOP BAR -->
 
     <!-- blank Page -->
-    <div class="container-fluid " style="margin-top: 65px;">
-      <h1 class=" text-center">
-        ใบแจ้งบิล
-      </h1>
-      <table class="table table-bordered">
-        <thead>
-          <tr>
-            <th scope="col" class="text-center">บิลที่</th>
-            <th scope="col" class="text-center">หมายเลขห้อง</th>
-            <th scope="col" class="text-center">ชื่อผู้เช่า</th>
-            <th scope="col" class="text-center">วันที่ออกบิล</th>
-            <th scope="col" class="text-center">จัดการบิล</th>
-          </tr>
-        </thead>
+    <div class="container-fluid" style="margin-top: 30px">
+      <main class="col-md-9 ml-sm-auto col-lg-12 px-md-4 py-4">
+        <div class=" row my-4">
+          <div class="col-md-12">
+            <h1 class="text-center">ใบแจ้งบิล</h1>
+            <table class="table" id="myTable">
+              <thead>
+                <tr class="header" style="background-color: #007bff; color: white;">
+                  <th scope="col">บิลที่</th>
+                  <th scope="col">หมายเลขห้อง</th>
+                  <th scope="col">ชื่อผู้เช่า</th>
+                  <th scope="col">วันที่ออกบิล</th>
+                  <th scope="col">สถานะ</th>
+                  <th scope="col" class="text-center">จัดการบิล</th>
+                </tr>
+              </thead>
 
-        <tbody>
-          <% if (dataBill.length == 0) { %>
-          <tr>
-            <td colspan="7" class="text-center">
-              <h1>ไม่มีข้อมูล</h1>
-            </td>
-          </tr>
+              <tbody>
+                <% if (dataBill.length == 0) { %>
+                <tr>
+                  <td colspan="7" class="text-center">
+                    <h1>ไม่มีข้อมูล</h1>
+                  </td>
+                </tr>
 
-          <% } else  { %>
-          <% for (let i = 0; i < dataBill.length; i++) { %>
-          <tr>
-            <th scope="row" class="text-center"><%= i+1 %></th>
-            <td class="text-center"><%=dataBill[i].room_number%></td>
-            <td class="text-center"> <%= dataBill[i].firstname %> </td>
-            <td class="text-center"> <%= dataBill[i].bBill_date %> </td>
-            <td class="text-center">
-              <button type="button" class="btn btn-secondary" style="background-color: blueviolet;" onclick="showmodalAddPay(this)" data-toggle="modal" data-target="#Modal_addPay" data-User="<%= JSON.stringify(dataBill[i]) %>"> ดูข้อมูลบิล!</button>
-            </td>
-          </tr>
-          <% } %>
-          <% } %>
-        </tbody>
-      </table>
-      <!-- <div class=" row d-flex justify-content-center">
-        <div class="card me-5" style="width: 25rem; margin: 25px;">
-          <img src="/public//img/Payment History.png" class="card-img-top">
-          <h5 class="card-header bg-danger text-white border-0">[ ใบแจ้งค่าใช้จ่าย ]</h5>
-          <div class="card-body">
-            <h6 class="card-subtitle mb-3 text-success">บิล</h6>
-            <p class="card-text" style="color: black;">
-              บิลค่าน้ำ บิลค่าไฟ และบิลค่าห้อง.
-            </p>
-          </div>
-          <div class="card-footer text-end border-0">
-            <button class="btn btn-sm btn-info" data-toggle="modal" data-target="#exampleModal" style="background-color: blueviolet;"> ดูข้อมูลบิล</button>
-            <button class="btn btn-sm btn-info">button 2</button>
+                <% } else { %> <% for (let i = 0; i < dataBill.length; i++) { %>
+                <tr>
+                  <th scope="row"><%= i+1 %></th>
+                  <td><%=dataBill[i].room_number%></td>
+                  <td><%= dataBill[i].firstname %></td>
+                  <td><%= dataBill[i].bBill_date %></td>
+                  <td>
+                    <% if (dataBill[i].bill_status == 0) { %>
+                    <h5 style="color: red" class="blink">ใบเรียกเก็บเงิน</h5>
+                    <% } else if (dataBill[i].bill_status == 3){ %>
+                    <h5 style="color: red" class="blink">
+                      ข้อมูลการชำระเงินไม่ถูกต้องโปรดชำระเงินใหม่!!
+                    </h5>
+                    <% } else if (dataBill[i].bill_status == 2){ %>
+                    <h5 style="color: darkkhaki">ชำระเงินแล้ว!!</h5>
+                    <% } else { %>
+                    <h5 style="color: red" class="blink">รอตรวจสอบ!!</h5>
+                    <% } %>
+                  </td>
+                  <td class="text-center">
+                    <% if (dataBill[i].bill_status == 0) { %>
+                    <button type="button" class="btn btn-secondary" style="background-color: blueviolet" onclick="showmodalAddPay(this)" data-toggle="modal" data-target="#Modal_addPay" data-User="<%= JSON.stringify(dataBill[i]) %>">
+                      ดูข้อมูลบิล!
+                      <h7 style="color: chartreuse" class="blink">NEW!!!</h7>
+                    </button>
+                    <% } else if (dataBill[i].bill_status == 3){ %>
+                    <button type="button" class="btn btn-secondary" style="background-color: blueviolet" onclick="showmodalAddPay(this)" data-toggle="modal" data-target="#Modal_addPay" data-User="<%= JSON.stringify(dataBill[i]) %>">
+                      ดูข้อมูลบิล!
+                      <h7 style="color: chartreuse" class="blink">NEW!!!</h7>
+                    </button>
+                    <% } else if (dataBill[i].bill_status == 2){ %>
+                    <button type="button" class="btn btn-secondary" style="background-color: blueviolet" onclick="showmodalDataPay(this)" data-toggle="modal" data-target="#Modal_dataPay" data-User="<%= JSON.stringify(dataPay[i]) %>">
+                      ดูข้อมูลใบเสร็จ!
+                      <h7 style="color: chartreuse" class="blink">NEW!!!</h7>
+                    </button>
+
+                    <% } else { %>
+                    <h5 style="color: red">
+                      <i class="fas fa-file-invoice" style="color: red"></i>
+                    </h5>
+
+                    <% } %>
+                  </td>
+                </tr>
+                <% } %> <% } %>
+              </tbody>
+            </table>
           </div>
         </div>
-      </div> -->
+      </main>
     </div>
 
     <!-- โมดอลค่าใช้จ่าย -->
@@ -84,29 +142,35 @@
           </div>
           <div class="modal-body">
             <div class="card-group">
-              <div class="card " style="width: 150rem; margin: 20px;">
-                <img src="/public/img/room.png" class="card-img-top">
+              <div class="card" style="width: 150rem; margin: 20px">
+                <img src="/public/img/room.png" class="card-img-top" />
                 <div class="card-body">
-                  <h5 class="card-header  text-white border-0 text-center" style="background-color:coral;">บิลค่าห้อง</h5>
+                  <h5 class="card-header text-white border-0 text-center" style="background-color: coral">
+                    บิลค่าห้อง
+                  </h5>
                   <p class="card-text" id="room_number"></p>
                   <p class="card-text" id="room_price"></p>
                 </div>
                 <div class="card-footer text-end border-0"></div>
               </div>
-              <div class="card " style="width: 50rem; margin: 20px;">
-                <img src="/public/img/water.png" class="card-img-top">
+              <div class="card" style="width: 50rem; margin: 20px">
+                <img src="/public/img/water.png" class="card-img-top" />
                 <div class="card-body">
-                  <h5 class="card-header  text-white border-0 text-center" style="background-color:blueviolet ;">บิลค่าน้ำ</h5>
+                  <h5 class="card-header text-white border-0 text-center" style="background-color: blueviolet">
+                    บิลค่าน้ำ
+                  </h5>
                   <p class="card-text" id="water_unit"></p>
                   <p class="card-text" id="water_unitPrice"></p>
                   <p class="card-text" id="water_price"></p>
                 </div>
                 <div class="card-footer text-end border-0"></div>
               </div>
-              <div class="card " style="width: 50rem; margin: 20px;">
-                <img src="/public/img/lightning.png" class="card-img-top">
+              <div class="card" style="width: 50rem; margin: 20px">
+                <img src="/public/img/lightning.png" class="card-img-top" />
                 <div class="card-body">
-                  <h5 class="card-header  text-white border-0 text-center" style="background-color:darkorange ;">บิลค่าไฟ</h5>
+                  <h5 class="card-header text-white border-0 text-center" style="background-color: darkorange">
+                    บิลค่าไฟ
+                  </h5>
                   <p class="card-text" id="power_unit"></p>
                   <p class="card-text" id="power_unitPrice"></p>
                   <p class="card-text" id="power_price"></p>
@@ -114,49 +178,94 @@
                 <div class="card-footer text-end border-0"></div>
               </div>
             </div>
-            <div class="card " style="width: 45.6rem; margin: 20px;">
-              <h5 class="card-header bg-danger text-white border-0">บิลรวม</h5>
+            <div class="card" style="width: 45.6rem; margin: 20px">
+              <h5 class="card-header bg-danger text-white border-0">
+                บิลรวม
+              </h5>
               <div class="card-body">
                 <p class="card-text" id="sum_room_price"></p>
                 <p class="card-text" id="sum_water_price"></p>
                 <p class="card-text" id="sum_power_price"></p>
                 <p class="card-text" id="sum_price"></p>
-                <input type="hidden" id="Sum_price">
-                <input type="hidden" id="bill_id">
-                <input type="hidden" id="user_id">
-                <div class="form-group" style="margin-left: 200px; margin-top: -160px;">
+                <input type="hidden" id="payment_type" value="สลิปค่าห้อง,ค่าน้ำ,ค่าไฟ" />
+                <input type="hidden" id="Sum_price" />
+                <input type="hidden" id="bill_id" />
+                <input type="hidden" id="user_id" />
+                <div class="form-group" style="margin-left: 200px; margin-top: -180px">
                   <h6>อัพโหลดรูปภาพสลิปโอน:</h6>
-                  <input type="file" class="form-control-file" id="Paymment_images" style="margin-top: 18px;">
-                  <h6 style="margin-top: 18px;">วันที่อัพโหลดสลิปโอน : </h6>
-                  <div class="row" style="margin-left: 1px;">
-                    <input type="date" class="text-lg-center" id="Payment_date" style="width: 125px; height: 45px; font-size: 16px;">
-                    <input type="time" class="text-lg-center" id="Payment_time" style="font-size: 16px;">
+                  <input type="file" class="form-control-file" id="Payment_images" style="margin-top: 18px" />
+                  <h6 style="margin-top: 18px">วันที่อัพโหลดสลิปโอน :</h6>
+                  <div class="col-4" style="margin-left: -14px; ">
+                    <div class="row" style="margin-left: 1px">
+                      <input type="date" id="Payment_date" />
+                      <input type="time" id="Payment_time" />
+                    </div>
                   </div>
-                  <div style="margin-top: -152px; margin-left: 290px;">
-                    <img src="/public/img/sleep.png" alt="" style="width: 180px ; height: 180px mar;">
+                  <div style="margin-top: -170px; margin-left: 295px">
+                    <h4>โอนเงินมาที่บัญชีนี้ :</h4>
+                    <h4 id="bank_name"></h4>
+                    <h4 id="bank_number"></h4>
                   </div>
                 </div>
               </div>
-              <div class="card-footer text-end border-0">
-              </div>
+              <div class="card-footer text-end border-0"></div>
             </div>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" style="background-color:blueviolet ;" onclick="AddPay()">บันทึกการชำระเงิน</button>
-            <button type="button" class="btn btn-secondary" data-dismiss="modal" style="background-color: darkcyan;">ยกเลิก</button>
+            <button type="button" class="btn btn-secondary" style="background-color: blueviolet" onclick="AddPay()">
+              บันทึกการชำระเงิน
+            </button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal" style="background-color: darkcyan">
+              ยกเลิก
+            </button>
           </div>
         </div>
       </div>
     </div>
 
+    <!-- โมดอลData Pay -->
+    <div class="modal fade" id="Modal_dataPay" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">ข้อมูลใบเสร็จ</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="card" style="width: 45.6rem; margin: 20px">
+              <h5 class="card-header bg-danger text-white border-0">
+                ใบเสร็จ
+              </h5>
+              <img src="/public/images_bill/" class="card-img-top" id="payment_image" />
+              <div class="card-body">
+                <p class="card-text" id="Pdate" style="font-size: 20px"></p>
+                <p class="card-text" id="room" style="font-size: 20px"></p>
+                <p class="card-text" id="water" style="font-size: 20px"></p>
+                <p class="card-text" id="power" style="font-size: 20px"></p>
+                <p class="card-text" id="sum_" style="font-size: 20px"></p>
+                <p class="card-text" id="pay_price" style="font-size: 20px"></p>
+              </div>
+              <div class="card-footer text-end border-0"></div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal" style="background-color: darkcyan">
+              ยกเลิก
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
 
-    <footer class="tm-bg-dark-blue">
+    <footer class=" tm-bg-dark-blue">
       <div class="container">
         <div class="row">
           <p class="col-sm-12 text-center tm-font-light tm-color-white p-4 tm-margin-b-0">
-            Copyright &copy; <span class="tm-current-year">2018</span> Your Company
+            Copyright &copy; <span class="tm-current-year">2022</span> Hotel Center
 
-            - Design: <a rel="nofollow" href="https://www.tooplate.com" class="tm-color-primary tm-font-normal" target="_parent">Tooplate</a></p>
+            - Design by: <a rel="nofollow" href="https://www.facebook.com/profile.php?id=100008831296272" class="tm-color-primary tm-font-normal" target="_parent">Tang</a></p>
         </div>
       </div>
     </footer>
@@ -165,128 +274,164 @@
   <%- include('../component/script.ejs') %>
 </body>
 
-
 <script>
+  $(document).ready(function() {
+    $('#myTable').DataTable();
+  });
+
+  function blink_text() {
+    $(".blink").fadeOut(200);
+    $(".blink").fadeIn(100);
+  }
+  setInterval(blink_text, 500);
+
   //--------------------------------------------------------โชว์ข้อมูลบิล---------------------------------------------------------
   function showmodalAddPay(modal) {
-    let user = modal.getAttribute("data-User")
-    const jsonUser = JSON.parse(user)
-    document.getElementById("room_number").innerHTML = 'หมายเลขห้อง : ' + jsonUser.room_number
-    document.getElementById("room_price").innerHTML = 'ราคาห้อง : ' + jsonUser.room_price + ' บาท'
+    let user = modal.getAttribute("data-User");
+    const jsonUser = JSON.parse(user);
+    document.getElementById("room_number").innerHTML =
+      "หมายเลขห้อง : " + jsonUser.room_number;
+    document.getElementById("room_price").innerHTML =
+      "ราคาห้อง : " + jsonUser.room_price + " บาท";
 
-    document.getElementById("water_unit").innerHTML = 'น้ำ : ' + jsonUser.water_unit + ' หน่วย'
-    document.getElementById("water_unitPrice").innerHTML = 'ราคา / หน่วย : ' + jsonUser.water_unitPrice + ' บาท'
-    document.getElementById("water_price").innerHTML = 'ราคารวม : ' + jsonUser.water_price + ' บาท'
+    document.getElementById("water_unit").innerHTML =
+      "น้ำ : " + jsonUser.water_unit + " หน่วย";
+    document.getElementById("water_unitPrice").innerHTML =
+      "ราคา / หน่วย : " + jsonUser.water_unitPrice + " บาท";
+    document.getElementById("water_price").innerHTML =
+      "ราคารวม : " + jsonUser.water_price + " บาท";
 
-    document.getElementById("power_unit").innerHTML = 'ไฟ : ' + jsonUser.power_unit + ' หน่วย'
-    document.getElementById("power_unitPrice").innerHTML = 'ราคา / หน่วย : ' + jsonUser.power_unitPrice + ' บาท'
-    document.getElementById("power_price").innerHTML = 'ราคารวม : ' + jsonUser.power_price + ' บาท'
+    document.getElementById("power_unit").innerHTML =
+      "ไฟ : " + jsonUser.power_unit + " หน่วย";
+    document.getElementById("power_unitPrice").innerHTML =
+      "ราคา / หน่วย : " + jsonUser.power_unitPrice + " บาท";
+    document.getElementById("power_price").innerHTML =
+      "ราคารวม : " + jsonUser.power_price + " บาท";
 
-    document.getElementById("sum_room_price").innerHTML = 'ค่าห้อง : ' + jsonUser.room_price + ' บาท'
-    document.getElementById("sum_water_price").innerHTML = 'ค่าน้ำ : ' + jsonUser.water_price + ' บาท'
-    document.getElementById("sum_power_price").innerHTML = 'ค่าไฟ : ' + jsonUser.power_price + ' บาท'
-    document.getElementById("sum_price").innerHTML = 'ราคารวม : ' + jsonUser.sumPrice + ' บาท'
-    document.getElementById("Sum_price").value = jsonUser.sumPrice
+    document.getElementById("sum_room_price").innerHTML =
+      "ค่าห้อง : " + jsonUser.room_price + " บาท";
+    document.getElementById("sum_water_price").innerHTML =
+      "ค่าน้ำ : " + jsonUser.water_price + " บาท";
+    document.getElementById("sum_power_price").innerHTML =
+      "ค่าไฟ : " + jsonUser.power_price + " บาท";
+    document.getElementById("sum_price").innerHTML =
+      "ราคารวม : " + jsonUser.PRice + " บาท";
+    document.getElementById("Sum_price").value = jsonUser.PRice;
+    document.getElementById("bank_name").innerHTML = jsonUser.bank_name;
+    document.getElementById("bank_number").innerHTML =
+      "หมายเลขบัญชี : " + jsonUser.bank_number;
     // console.log(jsonUser.sumPrice);
     // console.log(jsonUser.room_price);
-    document.getElementById("bill_id").value = jsonUser.bill_id
-    document.getElementById("user_id").value = jsonUser.user_id
-    // console.log("--------------บิล", jsonUser.bill_id);
-    // console.log("--------------IDผู้เช่า", jsonUser.user_id);
+    document.getElementById("bill_id").value = jsonUser.bill_id;
+    document.getElementById("user_id").value = jsonUser.USER_ID;
+    console.log("--------------บิล", jsonUser.bill_id);
+    console.log("--------------IDผู้เช่า", jsonUser.USER_ID);
+  }
 
+  //--------------------------------------------------------โชว์ข้อมูลบิล DATA---------------------------------------------------------
+  function showmodalDataPay(modal) {
+    let user = modal.getAttribute("data-User");
+    const jsonUser = JSON.parse(user);
+    document.getElementById("pay_price").innerHTML =
+      "จำนวนเงินที่โอน : " + jsonUser.paymentBill_price + " บาท";
+    document.getElementById("payment_image").src =
+      "/public/images_bill/" + jsonUser.paymentBill_image;
+    document.getElementById("Pdate").innerHTML =
+      "วันที่ทำการชำระเงิน : " + jsonUser.pPay_date;
   }
 
   //-----------------------------------------รูปภาพ--------------------------------
   var fileData;
   var myFile;
-  $('#Paymment_images').change(function() {
+  $("#Payment_images").change(function() {
     var filereader = new FileReader();
     filereader.onload = function(event) {
       fileData = event.target.result;
     };
-    myFile = $('#Paymment_images').prop('files')[0];
-    console.log('myFile', myFile);
+    myFile = $("#Payment_images").prop("files")[0];
+    console.log("myFile", myFile);
     filereader.readAsDataURL(myFile);
     if (myFile.size >= 1024 * 1024 * 2) {
       Swal.fire({
-        icon: 'error',
-        title: 'เกิดปัญหา',
-        text: 'ขนาดรูปภาพใหญ่เกินไป',
-        footer: '<a>ทำไมไม่ลองเลือกรูปภาพใหม่ดูละ</a>'
-      })
+        icon: "error",
+        title: "เกิดปัญหา",
+        text: "ขนาดรูปภาพใหญ่เกินไป",
+        footer: "<a>ทำไมไม่ลองเลือกรูปภาพใหม่ดูละ</a>",
+      });
     }
-  })
+  });
 
   //------------------------------------------บันทุกการชำระเงิน-------------------------------------
   async function AddPay() {
     let user_id = document.getElementById("user_id").value;
     let bill_id = document.getElementById("bill_id").value;
-    let payment_price = document.getElementById("Sum_price").value;
-    let payment_image = document.getElementById("Paymment_images").value;
+    let paymentBill_price = document.getElementById("Sum_price").value;
+    let paymentBill_image = document.getElementById("Payment_images").value;
+    let paymentBill_type = document.getElementById("payment_type").value;
+    let paymentBill_date = document.getElementById("Payment_date").value;
+    let paymentBill_time = document.getElementById("Payment_time").value;
 
-    let payment_date = document.getElementById("Payment_date").value;
-    let payment_time = document.getElementById("Payment_time").value;
-
-    const paymentdate = payment_date + " " + payment_time;
-    console.log("---------user_id------", user_id)
-    console.log("----bill_id----", bill_id)
-    console.log("---payment_price-----", payment_price)
-    console.log("---payment_image-----", payment_image)
-    console.log("----payment_date----", payment_date)
-    console.log("-----payment_time---", payment_time)
-    if (payment_price == '' || payment_image == '' || payment_date == '' || payment_time == '') {
+    const paymentbilldate = paymentBill_date + " " + paymentBill_time;
+    console.log("---------user_id------", user_id);
+    console.log("----bill_id----", bill_id);
+    console.log("---paymentBill_price-----", paymentBill_price);
+    console.log("---paymentBill_image-----", paymentBill_image);
+    console.log("----paymentBill_date----", paymentBill_date);
+    console.log("-----paymentBill_time---", paymentBill_time);
+    if (
+      paymentBill_price == "" ||
+      paymentBill_image == "" ||
+      paymentBill_date == "" ||
+      paymentBill_time == "" ||
+      paymentBill_type == ""
+    ) {
       swal.fire({
-        position: 'center',
-        icon: 'info',
-        title: 'กรุณากรอกข้อมูลให้ครบ',
-        time: 2000
-      })
+        position: "center",
+        icon: "info",
+        title: "กรุณากรอกข้อมูลให้ครบ",
+        time: 2000,
+      });
       return;
     }
     const Data = {
-      "payment_price": payment_price,
-      "paymentdate": paymentdate,
-      "filename": myFile.name,
-      "file": fileData,
-      "user_id": user_id,
-      "bill_id": bill_id
-    }
+      paymentBill_price: paymentBill_price,
+      paymentbilldate: paymentbilldate,
+      paymentBill_type: paymentBill_type,
+      filename: myFile.name,
+      file: fileData,
+      user_id: user_id,
+      bill_id: bill_id,
+    };
     console.log("Data", Data);
     const url = location.origin + "/apiuser/AddPay";
     $.ajax({
-      type: 'POST',
+      type: "POST",
       url: url,
       data: JSON.stringify(Data),
-      dataType: 'json',
+      dataType: "json",
       contentType: "application/json; charset=utf-8",
       success: function(data, status) {
-        console.log("hello world", data)
-        swal.fire({
-          position: 'center',
-          icon: 'success',
-          title: 'บันทึกการชำระเงินสำเร็จ',
-          time: 2000
-        }).then(() => {
-          location.reload()
-        });
+        console.log("hello world", data);
+        swal
+          .fire({
+            position: "center",
+            icon: "success",
+            title: "บันทึกการชำระเงินสำเร็จ",
+            time: 2000,
+          })
+          .then(() => {
+            location.reload();
+          });
       },
       error: function(jqXhr, textStatus, errorThrow) {
-        // console.log(jqXhr);
-        const msg = (() => {
-          switch (jqXhr.responseJSON.message) {
-            case "duplicated":
-              return "ข้อมูลซ้ำ";
-          }
-        })();
-        console.log(msg);
         swal.fire({
-          position: 'center',
-          icon: 'error',
-          title: msg,
-          time: 2000
-        })
-      }
-    })
+          position: "center",
+          icon: "error",
+          title: "เกิดข้อผิดพลาด",
+          time: 2000,
+        });
+      },
+    });
   }
 </script>
 

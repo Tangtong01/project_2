@@ -1,6 +1,53 @@
 <!DOCTYPE html>
 <html lang="en">
+<style>
+  * {
+    box-sizing: border-box;
+  }
 
+  #myInput {
+    background-image: url('https://www.w3schools.com/css/searchicon.png');
+    background-position: 10px 10px;
+    background-repeat: no-repeat;
+    width: 100%;
+    font-size: 16px;
+    padding: 12px 20px 12px 40px;
+    border: 1px solid #ddd;
+    margin-bottom: 12px;
+  }
+
+  #myTable {
+    border-collapse: collapse;
+    width: 100%;
+    border: 1px solid #ddd;
+    font-size: 18px;
+  }
+
+  #myTable th,
+  #myTable td {
+    text-align: left;
+    padding: 12px;
+  }
+
+  #myTable tr {
+    border-bottom: 1px solid #ddd;
+  }
+
+  #myTable tr.header,
+  #myTable tr:hover {
+    background-color: #f1f1f1;
+  }
+
+  #myUL {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .p {
+    font-size: 20px;
+  }
+</style>
 <%- include('./component/header.ejs',{
         title:"จัดการหอพัก"
       }) %>
@@ -16,99 +63,114 @@
     <!-- END TOP BAR -->
 
     <!-- blank Page -->
-    <div class="container-fluid " style="margin-top: 65px;">
-      <div class=" row">
-      <div class="col-4">
-        <h3>Tang Tomg</h3>
-      </div>
-      <div class="col-4">
-        <h3>Tang Tomg</h3>
-      </div>
-      <div class="col-4">
-        <h3>Tang Tomg</h3>
-      </div>
-    </div>
-  </div>
-  <div class="container-fluid">
-    <div class="tm-section tm-section-pad tm-bg-gray" id="tm-section-4">
-      <div class="container">
-        <div class="row">
-          <div class="col-sm-12 col-md-12 col-lg-8 col-xl-8">
-            <% for (let i = 0; i < 10; i++) { %>
-            <article class="tm-bg-white mr-2 tm-carousel-item">
-              <img src="img/1.jpg" alt="Image" class="img-fluid">
-              <div class="tm-article-pad">
-                <header>
-                  <h3 class="text-uppercase tm-article-title-2">หักพักหลังคาโปร่ง</h3>
-                </header>
-                <p1>อากาศเย็นสบาย ไม่ต้องเปิดแอร์ก็อยู่ได้ ฟรีWiFi เฟอร์นิเจอร์ครบครัน.</p1>
-                <a href="#" class="text-uppercase btn-primary tm-btn-primary">ข้อมูลเพิ่มเติม.</a>
-              </div>
-            </article>
-            <div class="tm-article-carousel">
-              <article class="tm-bg-white mr-2 tm-carousel-item">
-                <img src="img/2.jpg" alt="Image" class="img-fluid">
-                <div class="tm-article-pad">
-                  <header>
-                    <h3 class="text-uppercase tm-article-title-2">หักพอบ้านเมตตาธรรม</h3>
-                  </header>
-                  <p1>มีอุปกรณ์ในห้องพักครบในตัวทั้งตู้เย็น ตู้เสื้อผ้า ทีวี เครื่องซักผ้า ฟรีWiFi ห้องพักราคาถูก.</p1>
-                  <a href="#" class="text-uppercase btn-primary tm-btn-primary">ข้อมูลเพิ่มเติม.</a>
+    <div class="container-fluid">
+      <div class="tm-section tm-section-pad tm-bg-gray" id="tm-section-4">
+        <div class="container">
+          <div class="row">
+            <div class="col-sm-12 col-md-12 col-lg-8 col-xl-8">
+              <h2>ค้นหาหอพัก</h2>
+              <input type="text" id="myInput" onkeyup="search()" placeholder="กรอกหอพักที่ต้องการค้นหา">
+              <div class="col-sm-12 col-md-12 col-lg-8 col-xl-8" id="Domitory_list">
+                <% for (let i = 0; i < dataDomitory.length; i++) { %>
+                <div class="Domitory" id="domitory<%= dataDomitory[i].domitory_id %>">
+                  <div class="card me-5" style="width: 42rem; margin: 20px;">
+                    <div class="card-body">
+                      <img src="/public/images_domitory/<%= dataDomitory[i].domitory_images %>" class="card-img-top">
+                      <p1 class="card-title" style="font-size: 20px; color: black;"><%= dataDomitory[i].domitory_name %></p1>
+                      <p class="card-text p"><%= dataDomitory[i].domitory_address %></p>
+                      <br>
+                      <button  class="text-uppercase btn-primary tm-btn-primary" onclick="showmodalDomitory(this)" data-toggle="modal" data-target="#Modal_Domi" data-User="<%= JSON.stringify(dataDomitory[i]) %>">ข้อมูลเพิ่มเติม.</button>
+                    </div>
+                  </div>
                 </div>
-              </article>
-            </div>
-            <%  } %>
-          </div>
-
-          <div class="col-sm-12 col-md-12 col-lg-4 col-xl-4 tm-recommended-container">
-            <div class="tm-bg-white">
-              <div class="tm-bg-primary tm-sidebar-pad">
-                <h3 class="tm-color-white tm-sidebar-title">หอพักแนะนำ</h3>
-                <p class="tm-color-white tm-margin-b-0 tm-font-light">หอพักที่ใช้งานเว็บไซต์เรา !</p>
+                <%  } %>
               </div>
-              <div class="tm-sidebar-pad-2">
-                <a href="#" class="media tm-media tm-recommended-item">
-                  <img src="img/tn-img-01.jpg" alt="Image">
-                  <div class="media-body tm-media-body tm-bg-gray">
-                    <h4 class="text-uppercase tm-font-semibold tm-sidebar-item-title">''</h4>
-                  </div>
-                </a>
-                <a href="#" class="media tm-media tm-recommended-item">
-                  <img src="img/tn-img-02.jpg" alt="Image">
-                  <div class="media-body tm-media-body tm-bg-gray">
-                    <h4 class="text-uppercase tm-font-semibold tm-sidebar-item-title">''</h4>
-                  </div>
-                </a>
-                <a href="#" class="media tm-media tm-recommended-item">
-                  <img src="img/tn-img-03.jpg" alt="Image">
-                  <div class="media-body tm-media-body tm-bg-gray">
-                    <h4 class="text-uppercase tm-font-semibold tm-sidebar-item-title">''</h4>
-                  </div>
-                </a>
-                <a href="#" class="media tm-media tm-recommended-item">
-                  <img src="img/tn-img-04.jpg" alt="Image">
-                  <div class="media-body tm-media-body tm-bg-gray">
-                    <h4 class="text-uppercase tm-font-semibold tm-sidebar-item-title">''</h4>
-                  </div>
-                </a>
+            </div>
+            <div class="col-sm-12 col-md-12 col-lg-4 col-xl-4 tm-recommended-container">
+              <div class="tm-bg-white">
+                <div class="tm-bg-primary tm-sidebar-pad">
+                  <h3 class="tm-color-white tm-sidebar-title">หอพักแนะนำ</h3>
+                  <p class="tm-color-white tm-margin-b-0 tm-font-light">หอพักที่ใช้งานเว็บไซต์เรา !</p>
+                </div>
+                <% for (let i = 0; i < dataDomitpry_limit.length; i++) { %>
+                <div class="tm-sidebar-pad-2">
+                  <a href="#domitory<%= dataDomitpry_limit[i].domitory_id  %>" class="media tm-media tm-recommended-item">
+                    <img src="/public/images_domitory/<%= dataDomitpry_limit[i].domitory_images %> " alt="Image" style="height: 70px;width: 70px;">
+                    <div class="media-body tm-media-body tm-bg-gray">
+                      <h4 class="text-uppercase tm-font-semibold tm-sidebar-item-title"><%= dataDomitpry_limit[i].domitory_name  %> </h4>
+                    </div>
+                  </a>
+                </div>
+                <% } %>
               </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <footer class="tm-bg-dark-blue">
-    <div class="container">
-      <div class="row">
-        <p class="col-sm-12 text-center tm-font-light tm-color-white p-4 tm-margin-b-0">
-          Copyright &copy; <span class="tm-current-year">2018</span> Your Company
+    <!-- โมดอลข้อมูล DOmi-->
+    <div class="modal fade bd-example-modal-lg" id="Modal_Domi" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">ข้อมูลหอพัก</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="card" style="width: 48rem;">
+              <div class="text-center" style="margin-top: 20px;">
+                <img class="card-img-top" id="domi_img" src="/public/images_domitory/" alt="Card image cap" style="width: 400px; height: 400px;">
+              </div>
+              <div class="card-body">
+                <h5 class="card-title">ชื่อหอพัก :</h5>
+                <div class="col-4" style="margin-left: -14px;">
+                  <div class="form-group">
+                    <p class="p" id="domi_name"></p>
+                  </div>
+                </div>
+                <h5 class="card-title">ที่อยู่หอพัก :</h5>
+                <div class="col-8" style="margin-left: -14px;">
+                  <div class="form-group">
+                    <p class="p" id="domi_address"></p>
+                  </div>
+                </div>
+                <h5 class="card-title">รายระเอียดหอพัก :</h5>
+                <div class="col-8" style="margin-left: -14px;">
+                  <div class="form-group">
+                    <p class="p" id="domi_description"></p>
+                  </div>
+                </div>
+                <h5 class="card-title">ติดต่อที่ :</h5>
+                <div class="col-8" style="margin-left: -14px;">
+                  <div class="form-group">
+                    <p class="p" id="domi_phone"></p>
+                    <p class="p" id="domi_email"></p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
 
-          - Design: <a rel="nofollow" href="https://www.tooplate.com" class="tm-color-primary tm-font-normal" target="_parent">Tooplate</a></p>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-danger" data-dismiss="modal" style="background-color: darkcyan;">ปิด</button>
+          </div>
+
+        </div>
       </div>
     </div>
-  </footer>
+    <footer class=" tm-bg-dark-blue">
+      <div class="container">
+        <div class="row">
+          <p class="col-sm-12 text-center tm-font-light tm-color-white p-4 tm-margin-b-0">
+            Copyright &copy; <span class="tm-current-year">2022</span> Hotel Center
+
+            - Design by: <a rel="nofollow" href="https://www.facebook.com/profile.php?id=100008831296272" class="tm-color-primary tm-font-normal" target="_parent">Tang</a></p>
+        </div>
+      </div>
+    </footer>
   </div>
 
   <%- include('./component/script.ejs') %>
@@ -116,7 +178,39 @@
 
 
 <script>
+  const search = () => {
+    const searchbox = document.getElementById("myInput").value.toUpperCase();
+    const domitory_list = document.getElementById("Domitory_list")
+    const domitory = document.querySelectorAll(".Domitory")
+    const Dname = domitory_list.getElementsByTagName("p1")
 
+    for (var i = 0; i < Dname.length; i++) {
+      let match = domitory[i].getElementsByTagName("p1")[0];
+
+      if (match) {
+        let textvalue = match.textContent || match.innerHTML
+
+        if (textvalue.toUpperCase().indexOf(searchbox) > -1) {
+          domitory[i].style.display = "";
+        } else {
+          domitory[i].style.display = "none";
+        }
+      }
+    }
+  }
+  //------------------------------------------------------โชว์ข้อมูลหอพัก-----------------------------------------------------
+  function showmodalDomitory(modal) {
+
+    let user = modal.getAttribute("data-User")
+    const jsonUser = JSON.parse(user)
+    document.getElementById("domi_img").src = "/public/images_domitory/" + jsonUser.domitory_images
+    document.getElementById("domi_name").innerHTML = jsonUser.domitory_name
+    document.getElementById("domi_address").innerHTML = jsonUser.domitory_address
+    document.getElementById("domi_description").innerHTML = jsonUser.domitory_description
+    document.getElementById("domi_phone").innerHTML = 'เบอร์โทร : ' + jsonUser.user_tel
+    document.getElementById("domi_email").innerHTML = 'อีเมล์ : ' + jsonUser.user_email
+
+  }
 </script>
 
 </html>

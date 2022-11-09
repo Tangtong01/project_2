@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<%- include('../component/header.ejs',{
+        title:"จัดการโปรไฟล์"
+      }) %>
+
+<body>
+  <div class="tm-main-content" id="top">
+
+    <%- include('../component/navbarNew.ejs',{
+        checklogin: checklogin,
+        role:CheckRole,
+        route: route
+      }) %>
+    <!-- END TOP BAR -->
+
+    <!-- blank Page -->
+    <div class="text-center" style="margin-top: 75px;">
+      <h1>ข้อมูลโปรไฟล์</h1>
+    </div>
+    <div class=" row d-flex justify-content-center">
+      <div class="card me-5" style="width: 70rem; margin: 20px;">
+        <div class="card-body">
+          <div class="text-center">
+            <img src="/public/img/Admin-Profile-Vector-PNG-Clipart.png" class="card-img-top " style="height: 400px; width: 400px;">
+          </div>
+          <br>
+          <div>
+            <p class="card-text" id="user_name" style="font-size: 18px; color: cornflowerblue;">ชื่อ-นามสกุล : <%= dataUser.firstname  +' '+dataUser.surname %></p>
+            <p class="card-text" id="user_user" style="font-size: 18px; color: cornflowerblue;">ชื่อผู้ใช้ : <%= dataUser.username %> </p>
+            <p class="card-text" id="user_email" style="font-size: 18px; color: cornflowerblue;">อีเมล์ : <%= dataUser.user_email %></p>
+            <p class="card-text" id="user_phone" style="font-size: 18px; color: cornflowerblue;">เบอร์โทร : <%= dataUser.user_tel %></p>
+            <p class="card-text" id="user_address" style="font-size: 18px; color: cornflowerblue;">ที่อยู่ : <%= dataUser.user_address %></p>
+            <p class="card-text" id="user_address" style="font-size: 18px; color: cornflowerblue;">บัญชีธนาคาร : <%= dataUser.bank_name %></p>
+            <p class="card-text" id="user_address" style="font-size: 18px; color: cornflowerblue;">หมายเลขบัญชี : <%= dataUser.bank_number %></p>
+          </div>
+          <br>
+          <button type="button" class="btn btn-warning" onclick="showmodalUpdate(this)" data-toggle="modal" data-target="#Modal_Update" data-User="<%= JSON.stringify(dataUser) %>"><i class="fas fa-user"></i> แก้ไขข้อมูลส่วนตัว</button>
+          <% if (dataUser.bank_id == null)  { %>
+          <button type="button" class="btn btn-secondary" style="background-color: blueviolet;" data-toggle="modal" data-target="#Modal_Bank" data-User="<%= JSON.stringify(dataUser) %>"><i class="fas fa-money-check-alt"></i> เพิ่มบัญชีธนาคาร</button>
+          <% } else { %>
+          <button type="button" class="btn btn-warning" onclick="showmodalUpdateฺBank(this)" data-toggle="modal" data-target="#Modal_UpdateBank" data-User="<%= JSON.stringify(dataUser) %>"><i class="fas fa-money-check-alt"></i> แก้ไขข้อมูลบัญชีธนาคาร</button>
+          <% } %>
+        </div>
+      </div>
+    </div>
+    <!-- โมดอลข้อมูล UpdateUser-->
+    <div class="modal fade bd-example-modal-lg" id="Modal_Update" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">ข้อมูลผู้ใช้งาน</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="card" style="width: 48rem;">
+              <div class="text-center" style="margin-top: 20px;">
+                <img id="domi_img" src="/public/img/Admin-Profile-Vector-PNG-Clipart.png" alt="Card image cap" class="card-img-top" style="width: 250px; height: 250px;">
+              </div>
+              <div class="card-body">
+                <div class="row">
+                  <div class="col-4">
+                    <div class="form-group">
+                      <label for="exampleInputPassword1" style="font-size: 20px;">ชื่อจริง</label>
+                      <input type="text" class="form-control" id="EditFirstname" placeholder="กรอกชื่อจริง">
+                    </div>
+                  </div>
+                  <div class="col-4">
+                    <div class="form-group">
+                      <label for="exampleInputPassword1" style="font-size: 20px;">นามสกุล</label>
+                      <input type="text" class="form-control" id="EditSurname" placeholder="กรอกนามสกุล">
+                    </div>
+                  </div>
+                  <div class="col-4">
+                    <div class="form-group">
+                      <label for="exampleInputPassword1" style="font-size: 20px;">ชื่อผู้ใช้</label>
+                      <input type="text" class="form-control" id="Editusername" placeholder="กรอกชื่อผู้ใช้">
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-4">
+                    <div class="form-group">
+                      <label for="exampleInputPassword1" style="font-size: 20px;">รหัสผ่าน</label>
+                      <input type="password" class="form-control" id="Editpassword" placeholder="กรอกรหัสผ่าน">
+                    </div>
+                  </div>
+                  <div class="col-4">
+                    <div class="form-group">
+                      <label for="exampleInputEmail1" style="font-size: 20px;">ที่อยู่อีเมล์</label>
+                      <input type="email" class="form-control" id="EditEmail" aria-describedby="emailHelp" placeholder="กรอกอีเมล์">
+                    </div>
+                  </div>
+                  <div class="col-4">
+                    <div class="form-group">
+                      <label for="exampleInputEmail1" style="font-size: 20px;">เบอร์โทร</label>
+                      <input type="text" class="form-control" id="EditPhonenumber" placeholder="กรอกเบอร์โทร">
+                      <input type="hidden" class="form-control" aria-describedby=" basic-addon1" id="Role_id">
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-8">
+                    <div class="form-group">
+                      <label for="exampleInputEmail1" style="font-size: 20px;">ที่อยู่</label>
+                      <textarea type="text" class="form-control" id="EditAddress" placeholder="กรอกที่อยู่"></textarea>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="modal-footer">
+            <input type="button" class="btn btn-warning" style="background-color: blueviolet; color: white;" value="แก้ไขข้อมูล" onclick="UpdateUser()" />
+            <button type="button" class="btn btn-danger" data-dismiss="modal" style="background-color: darkcyan;">ปิด</button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- โมดอลข้อมูล AddBank-->
+    <div class="modal fade bd-example-modal-lg" id="Modal_Bank" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">ข้อมูลบัญชีธนาคาร</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="card" style="width: 48rem;">
+              <div class="text-center" style="margin-top: 20px;">
+                <img id="domi_img" src="/public/img/Admin-Profile-Vector-PNG-Clipart.png" alt="Card image cap" class="card-img-top" style="width: 250px; height: 250px;">
+              </div>
+              <div class="card-body">
+                <h5 class="card-title">เพิ่มบัญชีธนาคาร :</h5>
+                <div class="col-4" style="margin-left: -14px;">
+                  <div class="form-group">
+                    <select class="form-select" id="bank_name" style="height: 44.9px;" aria-label="Default select example">
+                      <option selected>เลือกบัญชีธนาคาร</option>
+                      <option value="ธนาคารกรุงเทพ">ธนาคารกรุงเทพ</option>
+                      <option value="ธนาคารกสิกรไทย">ธนาคารกสิกรไทย</option>
+                      <option value="ธนาคารกรุงไทย">ธนาคารกรุงไทย</option>
+                      <option value="ธนาคารทหารไทยธนชาต">ธนาคารทหารไทยธนชาต</option>
+                      <option value="ธนาคารไทยพาณิชย์">ธนาคารไทยพาณิชย์</option>
+                      <option value="ธนาคารกรุงศรีอยุธยา">ธนาคารกรุงศรีอยุธยา</option>
+                      <option value="ธนาคารซีไอเอ็มบีไทย">ธนาคารซีไอเอ็มบีไทย</option>
+                      <option value="ธนาคารออมสิน">ธนาคารออมสิน</option>
+                    </select>
+                  </div>
+                </div>
+                <h5 class="card-title">หมายเลขบัญชี :</h5>
+                <div class="col-4" style="margin-left: -14px;">
+                  <div class="form-group">
+                    <input type="text" class="form-control" id="bank_number" placeholder="กรอกหมายเลขบัญชี">
+                    <input type="hidden" id="user_id" value="<%= dataUser.USER_ID %>">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="modal-footer">
+            <input type="button" class="btn btn-warning" style="background-color: blueviolet; color: white;" value="บันทึกข้อมูล" onclick="AddBank()" />
+            <button type="button" class="btn btn-danger" data-dismiss="modal" style="background-color: darkcyan;">ปิด</button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- โมดอลข้อมูล UpdateBank-->
+    <div class="modal fade bd-example-modal-lg" id="Modal_UpdateBank" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">ข้อมูลบัญชีธนาคาร</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="card" style="width: 48rem;">
+              <div class="text-center" style="margin-top: 20px;">
+                <img id="domi_img" src="/public/img/Admin-Profile-Vector-PNG-Clipart.png" alt="Card image cap" class="card-img-top" style="width: 250px; height: 250px;">
+              </div>
+              <div class="card-body">
+                <h5 class="card-title">เพิ่มบัญชีธนาคาร :</h5>
+                <div class="col-4" style="margin-left: -14px;">
+                  <div class="form-group">
+                    <select class="form-select" id="Editbank_name" style="height: 44.9px;" aria-label="Default select example">
+                      <option selected>เลือกบัญชีธนาคาร</option>
+                      <option value="ธนาคารกรุงเทพ">ธนาคารกรุงเทพ</option>
+                      <option value="ธนาคารกสิกรไทย">ธนาคารกสิกรไทย</option>
+                      <option value="ธนาคารกรุงไทย">ธนาคารกรุงไทย</option>
+                      <option value="ธนาคารทหารไทยธนชาต">ธนาคารทหารไทยธนชาต</option>
+                      <option value="ธนาคารไทยพาณิชย์">ธนาคารไทยพาณิชย์</option>
+                      <option value="ธนาคารกรุงศรีอยุธยา">ธนาคารกรุงศรีอยุธยา</option>
+                      <option value="ธนาคารซีไอเอ็มบีไทย">ธนาคารซีไอเอ็มบีไทย</option>
+                      <option value="ธนาคารออมสิน">ธนาคารออมสิน</option>
+                    </select>
+                  </div>
+                </div>
+                <h5 class="card-title">หมายเลขบัญชี :</h5>
+                <div class="col-4" style="margin-left: -14px;">
+                  <div class="form-group">
+                    <input type="text" class="form-control" id="Editbank_number" placeholder="กรอกหมายเลขบัญชี">
+                    <input type="hidden" id="Edituser_id" value="<%= dataUser.USER_ID %>">
+                    <input type="hidden" id="Editbank_id" value="<%= dataUser.bank_id %>">
+                    <input type="hidden" id="DEbank_id" value="<%= dataUser.bank_id %>">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="modal-footer">
+            <input type="button" class="btn btn-warning" style="background-color: blueviolet; color: white;" value="แก้ไขข้อมูล" onclick="UpdateBank()" />
+            <input type="button" class="btn btn-danger" value="ลบบัญชีธนาคาร" onclick="DeleteBank()" />
+            <button type="button" class="btn btn-danger" data-dismiss="modal" style="background-color: darkcyan;">ปิด</button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+
+
+  <footer class=" tm-bg-dark-blue">
+    <div class="container">
+      <div class="row">
+        <p class="col-sm-12 text-center tm-font-light tm-color-white p-4 tm-margin-b-0">
+          Copyright &copy; <span class="tm-current-year">2022</span> Hotel Center
+
+          - Design by: <a rel="nofollow" href="https://www.facebook.com/profile.php?id=100008831296272" class="tm-color-primary tm-font-normal" target="_parent">Tang</a></p>
+      </div>
+    </div>
+  </footer>
+  </div>
+
+  <%- include('../component/script.ejs') %>
+</body>
+
+
+<script>
+  function cc_format(value) {
+    var v = value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
+    if (v.length > 3)
+      v = [v.slice(0, 3), '-', v.slice(3)].join('');
+    if (v.length > 8)
+      v = [v.slice(0, 7), '-', v.slice(7)].join('');
+    if (v.length > 12)
+      v = [v.slice(0, 12), ' ', v.slice(12)].join('');
+    v = v.slice(0, 12);
+    return v;
+  }
+  onload = function() {
+    document.getElementById('EditPhonenumber').oninput = function() {
+      this.value = cc_format(this.value)
+    }
+  }
+
+  const normalize = elem => {
+    let value = elem.target.value;
+
+    const onlyNums = value.replace(/[^\d]/g, '');
+
+    if (onlyNums.length <= 3) {
+      return onlyNums;
+    } else if (onlyNums.length <= 9) {
+      return `${onlyNums.slice(0, 3)} ${onlyNums.slice(3)}`;
+    } else if (onlyNums.length <= 9) {
+      return `${onlyNums.slice(0, 3)} ${onlyNums.slice(3, 9)} ${onlyNums.slice(9, 10)}`;
+    }
+    return `${onlyNums.slice(0, 3)} ${onlyNums.slice(3, 9)} ${onlyNums.slice(9, 10)}
+ ${onlyNums.slice(10, 10)}`;
+
+  };
+
+  const input = document.getElementById('bank_number');
+  input.addEventListener('input', (e) => e.target.value = normalize(e));
+
+  const input2 = document.getElementById('Editbank_number');
+  input2.addEventListener('input', (e) => e.target.value = normalize(e));
+  // function cc_format1(value) {
+  //   var v = value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
+  //   if (v.length > 3)
+  //     v = [v.slice(0, 3), '-', v.slice(3)].join('');
+  //   if (v.length > 10)
+  //     v = [v.slice(0, 10), '-', v.slice(10)].join('');
+  //   if (v.length > 12)
+  //     v = [v.slice(0, 12), ' ', v.slice(12)].join('');
+  //   v = v.slice(0, 12);
+  //   return v;
+  // }
+  // onload1 = function() {
+  //   document.getElementById('bank_account').oninput1 = function() {
+  //     this.value = cc_format1(this.value)
+  //   }
+  // }
+
+  // onload = function() {
+  //   document.getElementById('Editbank_number').oninput = function() {
+  //     this.value = cc_format3(this.value)
+  //   }
+  // }
+
+  //---------------------------------โชว์ข้อมูลUSER-----------------------------------
+  function showmodalUpdate(modal) {
+    let user = modal.getAttribute("data-User")
+    const jsonUser = JSON.parse(user)
+    document.getElementById("EditFirstname").value = jsonUser.firstname
+    document.getElementById("EditSurname").value = jsonUser.surname
+    document.getElementById("Editusername").value = jsonUser.username
+    document.getElementById("Editpassword").value = jsonUser.password
+    document.getElementById("EditEmail").value = jsonUser.user_email
+    document.getElementById("EditPhonenumber").value = jsonUser.user_tel
+    document.getElementById("EditAddress").value = jsonUser.user_address
+    document.getElementById("Role_id").value = jsonUser.role_id
+    console.log(jsonUser)
+    UserId = jsonUser.USER_ID
+  }
+
+  //---------------------------------แก้ไขข้อมูลUSER-----------------------------------
+  async function UpdateUser() {
+    console.log(UserId);
+    let firstname = document.getElementById("EditFirstname").value;
+    let surname = document.getElementById("EditSurname").value;
+    let username = document.getElementById("Editusername").value;
+    let password = document.getElementById("Editpassword").value;
+    let email = document.getElementById("EditEmail").value;
+    let address = document.getElementById("EditAddress").value;
+    let phone_number = document.getElementById("EditPhonenumber").value;
+    let role_id = document.getElementById("Role_id").value;
+    console.log(firstname);
+    console.log(surname);
+    console.log(username);
+    console.log(password);
+    console.log(email);
+    console.log(address);
+    console.log(phone_number);
+    if (!firstname || !surname || !username || !password || !email || !address || !phone_number) {
+      console.log("if")
+      swal.fire({
+        position: 'center',
+        icon: 'info',
+        title: 'กรุณากรอกข้อมูลให้ครบ',
+        time: 2000
+      })
+    } else {
+      console.log("else")
+      const Data = {
+        "UserId": UserId,
+        "Firstname": firstname,
+        "Surname": surname,
+        "username": username,
+        "password": password,
+        "Email": email,
+        "Address": address,
+        "Phonenumber": phone_number,
+        "Role_id": role_id
+      }
+      console.log(Data);
+
+      const url = location.origin + "/apiowner/UpdateUser";
+      $.ajax({
+        type: 'POST',
+        url: url,
+        data: JSON.stringify(Data),
+        dataType: 'json',
+        contentType: "application/json; charset=utf-8",
+        success: function(data, status) {
+          console.log("hello world", data)
+          swal.fire({
+            position: 'center',
+            icon: 'success',
+            title: 'แก้ไขข้อมูลสำเร็จ',
+            time: 2000
+          }).then(() => {
+            location.reload()
+          });
+        },
+        error: function(jqXhr, textStatus, errorThrow) {
+          console.log(jqXhr);
+          const msg = (() => {
+            switch (jqXhr.responseJSON.message) {
+              case "user_duplicated":
+                return "ชื่อผู้ใช้งานถูกใช้ไปแล้ว";
+            }
+          })();
+          swal.fire({
+            position: 'center',
+            icon: 'error',
+            title: msg,
+            time: 2000
+          })
+        }
+      })
+
+    }
+  }
+
+  //---------------------------------เพิ่มข้อมูลธนาคาร----------------------------------------
+  async function AddBank() {
+    let bank_name = document.getElementById("bank_name").value;
+    let bank_number = document.getElementById("bank_number").value;
+    let user_id = document.getElementById("user_id").value;
+
+    if (bank_name == '' || bank_number == '' || user_id == '') {
+      swal.fire({
+        position: 'center',
+        icon: 'info',
+        title: 'กรุณากรอกข้อมูลให้ครบ',
+        time: 2000
+      })
+      return;
+    }
+    const Data = {
+      "bank_name": bank_name,
+      "bank_number": bank_number,
+      "user_id": user_id,
+    }
+    console.log(Data);
+    const url = location.origin + "/apiowner/AddBank";
+    $.ajax({
+      type: 'POST',
+      url: url,
+      data: JSON.stringify(Data),
+      dataType: 'json',
+      contentType: "application/json; charset=utf-8",
+      success: function(data, status) {
+        console.log("hello world", data)
+        swal.fire({
+          position: 'center',
+          icon: 'success',
+          title: 'เพิ่มบัญชีธนาคารสำเร็จ',
+          time: 2000
+        }).then(() => {
+          location.reload()
+        });
+      },
+      error: function(jqXhr, textStatus, errorThrow) {
+        const msg = (() => {
+          switch (jqXhr.responseJSON.message) {
+            case "duplicated":
+              return "มีหมายเลขห้องพักนี้แล้ว";
+          }
+        })();
+        console.log(msg);
+        swal.fire({
+          position: 'center',
+          icon: 'error',
+          title: msg,
+          time: 2000
+        })
+      }
+    })
+
+  }
+
+  //---------------------------------โชว์ข้อมูลธนาคาร-----------------------------------
+  function showmodalUpdateฺBank(modal) {
+    let user = modal.getAttribute("data-User")
+    const jsonUser = JSON.parse(user)
+    document.getElementById("Editbank_name").value = jsonUser.bank_name
+    document.getElementById("Editbank_number").value = jsonUser.bank_number
+    document.getElementById("Editbank_id").value = jsonUser.bank_id
+    document.getElementById("DEbank_id").value = jsonUser.bank_id
+
+  }
+
+  //---------------------------------แก้ไขข้อมูลธนาคาร-----------------------------------
+  async function UpdateBank() {
+    // console.log(Room_id);
+    let bank_name = document.getElementById("Editbank_name").value;
+    let bank_number = document.getElementById("Editbank_number").value;
+    let bank_id = document.getElementById("Editbank_id").value;
+
+    console.log("bank_name", bank_name);
+    console.log("bank_number", bank_number);
+    console.log("bank_id", bank_id);
+    // console.log("ราคาห้อง", room_price);
+    // console.log("ประเภทห้อง", room_type);
+    // console.log("ID หอพัก", domitory_id);
+    if (!bank_name || !bank_number || !bank_id) {
+      //   console.log("if")
+      swal.fire({
+        position: 'center',
+        icon: 'info',
+        title: 'กรุณากรอกข้อมูลให้ครบ',
+        time: 2000
+      })
+    } else {
+      //   console.log("else")
+      const Data = {
+        "bank_name": bank_name,
+        "bank_number": bank_number,
+        "bank_id": bank_id,
+      }
+      console.log(Data);
+      const url = location.origin + "/apiowner/UpdateBank";
+      $.ajax({
+        type: 'POST',
+        url: url,
+        data: JSON.stringify(Data),
+        dataType: 'json',
+        contentType: "application/json; charset=utf-8",
+        success: function(data, status) {
+          console.log("hello world", data)
+          swal.fire({
+            position: 'center',
+            icon: 'success',
+            title: 'แก้ไขข้อมูลธนาคารสำเร็จ',
+            time: 2000
+          }).then(() => {
+            location.reload()
+          });
+        },
+        error: function(jqXhr, textStatus, errorThrow) {
+          swal.fire({
+            position: 'center',
+            icon: 'error',
+            title: 'เกิดข้อผิดพลาด!',
+            time: 2000
+          })
+        }
+      })
+
+    }
+  }
+
+  //---------------------------------ลบข้อมูลห้องพัก-----------------------------------
+  async function DeleteBank() {
+    let bank_id = document.getElementById("DEbank_id").value;
+    Swal.fire({
+      title: 'แน่ใจแล้วหรือ ?',
+      text: "คุณต้องการลบบัญชีธนาคารหรือไม่ !",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#F10724',
+      cancelButtonColor: '#darkcyan',
+      cancelButtonText: 'ยกเลิก',
+      confirmButtonText: 'ใช่ต้องการลบ !'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const Data = {
+          bank_id: bank_id
+        }
+        const url = location.origin + '/apiowner/DeleteBank/';
+        $.ajax({
+          type: 'POST',
+          url: url,
+          data: JSON.stringify(Data),
+          dataType: 'json',
+          contentType: "application/json; charset=utf-8",
+          success: function(data, status) {
+            if (data.message == "DeleteBank") {
+              Swal.fire({
+                position: 'center',
+                icon: 'success',
+                title: 'ลบข้อมูลธนาคารสำเร็จ',
+                showConfirmButton: true,
+              }).then(() => {
+                location.reload();
+              })
+            }
+          },
+          error: function(jqXhr, textStatus, errorThrow) {
+            swal.fire({
+              position: 'center',
+              icon: 'error',
+              title: 'เกิดข้อผิดพลาด!',
+              time: 2000
+            });
+          }
+        })
+      }
+    })
+  }
+</script>
+
+</html>

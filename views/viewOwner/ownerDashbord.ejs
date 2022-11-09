@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<%- include('../component/header.ejs',{
+        title:"แผงควบคุม"
+      }) %>
+<style>
+  .sidebar {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 100;
+    padding: 90px 0 0;
+    box-shadow: inset -1px 0 0 rgba(0, 0, 0, .1);
+    z-index: 99;
+  }
+
+  @media (max-width: 767.98px) {
+    .sidebar {
+      top: 11.5rem;
+      padding: 0;
+    }
+  }
+
+  .navbar {
+    box-shadow: inset 0 -1px 0 rgba(0, 0, 0, .1);
+  }
+
+  @media (min-width: 767.98px) {
+    .navbar {
+      top: 0;
+      position: sticky;
+      z-index: 999;
+    }
+  }
+
+  .sidebar .nav-link {
+    color: #333;
+  }
+
+  .sidebar .nav-link.active {
+    color: #0d6efd;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  #myInput {
+    background-image: url('https://www.w3schools.com/css/searchicon.png');
+    background-position: 10px 10px;
+    background-repeat: no-repeat;
+    width: 50%;
+    font-size: 16px;
+    padding: 12px 20px 12px 40px;
+    border: 1px solid #ddd;
+    margin-bottom: 12px;
+  }
+
+  #myTable {
+    border-collapse: collapse;
+    width: 100%;
+    border: 1px solid #ddd;
+    font-size: 16px;
+  }
+
+  #myTable th,
+  #myTable td {
+    text-align: left;
+    padding: 12px;
+  }
+
+  #myTable tr {
+    border-bottom: 1px solid #ddd;
+  }
+
+  #myTable tr.header,
+  #myTable tr:hover {
+    background-color: #f1f1f1;
+  }
+
+  .p {
+    font-size: 20px;
+    color: #333;
+  }
+</style>
+
+
+<body>
+  <div class="tm-main-content" id="top">
+
+    <%- include('../component/navbarNew.ejs',{
+        checklogin: checklogin,
+        role:CheckRole,
+        route: route
+      }) %>
+    <!-- END TOP BAR -->
+
+    <!-- blank Page -->
+    <div class="container-fluid">
+      <div class="row">
+        <main class="col-md-9 ml-sm-auto col-lg-12 px-md-4 py-4">
+          <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+              <li class="breadcrumb-item"><a href="#">Home</a></li>
+              <li class="breadcrumb-item active" aria-current="page">Overview</li>
+            </ol>
+          </nav>
+          <h1 class="h2">Dashboard</h1>
+          <p class="p" style="font-size: 20px;">ข้อมูลการสรุปยอดต่างๆ ภายในระบบหอพัก </p>
+          <div class="row my-4">
+            <div class="col-12 col-md-6 col-lg-4 mb-4 mb-lg-0">
+              <div class="card">
+                <h5 class="card-header" style="background-color: #CD6155; color: white;">จำนวนผู้เช่า</h5>
+                <div class="card-body">
+                  <h5 class="card-title">ทั้งหมด : <%= dataCountuser[0].Count_users_role_3 %> คน</h5>
+                  <p class="card-text p">ประจำวัน : <%= CountDay_users[0].Count_users_role_3  %> คน</p>
+                  <p class="card-text text p ">ประจำเดือน : <%= CountMonth_users[0].Count_users_role_3  %> คน</p>
+                  <p class="card-text text p ">ประจำปี : <%= CountYear_users[0].Count_users_role_3  %> คน</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-md-6 mb-4 mb-lg-0 col-lg-4">
+              <div class="card">
+                <h5 class="card-header" style="background-color: #CD6155; color: white;">ห้องเช่าที่ว่าง</h5>
+                <div class="card-body">
+                  <h5 class="card-title">ทั้งหมด : <%= CountEmptyAll_room[0].CountRoomEmty %> ห้อง</h5>
+                  <p class="card-text p">ประจำวัน : <%= CountDay_room[0].CountRoomEmty %> ห้อง</p>
+                  <p class="card-text text p ">ประจำเดือน : <%= CountMonth_room[0].CountRoomEmty %> ห้อง</p>
+                  <p class="card-text text p ">ประจำปี : <%= CountYear_room[0].CountRoomEmty %> ห้อง</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-md-6 mb-4 mb-lg-0 col-lg-4">
+              <div class="card">
+                <h5 class="card-header" style="background-color: #CD6155; color: white;">รายการรายรับ</h5>
+                <div class="card-body">
+                  <h5 class="card-title" id="sumpriceall">ทั้งหมด : <%= sumPriceAll %> บาท </h5>
+                  <p class="card-text p" id="sumpriceday">ประจำวัน : <%= SumPriceDay %> บาท</p>
+                  <p class="card-text text p " id="sumpricemonth">ประจำเดือน : <%= SumPriceMonth %> บาท</p>
+                  <p class="card-text text p " id="sumpriceyear">ประจำปี : <%= SumPriceYear %> บาท</p>
+                </div>
+              </div>
+            </div>
+
+          </div>
+          <div class="row my-4">
+            <div class="col-12 col-md-6 mb-4 mb-lg-0 col-lg-4">
+              <div class="card">
+                <h5 class="card-header" style="background-color: #CD6155; color: white;">รายการแจ้งซ่อม</h5>
+                <div class="card-body">
+                  <h5 class="card-title">ทั้งหมด : <%= CountAll_repair[0].CountRepair  %> ครั้ง</h5>
+                  <p class="card-text p">ประจำวัน : <%= CountDay_repair[0].CountRepair  %> ครั้ง</p>
+                  <p class="card-text text p ">ประจำเดือน : <%= CountMonth_repair[0].CountRepair  %> ครั้ง</p>
+                  <p class="card-text text p ">ประจำปี : <%= CountYear_repair[0].CountRepair  %> ครั้ง</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-md-6 mb-4 mb-lg-0 col-lg-4">
+              <div class="card">
+                <h5 class="card-header" style="background-color: #CD6155; color: white;">รายการชำระค่าใช้จ่าย(บิล)</h5>
+                <div class="card-body">
+                  <h5 class="card-title">ทั้งหมด : <%= CountAll_paymentbill[0].CountPayment_Bill %> บิล</h5>
+                  <p class="card-text p">ประจำวัน : <%= CountDay_paymentbill[0].CountPayment_Bill %> บิล</p>
+                  <p class="card-text text p ">ประจำเดือน : <%= CountMonth_paymentbill[0].CountPayment_Bill %> บิล</p>
+                  <p class="card-text text p ">ประจำปี : <%= CountYear_paymentbill[0].CountPayment_Bill %> บิล</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-md-6 mb-4 mb-lg-0 col-lg-4">
+              <div class="card">
+                <h5 class="card-header" style="background-color: #CD6155; color: white;">รายการชำระค่าใช้จ่าย(ค่าอุปกรณ์)</h5>
+                <div class="card-body">
+                  <h5 class="card-title">ทั้งหมด : <%= CountAll_paymentrepair[0].CountPayment_repair %> บิล</h5>
+                  <p class="card-text p">ประจำวัน : <%= CountDay_paymentrepair[0].CountPayment_repair %> บิล</p>
+                  <p class="card-text text p ">ประจำเดือน : <%= CountMonth_paymentrepair[0].CountPayment_repair %> บิล</p>
+                  <p class="card-text text p ">ประจำปี : <%= CountYear_paymentrepair[0].CountPayment_repair %> บิล</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-12 col-xl-12 mb-4 mb-lg-0">
+              <div class="card">
+                <h5 class="card-header" style="background-color: #CD6155; color: white;">รายการข้อมูลการเช่าปัจจุบัน</h5>
+                <div class="card-body">
+                  <div class="table-responsive">
+                    <table class="table" id="myTable">
+                      <thead>
+                        <tr class="header" style="background-color: #CD6155; color: white;">
+                          <th scope="col">ลำดับ</th>
+                          <th scope="col">หมายเลขห้อง</th>
+                          <th scope="col">ผู้เช่า</th>
+                          <th scope="col">วันที่ทำสัญญา</th>
+                          <th scope="col">วันหมดอายุสัญญา</th>
+                          <th scope="col">เบอร์โทร</th>
+                        </tr>
+                      </thead>
+                      <% for (let i = 0; i < dataDeposit.length; i++) { %>
+                      <tbody>
+                        <tr>
+                          <th scope="row"><%= i+1 %></th>
+                          <td><%= dataDeposit[i].room_number %> </td>
+                          <td><%= dataDeposit[i].firstname %></td>
+                          <td><%= dataDeposit[i].Deposit_date %></td>
+                          <td><%= dataDeposit[i].Deposit_end_date %></td>
+                          <td><%= dataDeposit[i].user_tel %></td>
+                        </tr>
+                      </tbody>
+                      <%  } %>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+
+
+    <footer class=" tm-bg-dark-blue">
+      <div class="container">
+        <div class="row">
+          <p class="col-sm-12 text-center tm-font-light tm-color-white p-4 tm-margin-b-0">
+            Copyright &copy; <span class="tm-current-year">2022</span> Hotel Center
+
+            - Design by: <a rel="nofollow" href="https://www.facebook.com/profile.php?id=100008831296272" class="tm-color-primary tm-font-normal" target="_parent">Tang</a></p>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <%- include('../component/script.ejs') %>
+</body>
+
+
+<script>
+  $(document).ready(function() {
+    $('#myTable').DataTable();
+    let sumPrcieall = numberWithCommas(' <%= sumPriceAll %>')
+    document.getElementById("sumpriceall").innerHTML = "ทั้งหมด :" + '' + sumPrcieall + ' ' + "บาท"
+    let sumPrcieday = numberWithCommas(' <%= SumPriceDay %>')
+    document.getElementById("sumpriceday").innerHTML = "ประจำวัน :" + '' + sumPrcieday + ' ' + "บาท"
+    let sumPrciemonth = numberWithCommas(' <%= SumPriceMonth %>')
+    document.getElementById("sumpricemonth").innerHTML = "ประจำเดือน :" + '' + sumPrciemonth + ' ' + "บาท"
+    let sumPrcieyear = numberWithCommas(' <%= SumPriceYear %>')
+    document.getElementById("sumpriceyear").innerHTML = "ประจำปี :" + '' + sumPrcieyear + ' ' + "บาท"
+    // console.log(sumPrcieall);
+  });
+
+  function numberWithCommas(x) {
+    return x.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
+  }
+
+  function test(x, expect) {
+    const result = numberWithCommas(x);
+    const pass = result === expect;
+    console.log(`${pass ? "✓" : "ERROR ====>"} ${x} => ${result}`);
+    return pass;
+  }
+
+  let failures = 0;
+  failures += !test(0, "0");
+  failures += !test(100, "100");
+  failures += !test(1000, "1,000");
+  failures += !test(10000, "10,000");
+  failures += !test(100000, "100,000");
+  failures += !test(1000000, "1,000,000");
+  failures += !test(10000000, "10,000,000");
+  if (failures) {
+    console.log(`${failures} test(s) failed`);
+  } else {
+    console.log("All tests passed");
+  }
+</script>
+
+</html>

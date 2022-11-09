@@ -1,6 +1,43 @@
 <!DOCTYPE html>
 <html lang="en">
+<style>
+  * {
+    box-sizing: border-box;
+  }
 
+  #myInput {
+    background-image: url('https://www.w3schools.com/css/searchicon.png');
+    background-position: 10px 10px;
+    background-repeat: no-repeat;
+    width: 50%;
+    font-size: 16px;
+    padding: 12px 20px 12px 40px;
+    border: 1px solid #ddd;
+    margin-bottom: 12px;
+  }
+
+  #myTable {
+    border-collapse: collapse;
+    width: 100%;
+    border: 1px solid #ddd;
+    font-size: 18px;
+  }
+
+  #myTable th,
+  #myTable td {
+    text-align: left;
+    padding: 12px;
+  }
+
+  #myTable tr {
+    border-bottom: 1px solid #ddd;
+  }
+
+  #myTable tr.header,
+  #myTable tr:hover {
+    background-color: #f1f1f1;
+  }
+</style>
 <%- include('../component/header.ejs',{
         title:"จัดการบิล"
       }) %>
@@ -16,32 +53,34 @@
     <!-- END TOP BAR -->
 
     <!-- blank Page -->
-    <div class="container-fluid " style="margin-top: 65px;">
-      <div class=" container-fluid " style=" margin-top: 65px;">
-        <div class=" row">
+    <div class=" container-fluid " style=" margin-top: 30px;;">
+      <main class="col-md-9 ml-sm-auto col-lg-12 px-md-4 py-4">
+        <div class=" row my-4">
           <div class="container-fluid ">
-            <div class=" row">
+            <div class=" row ">
               <div class="col-md-12">
-                <h4 class=" text-center">ตารางข้อมูลบิล</h4>
-                <div class=" row">
+                <h1 class=" text-center">ตารางข้อมูลบิล</h1>
+                <% if(dataDeposit_users_room.length == 0 ) { %>
+                <a href="/owner/deposit">
+                  <h1 class="d-flex justify-content-center">ไปเพิ่มข้อมูลการมัดจำก่อน</h1>
+                </a>
+                <% } else { %>
+                <!-- <h2>ค้นหาข้อมูลข้อมูลบิล</h2>
+                <input type="text" id="myInput" onkeyup="myFunction()" placeholder="กรอกชื่อผู้ใช้ที่ต้องการค้นหา" title="Type in a name"> -->
+                <div class=" row my-2">
                   <div class="col-md-12">
-                    <% if(dataDeposit_users_room.length == 0 ) { %>
-                    <a href="/owner/deposit">
-                      <h1 class="d-flex justify-content-center">ไปเพิ่มข้อมูลการมัดจำก่อน</h1>
-                    </a>
-                    <% } else { %>
-                    <table class="table table-bordered">
+                    <table class="table" id="myTable">
                       <thead>
-                        <tr>
-                          <th scope="col" class="text-center">ลำดับ</th>
-                          <th scope="col" class="text-center">ชื่อผู้ใช้</th>
-                          <th scope="col" class="text-center">หมายเลขห้อง</th>
-                          <th scope="col" class="text-center">ค่าห้อง</th>
-                          <th scope="col" class="text-center">ค่าน้ำ</th>
-                          <th scope="col" class="text-center">ค่าไฟ</th>
-                          <th scope="col" class="text-center">วันที่ออกบิล</th>
+                        <tr class="header" style="background-color: #CD6155; color: white;">
+                          <th scope="col">ลำดับ</th>
+                          <th scope="col">ชื่อผู้ใช้</th>
+                          <th scope="col">หมายเลขห้อง</th>
+                          <th scope="col">ค่าห้อง</th>
+                          <th scope="col">ค่าน้ำ</th>
+                          <th scope="col">ค่าไฟ</th>
+                          <th scope="col">วันที่ออกบิล</th>
                           <th scope="col" class="text-center">ออกบิล:
-                            <button type="button" class="btn btn-primary-bill" data-toggle="modal" onclick="showmodalAddroombill(this)" data-target="#Modal_AddRoomprice"><i class="fas fa-home" style="font-size: 14px;"></i></button>
+                            <button type="button" class="btn btn-primary-bill" data-toggle="modal" onclick="showmodalAddroombill(this)" data-target="#Modal_AddRoomprice" style="background-color: blueviolet;"><i class="fas fa-home" style="color: white;"></i></button>
                           </th>
                         </tr>
                       </thead>
@@ -78,18 +117,21 @@
                           <td> <%= dataBill[i].bBill_date  %> </td>
                           <td class="text-center">
                             <% if (dataBill[i].bill_status == 1 ) { %>
-                            <h5>ชำระเงินแล้ว</h5>
+                            <h5 style="color: red;" class="blink">รอตรวจสอบ!!</h5>
+
+                            <%  } else if(dataBill[i].bill_status == 2 ) { %>
+                            <h5 style="color: chartreuse;">ชำระเงินแล้ว!!</h5>
                             <%  } else { %>
                             <% if (dataBill[i].roombill_id == null) { %>
-                            <button type="button" class="btn btn-primary-bill" data-toggle="modal" onclick="showmodalAddroombill(this)" data-target="#Modal_AddRoomprice" data-User="<%= JSON.stringify(dataBill[i]) %>"><i class="fas fa-home" style="font-size: 14px;"></i></button>
+                            <button type="button" class="btn btn-success" data-toggle="modal" onclick="showmodalAddroombill(this)" data-target="#Modal_AddRoomprice" data-User="<%= JSON.stringify(dataBill[i]) %>" style="background-color: #CD6155;"><i class="fas fa-home"></i></button>
                             <% } else { %>
 
-                            <button type="button" class="btn btn-primary-bill" data-toggle="modal" onclick="showmodalUpdateroombill(this)" data-target="#Modal_UpdateRoomprice" data-User="<%= JSON.stringify(dataBill[i]) %>"><i class="fas fa-home" style="font-size: 14px;"> แก้ไขบิล</i></button>
+                            <button type="button" class="btn btn-success" data-toggle="modal" onclick="showmodalUpdateroombill(this)" data-target="#Modal_UpdateRoomprice" data-User="<%= JSON.stringify(dataBill[i]) %>" style="background-color: #CD6155;"><i class="fas fa-home"> แก้ไขบิล</i></button>
 
                             <% if (dataBill[i].waterbill_id == null){ %>
                             <button type="button" class="btn btn-success" style="background-color: blue ;" data-toggle="modal" onclick="showmodalAddWaterbill(this)" data-target="#Modal_AddWaterprice" data-User="<%= JSON.stringify(dataBill[i]) %>"><i class="fas fa-tint"></i></button>
                             <%  } else { %>
-                            <button type="button" class="btn btn-success" style="background-color: blue ;" data-toggle="modal" onclick="showmodalUpdateWaterbill(this)" data-target="#Modal_UpdateWaterprice" data-User="<%= JSON.stringify(dataBill[i]) %>"><i class="fas fa-tint" style="font-size: 15px;"> แก้ไขบิล</i></button>
+                            <button type="button" class="btn btn-success" style="background-color: blue ;" data-toggle="modal" onclick="showmodalUpdateWaterbill(this)" data-target="#Modal_UpdateWaterprice" data-User="<%= JSON.stringify(dataBill[i]) %>"><i class="fas fa-tint"> แก้ไขบิล</i></button>
 
                             <% } %>
                             <% if (dataBill[i].powerbill_id == null) { %>
@@ -119,7 +161,7 @@
             </div>
           </div>
         </div>
-      </div>
+      </main>
     </div>
 
     <!------------------------------------------------------------------------------ จัดการบิลค่าห้อง ------------------------------------------------------------------>
@@ -140,21 +182,22 @@
                   <div class="form-group">
                     <label for="exampleInputPassword1">หมายเลขห้อง</label>
                     <div class="row" style="margin-left: 1px; ">
-                      <select class="form-select" id="RoomID" aria-label="Default select example" onchange="chackAddTenant()" style="height: 44.9px; width: 130px;">
+                      <select class="form-select" id="RoomID" aria-label="Default select example" onchange="chackAddTenant()">
                         <option selected>เลือกหมายเลขห้อง</option>
                         <% for (let i = 0; i < dataDeposit.length; i++) { %>
-                        <option value="<%= dataDeposit[i].room_id %>"><%= dataDeposit[i].room_id+"-"+dataDeposit[i].room_number %></option>
+                        <option value="<%= dataDeposit[i].room_id %>"><%= dataDeposit[i].room_number %></option>
                         <% } %>
                       </select>
                     </div>
                   </div>
                 </div>
-                <div class="col-6">
+                <div class="col-4" style="margin-left: 50px;">
                   <div class="form-group">
-                    <label for="exampleInputPassword1" style="margin-left: -50px;">วันที่ออกบิล :</label>
-                    <div class="row" style="margin-left: -50px;">
-                      <input type="date" id="roombill_date" style="width: 125px; height: 45px; font-size: 16px;">
-                      <input type="time" id="roombill_time" style="font-size: 16px;">
+                    <label for="exampleInputPassword1">วันที่ออกบิล :</label>
+                    <div class="row">
+                      <input type="date" id="roombill_date">
+                      <input type="time" id="roombill_time">
+                      <input type="hidden" id="bank_id" value="<%= dataUser[0].bank_id %> ">
                     </div>
                   </div>
                 </div>
@@ -194,12 +237,12 @@
                     <input type="text" disabled class="form-control" id="Editroom_number" placeholder="กรอกหมายเลขห้อง">
                   </div>
                 </div>
-                <div class="col-6">
+                <div class="col-4">
                   <div class="form-group">
                     <label for="exampleInputPassword1">วันที่ออกบิล :</label>
                     <div class="row" style="margin-left: 1px;">
-                      <input type="date" id="Editroombill_date" style="width: 125px; height: 45px; font-size: 16px;">
-                      <input type="time" id="Editroombill_time" style="font-size: 16px;">
+                      <input type="date" id="Editroombill_date">
+                      <input type="time" id="Editroombill_time">
                     </div>
                   </div>
                 </div>
@@ -238,12 +281,12 @@
                     <input type="text" disabled class="form-control" id="room_number_water" placeholder="กรอกหมายเลขห้อง">
                   </div>
                 </div>
-                <div class="col-6">
+                <div class="col-4">
                   <div class="form-group">
                     <label for="exampleInputPassword1">วันที่ออกบิล :</label>
                     <div class="row" style="margin-left: 1px;">
-                      <input type="date" class="text-lg-center" id="waterbill_date" style="width: 125px; height: 45px; font-size: 16px;">
-                      <input type="time" class="text-lg-center" id="waterbill_time" style="font-size: 16px;">
+                      <input type="date" id="waterbill_date">
+                      <input type="time" id="waterbill_time">
                     </div>
                   </div>
                 </div>
@@ -265,7 +308,7 @@
                 <div class="col-4">
                   <div class="form-group">
                     <label for="exampleInputPassword1">ราคารวม (บาท)</label>
-                    <input type="number" disabled class="form-control" id="water_price" placeholder="ราคารวม">
+                    <input type="text" disabled class="form-control" id="water_price" placeholder="ราคารวม">
                   </div>
                 </div>
               </div>
@@ -301,12 +344,12 @@
                     <input type="text" disabled class="form-control" id="Editroom_number_water" placeholder="กรอกหมายเลขห้อง">
                   </div>
                 </div>
-                <div class="col-6">
+                <div class="col-4">
                   <div class="form-group">
                     <label for="exampleInputPassword1">วันที่ออกบิล :</label>
                     <div class="row" style="margin-left: 1px;">
-                      <input type="date" class="text-lg-center" id="Editwaterbill_date" style="width: 125px; height: 45px; font-size: 16px;">
-                      <input type="time" class="text-lg-center" id="Editwaterbill_time" style="font-size: 16px;">
+                      <input type="date" id="Editwaterbill_date">
+                      <input type="time" id="Editwaterbill_time">
                     </div>
                   </div>
                 </div>
@@ -329,7 +372,7 @@
                 <div class="col-4">
                   <div class="form-group">
                     <label for="exampleInputPassword1">ราคารวม (บาท)</label>
-                    <input type="number" disabled class="form-control" id="Editwater_price" placeholder="ราคารวม">
+                    <input type="text" disabled class="form-control" id="Editwater_price" placeholder="ราคารวม">
                   </div>
                 </div>
               </div>
@@ -367,12 +410,12 @@
                     <input type="text" disabled class="form-control" id="room_number_power" placeholder="กรอกหมายเลขห้อง">
                   </div>
                 </div>
-                <div class="col-6">
+                <div class="col-4">
                   <div class="form-group">
                     <label for="exampleInputPassword1">วันที่ออกบิล :</label>
                     <div class="row" style="margin-left: 1px;">
-                      <input type="date" class="text-lg-center" id="powerbill_date" style="width: 125px; height: 45px; font-size: 16px;">
-                      <input type="time" class="text-lg-center" id="powerbill_time" style="font-size: 16px;">
+                      <input type="date" id="powerbill_date">
+                      <input type="time" id="powerbill_time">
                     </div>
                   </div>
                 </div>
@@ -394,7 +437,7 @@
                 <div class="col-4">
                   <div class="form-group">
                     <label for="exampleInputPassword1">ราคารวม (บาท)</label>
-                    <input type="number" disabled class="form-control" id="power_price" placeholder="ราคารวม">
+                    <input type="text" disabled class="form-control" id="power_price" placeholder="ราคารวม">
                   </div>
                 </div>
               </div>
@@ -430,12 +473,12 @@
                     <input type="text" disabled class="form-control" id="Editroom_number_power" placeholder="กรอกหมายเลขห้อง">
                   </div>
                 </div>
-                <div class="col-6">
+                <div class="col-4">
                   <div class="form-group">
                     <label for="exampleInputPassword1">วันที่ออกบิล :</label>
                     <div class="row" style="margin-left: 1px;">
-                      <input type="date" class="text-lg-center" id="EditPowerbill_date" style="width: 125px; height: 45px; font-size: 16px;">
-                      <input type="time" class="text-lg-center" id="EditPowerbill_time" style="font-size: 16px;">
+                      <input type="date" id="EditPowerbill_date">
+                      <input type="time" id="EditPowerbill_time">
                     </div>
                   </div>
                 </div>
@@ -458,7 +501,7 @@
                 <div class="col-4">
                   <div class="form-group">
                     <label for="exampleInputPassword1">ราคารวม (บาท)</label>
-                    <input type="number" disabled class="form-control" id="EditPower_price" placeholder="ราคารวม">
+                    <input type="text" disabled class="form-control" id="EditPower_price" placeholder="ราคารวม">
                   </div>
                 </div>
               </div>
@@ -474,13 +517,14 @@
         </div>
       </div>
     </div>
-    <footer class="tm-bg-dark-blue">
+
+    <footer class=" tm-bg-dark-blue">
       <div class="container">
         <div class="row">
           <p class="col-sm-12 text-center tm-font-light tm-color-white p-4 tm-margin-b-0">
-            Copyright &copy; <span class="tm-current-year">2018</span> Your Company
+            Copyright &copy; <span class="tm-current-year">2022</span> Hotel Center
 
-            - Design: <a rel="nofollow" href="https://www.tooplate.com" class="tm-color-primary tm-font-normal" target="_parent">Tooplate</a></p>
+            - Design by: <a rel="nofollow" href="https://www.facebook.com/profile.php?id=100008831296272" class="tm-color-primary tm-font-normal" target="_parent">Tang</a></p>
         </div>
       </div>
     </footer>
@@ -491,21 +535,39 @@
 
 
 <script>
-  //-------------------------------------------------------------------------จัดการบิลค่าห้อง----------------------------------------------------
-  // //---------------------------------โชว์ข้อมูลออกบิลค่าห้อง-----------------------------------
-  // function showmodalAddroombill(modal) {
-  //   let user = modal.getAttribute("data-User")
-  //   const jsonUser = JSON.parse(user)
-  //   document.getElementById("room_id").value = jsonUser.dep_room_id
-  //   document.getElementById("room_number").value = jsonUser.room_number
-  //   document.getElementById("bBill_date").value = jsonUser.bBill_date
-  //   console.log("------------วันออกบิล", jsonUser.bBill_date);
-  //   Room_id = jsonUser.room_id;
-  // }
+  $(document).ready(function() {
+    $('#myTable').DataTable();
+  });
 
+  function myFunction() {
+    var input, filter, table, tr, td, i, txtValue;
+    input = document.getElementById("myInput");
+    filter = input.value.toUpperCase();
+    table = document.getElementById("myTable");
+    tr = table.getElementsByTagName("tr");
+    for (i = 0; i < tr.length; i++) {
+      td = tr[i].getElementsByTagName("td")[0];
+      if (td) {
+        txtValue = td.textContent || td.innerText;
+        if (txtValue.toUpperCase().indexOf(filter) > -1) {
+          tr[i].style.display = "";
+        } else {
+          tr[i].style.display = "none";
+        }
+      }
+    }
+  }
+
+  function blink_text() {
+    $('.blink').fadeOut(500);
+    $('.blink').fadeIn(500);
+  }
+  setInterval(blink_text, 500);
+  //-------------------------------------------------------------------------จัดการบิลค่าห้อง----------------------------------------------------
   //---------------------------------ออกข้อมูลบิลค่าห้อง----------------------------------------
   async function AddRoomBill() {
     let room_id = document.getElementById("RoomID").value;
+    let bank_id = document.getElementById("bank_id").value;
     let roombill_date = document.getElementById("roombill_date").value;
     let roombill_time = document.getElementById("roombill_time").value;
 
@@ -516,6 +578,15 @@
         position: 'center',
         icon: 'info',
         title: 'กรุณากรอกข้อมูลให้ครบ',
+        time: 2000
+      })
+      return;
+    } else if (bank_id == '') {
+      swal.fire({
+        position: 'center',
+        icon: 'warning',
+        title: 'กรุณาเพิ่มบัญชีธนาคาร!',
+        text: "ไปยังเมนูจัดการโปรไฟล์!",
         time: 2000
       })
       return;

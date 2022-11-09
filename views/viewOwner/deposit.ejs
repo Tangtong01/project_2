@@ -1,8 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
+<style>
+  * {
+    box-sizing: border-box;
+  }
 
+  #myInput {
+    background-image: url('https://www.w3schools.com/css/searchicon.png');
+    background-position: 10px 10px;
+    background-repeat: no-repeat;
+    width: 50%;
+    font-size: 16px;
+    padding: 12px 20px 12px 40px;
+    border: 1px solid #ddd;
+    margin-bottom: 12px;
+  }
+
+  #myTable {
+    border-collapse: collapse;
+    width: 100%;
+    border: 1px solid #ddd;
+    font-size: 18px;
+  }
+
+  #myTable th,
+  #myTable td {
+    text-align: left;
+    padding: 12px;
+  }
+
+  #myTable tr {
+    border-bottom: 1px solid #ddd;
+  }
+
+  #myTable tr.header,
+  #myTable tr:hover {
+    background-color: #f1f1f1;
+  }
+</style>
 <%- include('../component/header.ejs',{
-        title:"จัดการการมัดจำ"
+        title:"จัดการการเช่า"
       }) %>
 
 <body>
@@ -16,72 +53,81 @@
     <!-- END TOP BAR -->
 
     <!-- blank Page -->
-    <div class="container-fluid " style="margin-top: 65px;">
-      <div class=" row">
-        <div class="container-fluid ">
-          <div class=" row">
-            <div class="col-md-12">
-              <h4 class=" text-center">ตารางข้อมูลการมัดจำ</h4>
-              <div class=" row">
-                <div class="col-md-12">
-                  <% if(dataTenant.length == 0 ) { %>
-                  <a href="/owner/tenantManagement">
-                    <h1 class="d-flex justify-content-center">ไปเพิ่มข้อมูลผู้เช่าก่อน</h1>
-                  </a>
-                  <% } else { %>
-                  <table class="table table-bordered">
-                    <thead>
-                      <tr>
-                        <th scope="col" class="text-center">ลำดับ</th>
-                        <th scope="col" class="text-center">รหัสห้อง</th>
-                        <th scope="col" class="text-center">รหัสผู้เช่าหอ</th>
-                        <th scope="col" class="text-center">ค่ามัดจำ</th>
-                        <th scope="col" class="text-center">วันที่มัดจำ </th>
-                        <th scope="col" class="text-center">วันที่หมดอายุ </th>
-                        <th scope="col">การทำงาน : <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#Modal_Add" style="background-color: blueviolet;"><i class="fas fa-plus-square"></i></button></th>
-                      </tr>
-                    </thead>
+    <div class="container-fluid " style="margin-top: 30px;">
+      <main class="col-md-9 ml-sm-auto col-lg-12 px-md-4 py-4">
+        <div class=" row my-4">
+          <div class="container-fluid ">
+            <div class=" row ">
+              <div class="col-md-12">
+                <h1 class=" text-center">ตารางข้อมูลการเช่า</h1>
+                <% if(dataTenant.length == 0 ) { %>
+                <a href="/owner/tenantManagement">
+                  <h1 class="d-flex justify-content-center">ไปเพิ่มข้อมูลผู้เช่าก่อน</h1>
+                </a>
+                <% } else { %>
+                <!-- <h2>ค้นหาข้อมูลการเช่า</h2>
+                <input type="text" id="myInput" onkeyup="myFunction()" placeholder="กรอกชื่อผู้เช่าที่ต้องการค้นหา" title="Type in a name"> -->
+                <div class=" row my-2">
+                  <div class="col-md-12">
+                    <table class="table" id="myTable">
+                      <thead>
+                        <tr class="header" style="background-color: #CD6155; color: white;">
+                          <th scope="col">ลำดับ</th>
+                          <th scope="col">หมายเลขห้อง</th>
+                          <th scope="col">ชื่อผู้เช่าหอ</th>
+                          <th scope="col">ค่าประกัน</th>
+                          <th scope="col">วันที่ทำสัญญา </th>
+                          <th scope="col">วันที่หมดอายุสัญญา </th>
+                          <th scope="col" class="text-center">การทำงาน : <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#Modal_Add" style="background-color: blueviolet;"><i class="fas fa-plus-square"></i></button></th>
+                        </tr>
+                      </thead>
 
-                    <tbody>
-                      <% if (dataDeposit.length == 0) { %>
-                      <tr>
-                        <td colspan="7" class="text-center">
-                          <h1>ไม่มีข้อมูล</h1>
-                        </td>
-                      </tr>
+                      <tbody>
+                        <% if (dataDeposit.length == 0) { %>
+                        <tr>
+                          <td colspan="7" class="text-center">
+                            <h1>ไม่มีข้อมูล</h1>
+                          </td>
+                        </tr>
 
-                      <% } else { %>
-                      <% for (let i = 0; i < dataDeposit.length; i++) { %>
-                      <tr>
-                        <th scope="row"><%= i+1 %></th>
-                        <td> <%= dataDeposit[i].room_id %> - <%= dataDeposit[i].room_number %> </td>
-                        <td> <%= dataDeposit[i].user_id %> - <%= dataDeposit[i].firstname %> </td>
-                        <td> <%= dataDeposit[i].deposit_price %> bath </td>
-                        <td> <%= dataDeposit[i].deposit_date %> </td>
-                        <td> <%= dataDeposit[i].deposit_end_date %> </td>
-                        <td>
-                          <button type="button" class="btn btn-warning" onclick="showmodalupdate(this)" data-toggle="modal" data-target="#Modal_Update" data-User="<%= JSON.stringify(dataDeposit[i]) %>"><i class="fas fa-edit"></i></button>
-                          <button type="button" class="btn btn-danger" onclick="DeleteDeposit('<%= dataDeposit[i].deposit_id  %>','<%= dataDeposit[i].room_id  %>')"><i class="far fa-trash-alt"></i></button>
-                        </td>
-                      </tr>
+                        <% } else { %>
+                        <% for (let i = 0; i < dataDeposit.length; i++) { %>
+                        <tr>
+                          <th scope="row"><%= i+1 %></th>
+                          <td> <%= dataDeposit[i].room_number %> </td>
+                          <td> <%= dataDeposit[i].firstname %> </td>
+                          <td> <%= dataDeposit[i].deposit_price %> บาท </td>
+                          <td> <%= dataDeposit[i].Deposit_date %> </td>
+                          <td> <%= dataDeposit[i].Deposit_end_date %> </td>
+                          <td class="text-center">
+                            <% if (dataDeposit[i].deposit_status == 1) { %>
+                            <button type="button" class="btn btn-warning" onclick="showmodalupdate(this)" data-toggle="modal" data-target="#Modal_Update" data-User="<%= JSON.stringify(dataDeposit[i]) %>"><i class="fas fa-edit"></i></button>
+                            <button type="button" class="btn btn-danger" onclick="DeleteDeposit('<%= dataDeposit[i].deposit_id  %>','<%= dataDeposit[i].room_id  %>')"><i class="far fa-trash-alt"></i></button>
+                            <button type="button" class="btn btn-secondary" style="background-color: brown;" onclick="ReturnRoom('<%= dataDeposit[i].deposit_id  %>','<%= dataDeposit[i].room_id  %>','<%= dataDeposit[i].user_id  %>')"><i class="fas fa-door-open"></i></button>
+                            <% } else { %>
+                            <h5 style="color: red;"> ยกเลิกสัญญาแล้ว!</h5>
+                            <% } %>
+                          </td>
+                        </tr>
+                        <% } %>
+                        <% } %>
+                      </tbody>
+                    </table>
+                    <div class="col-2">
+                      <% if (dataUser.length != 0 ) { %>
+                      <input type="hidden" class="form-contsrol" disabled value="<%=dataTenant[0].owner_id  %> " aria-describedby=" basic-addon1" id="user_id">
                       <% } %>
-                      <% } %>
-                    </tbody>
-                  </table>
-                  <div class="col-2">
-                    <% if (dataUser.length != 0 ) { %>
-                    <input type="hidden" class="form-contsrol" disabled value="<%=dataTenant[0].owner_id  %> " aria-describedby=" basic-addon1" id="user_id">
+                    </div>
                     <% } %>
+
                   </div>
-                  <% } %>
 
                 </div>
-
               </div>
             </div>
           </div>
         </div>
-      </div>
+      </main>
     </div>
   </div>
 
@@ -92,7 +138,7 @@
     <div class="modal-dialog modal-lg modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">เพิ่มข้อมูลการมัดจำ</h5>
+          <h5 class="modal-title" id="exampleModalLabel">เพิ่มข้อมูลการเช่า</h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
@@ -102,12 +148,12 @@
             <div class="row">
               <div class="col-4">
                 <div class="form-group">
-                  <label for="exampleInputPassword1">รหัสห้อง</label>
+                  <label for="exampleInputPassword1">หมายเลขห้อง :</label>
                   <div class="row" style="margin-left: 1px; ">
-                    <select class="form-select" id="RoomID" aria-label="Default select example" onChange="checkAddRoom()" style="height: 44.9px; width: 130px;">
-                      <option selected>เลือกรหัสห้อง</option>
+                    <select class="form-select" id="RoomID" aria-label="Default select example" onChange="checkAddRoom()">
+                      <option selected>เลือกหมายเลขห้อง</option>
                       <% for (let i = 0; i < dataRoom.length; i++) { %>
-                      <option value="<%= dataRoom[i].room_id %>"><%= dataRoom[i].room_id+"-"+dataRoom[i].room_number %></option>
+                      <option value="<%= dataRoom[i].room_id %>"><%= dataRoom[i].room_number %></option>
                       <% } %>
                       <option value="add_room">เพิ่มห้องพัก</option>
                     </select>
@@ -118,43 +164,43 @@
               <div class="col-4">
 
                 <div class="form-group">
-                  <label for="exampleInputPassword1">รหัสผู้เช่า</label>
+                  <label for="exampleInputPassword1">ชื่อผู้เช่า :</label>
                   <div class="row" style="margin-left: 1px; ">
-                    <select class="form-select" id="TenantID" aria-label="Default select example" onchange="chackAddTenant()" style="height: 44.9px; width: 130px;">
-                      <option selected>เลือกรหัสผู้เช่า</option>
+                    <select class="form-select" id="TenantID" aria-label="Default select example" onchange="chackAddTenant()">
+                      <option selected>เลือกผู้เช่า</option>
                       <% for (let i = 0; i < dataTenant.length; i++) { %>
-                      <option value="<%= dataTenant[i].user_id %>"><%= dataTenant[i].user_id+"-"+dataTenant[i].firstname %></option>
+                      <option value="<%= dataTenant[i].user_id %>"><%= dataTenant[i].firstname %></option>
                       <% } %>
-                      <option value="add_tenant">เพิ่มผู้เช่า</option>
+                      <option value="add_tenant">เพิ่มผู้เช่า :</option>
                     </select>
                   </div>
                   <!-- <label for="exampleInputPassword1">รหัสผู้เช่า</label>
                   <input type="text" class="form-control" id="TenantID" placeholder="Enter TenantID"> -->
                 </div>
               </div>
-              <div class="col-3">
+              <div class="col-4">
                 <div class="form-group">
-                  <label for="exampleInputPassword1">ค่ามัดจำ</label>
-                  <input type="number" class="form-control" id="Deposit_Price" placeholder="กรอกค่ามัดจำ  ">
+                  <label for="exampleInputPassword1">ค่าประกัน(บาท) :</label>
+                  <input type="number" class="form-control" id="Deposit_Price" placeholder="กรอกค่าประกัน  ">
                 </div>
               </div>
             </div>
             <div class="row">
-              <div class="col-6">
+              <div class="col-4">
                 <div class="form-group">
-                  <label for="exampleInputPassword1">วันที่มัดจำ :</label>
+                  <label for="exampleInputPassword1">วันที่ทำสัญญา :</label>
                   <div class="row" style="margin-left: 1px;">
-                    <input type="date" class="text-lg-center" id="deposit_start_date" style="width: 125px; height: 45px; font-size: 16px;">
-                    <input type="time" class="text-lg-center" id="deposit_start_time" style="font-size: 16px;">
+                    <input type="date" id="deposit_start_date">
+                    <input type="time" id="deposit_start_time">
                   </div>
                 </div>
               </div>
-              <div class="col-6">
+              <div class="col-4">
                 <div class="form-group">
-                  <label for="exampleInputPassword1" style="margin-left: -133px;">วันที่หมดอายุ :</label>
+                  <label for="exampleInputPassword1">วันที่หมดอายุสัญญา :</label>
                   <div class="row" style="margin-left: 1px;">
-                    <input type="date" class="text-lg-center" id="deposit_end_date" style="width: 125px; height: 45px; font-size: 16px; margin-left: -133px;">
-                    <input type="time" class="text-lg-center" id="deposit_end_time" style="font-size: 16px;">
+                    <input type="date" id="deposit_end_date">
+                    <input type="time" id="deposit_end_time">
                   </div>
                 </div>
               </div>
@@ -178,7 +224,7 @@
     <div class="modal-dialog modal-lg modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">แก้ข้อมูลการมัดจำ</h5>
+          <h5 class="modal-title" id="exampleModalLabel">แก้ข้อมูลการเช่า</h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
@@ -188,12 +234,12 @@
             <div class="row">
               <div class="col-4">
                 <div class="form-group">
-                  <label for="exampleInputPassword1">รหัสห้อง</label>
+                  <label for="exampleInputPassword1">หมายเลขห้อง :</label>
                   <div class="row" style="margin-left: 1px; ">
-                    <select disabled class="form-select" id="EditRoomID" aria-label="Default select example" onChange="checkAddRoom()" style="height: 44.9px; width: 130px;">
-                      <option selected>เลือกรหัสห้อง</option>
+                    <select disabled class="form-select" id="EditRoomID" aria-label="Default select example" onChange="checkAddRoom()">
+                      <option selected>เลือกหมายเลขห้อง</option>
                       <% for (let i = 0; i < dataRoom.length; i++) { %>
-                      <option value="<%= dataRoom[i].room_id %>"><%= dataRoom[i].room_id+"-"+dataRoom[i].room_number %></option>
+                      <option value="<%= dataRoom[i].room_id %>"><%= dataRoom[i].room_number %></option>
                       <% } %>
                     </select>
                   </div>
@@ -203,12 +249,12 @@
               <div class="col-4">
 
                 <div class="form-group">
-                  <label for="exampleInputPassword1">รหัสผู้เช่า</label>
+                  <label for="exampleInputPassword1">ชื่อผู้เช่า :</label>
                   <div class="row" style="margin-left: 1px; ">
-                    <select disabled class="form-select" id="EditTenantID" aria-label="Default select example" onchange="chackAddTenant()" style="height: 44.9px; width: 130px;">
-                      <option selected>เลือกรหัสผู้เช่า</option>
+                    <select disabled class="form-select" id="EditTenantID" aria-label="Default select example" onchange="chackAddTenant()">
+                      <option selected>เลือกผู้เช่า</option>
                       <% for (let i = 0; i < dataTenant.length; i++) { %>
-                      <option value="<%= dataTenant[i].user_id %>"><%= dataTenant[i].user_id+"-"+dataTenant[i].firstname %></option>
+                      <option value="<%= dataTenant[i].user_id %>"><%= dataTenant[i].firstname %></option>
                       <% } %>
                     </select>
                   </div>
@@ -216,29 +262,29 @@
                   <input type="text" class="form-control" id="TenantID" placeholder="Enter TenantID"> -->
                 </div>
               </div>
-              <div class="col-3">
+              <div class="col-4">
                 <div class="form-group">
-                  <label for="exampleInputPassword1">ค่ามัดจำ</label>
-                  <input type="number" class="form-control" id="EditDeposit_Price" placeholder="กรอกค่ามัดจำ">
+                  <label for="exampleInputPassword1">ค่าประกัน(บาท) :</label>
+                  <input type="number" class="form-control" id="EditDeposit_Price" placeholder="กรอกค่าประกัน">
                 </div>
               </div>
             </div>
             <div class="row">
-              <div class="col-6">
+              <div class="col-4">
                 <div class="form-group">
-                  <label for="exampleInputPassword1">วันที่มัดจำ :</label>
+                  <label for="exampleInputPassword1">วันที่ทำสัญญา :</label>
                   <div class="row" style="margin-left: 1px;">
-                    <input type="date" id="Editdeposit_start_date" style="width: 125px; height: 45px; font-size: 16px;">
-                    <input type="time" id="Editdeposit_start_time" style="font-size: 16px;">
+                    <input type="date" id="Editdeposit_start_date">
+                    <input type="time" id="Editdeposit_start_time">
                   </div>
                 </div>
               </div>
-              <div class=" col-6">
+              <div class=" col-4">
                 <div class="form-group">
-                  <label for="exampleInputPassword1" style="margin-left: -133px;">วันที่หมดอายุ :</label>
+                  <label for="exampleInputPassword1">วันที่หมดอายุสัญญา :</label>
                   <div class="row" style="margin-left: 1px;">
-                    <input type="date" id="Editdeposit_end_date" style="width: 125px; height: 45px; font-size: 16px; margin-left: -133px;">
-                    <input type="time" id="Editdeposit_end_time" style="font-size: 16px;">
+                    <input type="date" id="Editdeposit_end_date">
+                    <input type="time" id="Editdeposit_end_time">
                   </div>
                 </div>
               </div>
@@ -257,13 +303,13 @@
   </div>
 
 
-  <footer class="tm-bg-dark-blue">
+  <footer class=" tm-bg-dark-blue">
     <div class="container">
       <div class="row">
         <p class="col-sm-12 text-center tm-font-light tm-color-white p-4 tm-margin-b-0">
-          Copyright &copy; <span class="tm-current-year">2018</span> Your Company
+          Copyright &copy; <span class="tm-current-year">2022</span> Hotel Center
 
-          - Design: <a rel="nofollow" href="https://www.tooplate.com" class="tm-color-primary tm-font-normal" target="_parent">Tooplate</a></p>
+          - Design by: <a rel="nofollow" href="https://www.facebook.com/profile.php?id=100008831296272" class="tm-color-primary tm-font-normal" target="_parent">Tang</a></p>
       </div>
     </div>
   </footer>
@@ -274,6 +320,28 @@
 
 
 <script>
+  $(document).ready(function() {
+    $('#myTable').DataTable();
+  });
+
+  function myFunction() {
+    var input, filter, table, tr, td, i, txtValue;
+    input = document.getElementById("myInput");
+    filter = input.value.toUpperCase();
+    table = document.getElementById("myTable");
+    tr = table.getElementsByTagName("tr");
+    for (i = 0; i < tr.length; i++) {
+      td = tr[i].getElementsByTagName("td")[1];
+      if (td) {
+        txtValue = td.textContent || td.innerText;
+        if (txtValue.toUpperCase().indexOf(filter) > -1) {
+          tr[i].style.display = "";
+        } else {
+          tr[i].style.display = "none";
+        }
+      }
+    }
+  }
   //----------------------------------------------เปลี่ยนหน้าไป หน้าเพิ่มห้องพัก-------------------
   function checkAddRoom() {
     console.log("change room");
@@ -368,8 +436,8 @@
 
     console.log(jsonUser.deposit_date);
 
-    const date_start_split = jsonUser.deposit_date.split(" ")
-    const date_end_split = jsonUser.deposit_end_date.split(" ")
+    const date_start_split = jsonUser.Deposit_date.split(" ")
+    const date_end_split = jsonUser.Deposit_end_date.split(" ")
 
     document.getElementById("Editdeposit_start_date").value = date_start_split[0];
     document.getElementById("Editdeposit_start_time").value = date_start_split[1]
@@ -486,6 +554,57 @@
                 position: 'center',
                 icon: 'success',
                 title: 'ลบข้อมูลการมัดจำสำเร็จ',
+                showConfirmButton: true,
+              }).then(() => {
+                location.reload();
+              })
+            }
+          },
+          error: function(jqXhr, textStatus, errorThrow) {
+            swal.fire({
+              position: 'center',
+              icon: 'error',
+              title: 'เกิดข้อผิดพลาด!',
+              time: 2000
+            });
+          }
+        })
+      }
+    })
+  }
+
+  //---------------------------------คืนห้องพัก-----------------------------------
+  async function ReturnRoom(deposit_id, room_id, user_id) {
+    Swal.fire({
+      title: 'แน่ใจแล้วหรือ ?',
+      text: "คุณต้องคืนห้องพักหรือไม่ !",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#72610E',
+      cancelButtonColor: '#darkcyan',
+      cancelButtonText: 'ยกเลิก',
+      confirmButtonText: 'ใช่ต้องการคืน !'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const Data = {
+          deposit_id: deposit_id,
+          room_id: room_id,
+          user_id: user_id
+        }
+        console.log(Data);
+        const url = location.origin + '/apiowner/ReturnRoom/';
+        $.ajax({
+          type: 'POST',
+          url: url,
+          data: JSON.stringify(Data),
+          dataType: 'json',
+          contentType: "application/json; charset=utf-8",
+          success: function(data, status) {
+            if (data.message == "ReturnRoom") {
+              Swal.fire({
+                position: 'center',
+                icon: 'success',
+                title: 'คืนห้องพักสำเร็จ',
                 showConfirmButton: true,
               }).then(() => {
                 location.reload();

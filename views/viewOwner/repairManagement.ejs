@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<style>
+  * {
+    box-sizing: border-box;
+  }
+
+  #myInput {
+    background-image: url('https://www.w3schools.com/css/searchicon.png');
+    background-position: 10px 10px;
+    background-repeat: no-repeat;
+    width: 50%;
+    font-size: 16px;
+    padding: 12px 20px 12px 40px;
+    border: 1px solid #ddd;
+    margin-bottom: 12px;
+  }
+
+  #myTable {
+    border-collapse: collapse;
+    width: 100%;
+    border: 1px solid #ddd;
+    font-size: 18px;
+  }
+
+  #myTable th,
+  #myTable td {
+    text-align: left;
+    padding: 12px;
+  }
+
+  #myTable tr {
+    border-bottom: 1px solid #ddd;
+  }
+
+  #myTable tr.header,
+  #myTable tr:hover {
+    background-color: #f1f1f1;
+  }
+</style>
+<%- include('../component/header.ejs',{
+        title:"จัดการแจ้งซ่อม"
+      }) %>
+
+<body>
+  <div class="tm-main-content" id="top">
+
+    <%- include('../component/navbarNew.ejs',{
+        checklogin: checklogin,
+        role:CheckRole,
+        route: route
+      }) %>
+    <!-- END TOP BAR -->
+
+    <!-- blank Page -->
+    <div class="container-fluid " style="margin-top: 30px;">
+      <main class="col-md-9 ml-sm-auto col-lg-12 px-md-4 py-4">
+        <div class=" row my-4">
+          <div class="col-md-12">
+            <h1 class=" text-center"> ตารางข้อมูลการแจ้งซ่อม</h1>
+            <!-- <h2>ค้นหาข้อมูลการแจ้งซ่อม</h2>
+            <input type="text" id="myInput" onkeyup="myFunction()" placeholder="กรอกชื่อผู้เช่าที่ต้องการค้นหา" title="Type in a name"> -->
+            <div class=" row my-2">
+              <div class="col-md-12">
+                <table class="table" id="myTable">
+                  <thead>
+                    <tr class="header" style="background-color: #CD6155; color: white;">
+                      <th scope="col">ลำดับที่</th>
+                      <th scope="col">หมายเลขห้อง</th>
+                      <th scope="col">ชื่อผู้เช่า</th>
+                      <th scope="col">หัวข้อเรื่อง</th>
+                      <th scope="col">วันที่แจ้งซ่อม</th>
+                      <th scope="col">สถานะ</th>
+                      <th scope="col" class="text-center">จัดการแจ้งซ่อม</th>
+                    </tr>
+                  </thead>
+
+                  <tbody>
+                    <% if (dataRepair.length == 0) { %>
+                    <tr>
+                      <td colspan="7" class="text-center">
+                        <h1>ไม่มีข้อมูล</h1>
+                      </td>
+                    </tr>
+
+                    <% } else  { %>
+                    <% for (let i = 0; i < dataRepair.length; i++) { %>
+                    <tr>
+                      <th scope="row"><%= i+1 %></th>
+                      <td><%=dataRepair[i].room_number%></td>
+                      <td> <%= dataRepair[i].firstname %> </td>
+                      <td> <%= dataRepair[i].repair_name %> </td>
+                      <td> <%= dataRepair[i].Repair_date %> </td>
+                      <td>
+                        <% if(dataRepair[i].repair_status == 0) { %>
+                        <h5 style="color: red;" class="blink"> รอการตรวจสอบ</h5>
+                        <% } else if (dataRepair[i].repair_status == 1) { %>
+                        <h5 style="color: #D9C355 ;"> ทำการซ่อมแล้ว</h5>
+                        <%  } else if (dataRepair[i].repair_status == 3){ %>
+                        <h5 style="color: red;"> ยกเลิกรายการ</h5>
+                        <%  } else if(dataRepair[i].repair_status == 4) { %>
+                        <h5 style="color: red;" class="blink">รอการตรวจสลิป</h5>
+                        <% } else { %>
+                        <h5 style="color: red;" class="blink">มีค่าเสียหาย</h5>
+                        <% } %>
+                      </td>
+                      <td class="text-center">
+                        <% if (dataRepair[i].repair_status == 0) { %>
+                        <button type="button" class="btn btn-secondary" style="background-color: blueviolet;" onclick="showmodalRepair(this)" data-toggle="modal" data-target="#Modal_Repair" data-User="<%= JSON.stringify(dataRepair[i]) %>">ดูข้อมูลเพิ่มเติม <h7 style="color: chartreuse;" class="blink">NEW!!!</h7></button>
+                        <% } else if (dataRepair[i].repair_status == 2) { %>
+                        <h5><i class="fas fa-file-invoice" style="color: brown;"></i></h5>
+                        <!-- <h5 style="color: red;"> ข้อมูลการชำระเงินไม่ถูกต้อง</h5> -->
+                        <% } else if (dataRepair[i].repair_status == 3){ %>
+                        <h5 style="color: chartreuse;"> <i class="fas fa-thumbs-down" style="color: red;"></i></h5>
+                        <!-- <i class="fas fa-thumbs-up"></i> -->
+                        <% } else if(dataRepair[i].repair_status == 4){ %>
+                        <h5 style="color: chartreuse;"> <i class="fas fa-file-invoice-dollar" style="color: coral;"></i></h5>
+                        <% } else if(dataRepair[i].repair_status == 1){ %>
+                        <h5 style="color: chartreuse;"> <i class="fas fa-thumbs-up" style="color: #D9C355;"></i></h5>
+                        <% } else { %>
+                        <h5 style="color: red;"> <i class="fas fa-hand-holding-usd" style="color: red;"></i></h5>
+                        <% }  %>
+                      </td>
+                    </tr>
+                    <% } %>
+                    <% } %>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+  <!-- โมดอลข้อมูลการแจ้งซ่อม-->
+  <div class="modal fade" id="Modal_Repair" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">การแจ้งซ่อม</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="card" style="width: 48rem;">
+            <div class="text-center" style="margin-top: 20px;">
+              <img class="card-img-top" src="/public/img/repair.png" alt="Card image cap" style="width: 200px; height: 200px;">
+            </div>
+            <div class="card-body">
+              <h5 class="card-title">หัวข้อเรื่อง :</h5>
+              <div class="col-4" style="margin-left: -14px;">
+                <div class="form-group">
+                  <input type="text" class="form-control" disabled id="Repair_name1" placeholder="กรอกหัวข้อการแจ้งซ่อม">
+
+                </div>
+              </div>
+              <h5 class="card-title">รายละเอียดการแจ้งซ่อม :</h5>
+              <div class="col-8" style="margin-left: -14px;">
+                <div class="form-group">
+                  <textarea type="text" rows="3" disabled class="form-control" id="Repair_detal1" placeholder="กรอกรายละเอียดการแจ้งซ่อม"></textarea>
+                  <input type="hidden" id="UserID1">
+                  <input type="hidden" id="Room_ID1">
+                  <input type="hidden" id="Repair_id">
+                </div>
+              </div>
+              <h5 class="card-title">รูปภาพที่ทำการแจ้งซ่อม :</h5>
+              <div class="col-8" style="margin-left: 150px;">
+                <div class="form-group">
+                  <img src="/public/images_repair/" class="card-img-top" id="Repair_image1">
+                </div>
+              </div>
+              <h5 class="card-title">กรณีมีค่าเสียหาย (บาท) :</h5>
+              <div class="col-6" style="margin-left: -14px;">
+                <div class="form-group">
+                  <input type="number" class="form-control" id="Repair_price" placeholder="กรอกค่าเสียหาย">
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-warning" onclick="confirmRapair()"> ยืนยันการซ่อม!</button>
+          <button type="button" class="btn btn-secondary" style="background-color:blueviolet ;" onclick="callback_to_tenant()"> ส่งข้อมูลค่าเสียหาย!</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal" style="background-color: darkcyan;">ยกเลิก</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <footer class=" tm-bg-dark-blue">
+    <div class="container">
+      <div class="row">
+        <p class="col-sm-12 text-center tm-font-light tm-color-white p-4 tm-margin-b-0">
+          Copyright &copy; <span class="tm-current-year">2022</span> Hotel Center
+
+          - Design by: <a rel="nofollow" href="https://www.facebook.com/profile.php?id=100008831296272" class="tm-color-primary tm-font-normal" target="_parent">Tang</a></p>
+      </div>
+    </div>
+  </footer>
+  </div>
+
+  <%- include('../component/script.ejs') %>
+</body>
+
+
+<script>
+  $(document).ready(function() {
+    $('#myTable').DataTable();
+  });
+
+  function myFunction() {
+    var input, filter, table, tr, td, i, txtValue;
+    input = document.getElementById("myInput");
+    filter = input.value.toUpperCase();
+    table = document.getElementById("myTable");
+    tr = table.getElementsByTagName("tr");
+    for (i = 0; i < tr.length; i++) {
+      td = tr[i].getElementsByTagName("td")[1];
+      if (td) {
+        txtValue = td.textContent || td.innerText;
+        if (txtValue.toUpperCase().indexOf(filter) > -1) {
+          tr[i].style.display = "";
+        } else {
+          tr[i].style.display = "none";
+        }
+      }
+    }
+  }
+
+  function blink_text() {
+
+    $('.blink').fadeOut(500);
+    $('.blink').fadeIn(500);
+  }
+  setInterval(blink_text, 500);
+
+  //---------------------------------------------------------------โชว์ข้อมูลการแจ้งซ่อม(เพิ่มเติม)------------------------------
+  function showmodalRepair(modal) {
+    let user = modal.getAttribute("data-User")
+    const jsonUser = JSON.parse(user)
+    // document.getElementById("UserID1").value = jsonUser.USER_ID
+    // document.getElementById("Room_ID1").value = jsonUser.room_id
+    document.getElementById("Repair_id").value = jsonUser.repair_id
+    document.getElementById("Repair_name1").value = jsonUser.repair_name
+    document.getElementById("Repair_detal1").value = jsonUser.repair_detal
+    document.getElementById("Repair_image1").src = "/public/images_repair/" + jsonUser.repair_image
+    console.log("--------------ID การแจ้งซ่อม", jsonUser.repair_id);
+    console.log("--------------IDผู้เช่า", jsonUser.USER_ID);
+
+  }
+
+  //------------------------------------------ยืนยันการแจ้งซ่อม-------------------------------------
+  async function confirmRapair() {
+    let repair_id = document.getElementById("Repair_id").value;
+
+
+    console.log("--------repair_id", repair_id)
+    if (repair_id == '') {
+      swal.fire({
+        position: 'center',
+        icon: 'info',
+        title: 'กรุณาเอาค่าเสียหายออก',
+        time: 2000
+      })
+      return;
+    }
+    const Data = {
+      "repair_id": repair_id,
+    }
+    console.log("Data", Data);
+    const url = location.origin + "/apiowner/ConfirmRapair";
+    $.ajax({
+      type: 'POST',
+      url: url,
+      data: JSON.stringify(Data),
+      dataType: 'json',
+      contentType: "application/json; charset=utf-8",
+      success: function(data, status) {
+        if (data.message == "UpdateStatus_Repair_Success") {
+          Swal.fire({
+            position: 'center',
+            icon: 'success',
+            title: 'ทำการยืนยันการซ่อมเสร็จสิ้น',
+            showConfirmButton: true,
+          }).then(() => {
+            location.reload();
+          })
+        }
+      },
+      error: function(jqXhr, textStatus, errorThrow) {
+        console.log(textStatus, jqXhr, errorThrow)
+        swal.fire({
+          position: 'center',
+          icon: 'error',
+          title: 'เกิดข้อผิดพลาด',
+          time: 2000
+        })
+      }
+    })
+  }
+
+  //------------------------------------------ส่งใบแจ้งค่าเสียหายให้ผู้เช่า-------------------------------------
+  async function callback_to_tenant() {
+    let repair_price = document.getElementById("Repair_price").value;
+    let repair_id = document.getElementById("Repair_id").value;
+
+    console.log("--------repair_price", repair_price)
+    console.log("--------repair_id", repair_id)
+    if (repair_id == '' || repair_price == '') {
+      swal.fire({
+        position: 'center',
+        icon: 'info',
+        title: 'กรุณากรอกข้อมูลให้ครบ',
+        time: 2000
+      })
+      return;
+    }
+    const Data = {
+      "repair_id": repair_id,
+      "repair_price": repair_price
+    }
+    console.log("Data", Data);
+    const url = location.origin + "/apiowner/Callback_to_tenant";
+    $.ajax({
+      type: 'POST',
+      url: url,
+      data: JSON.stringify(Data),
+      dataType: 'json',
+      contentType: "application/json; charset=utf-8",
+      success: function(data, status) {
+        if (data.message == "Callback_to_tenant") {
+          Swal.fire({
+            position: 'center',
+            icon: 'success',
+            title: 'ทำการส่งค่าเสียหายสำเร็จ',
+            showConfirmButton: true,
+          }).then(() => {
+            location.reload();
+          })
+        }
+      },
+      error: function(jqXhr, textStatus, errorThrow) {
+        console.log(textStatus, jqXhr, errorThrow)
+        swal.fire({
+          position: 'center',
+          icon: 'error',
+          title: 'เกิดข้อผิดพลาด',
+          time: 2000
+        })
+      }
+    })
+  }
+</script>
+
+</html>

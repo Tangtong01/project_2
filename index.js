@@ -3,7 +3,7 @@ const express = require("express");
 const app = express();
 const session = require("express-session");
 const oneDay = 1000 * 60 * 60 * 24;
-const bodyParser = require("body-parser");
+const bodyParser = require('body-parser');
 
 app.use(
   session({
@@ -13,7 +13,7 @@ app.use(
     resave: false,
   })
 );
-app.use(express.json());
+app.use(express.json({ limit: '50mb' }));
 app.listen(3000, () => {
   console.log("http://localhost:3000");
 });
@@ -22,9 +22,14 @@ app.use(express.static(__dirname));
 app.set(express.static(path.join(__dirname, "public")));
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
+
 app.use("/public/images_domitory", express.static("public/images_domitory"));
+app.use("/public/images_bill", express.static("public/images_bill"));
+app.use("/public/images_repair", express.static("public/images_repair"));
 app.use(bodyParser.json({ limit: '50mb' }));
 app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
+
+
 
 const route = require("./routeAdmin/routeAdmin");
 app.use("/", route);
